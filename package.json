@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d out"
   },
   "dependencies": {
     "autoprefixer": "^10.4.14",
@@ -14,5 +16,8 @@
     "react": "latest",
     "react-dom": "latest",
     "tailwindcss": "^3.3.2"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
   }
 }

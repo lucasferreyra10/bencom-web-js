@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-}
+  basePath: '/bencom-web-js',
+  assetPrefix: '/bencom-web-js/',
+  output: 'export', // Para que next export funcione bien con next 13+
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
