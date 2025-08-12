@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d out"
+    "export": "next build && next export"
   },
   "dependencies": {
     "autoprefixer": "^10.4.14",
