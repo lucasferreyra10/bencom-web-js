@@ -261,7 +261,7 @@ export default function Layout({ children }) {
         <div className="max-w-6xl mx-auto px-6 py-4 text-center">
           <div className="mb-2">
             <a
-              href="https://wa.me/+5421127797320"
+              href="https://wa.me/+5491127797320"
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => {

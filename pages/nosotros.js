@@ -24,7 +24,7 @@ export default function Nosotros() {
                     <dt className="font-medium">Teléfono</dt>
                     <dd>
                       <a
-                        href="https://wa.me/+5421127797320"
+                        href="https://wa.me/+5491127797320"
                         className="text-secondary underline"
                         aria-label="Llamar al 11 2779 7320"
                       >
