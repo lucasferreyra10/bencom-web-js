@@ -42,7 +42,7 @@ export default function Nosotros() {
                       <a
                         href="mailto:mantenimiento@bencom.com.ar"
                         className="text-secondary underline"
-                        aria-label="Enviar correo a mantenimiento en bencom punto com punto ar"
+                        aria-label="Enviar correo a mantenimiento"
                       >
                         mantenimiento@bencom.com.ar
                       </a>
