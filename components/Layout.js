@@ -48,7 +48,7 @@ export default function Layout({ children }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <header className="bg-primary text-white">
+      <header className="bg-primary text-white relative z-30">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center">
           {/* LOGO */}
           <div className="flex items-center">
