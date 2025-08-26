@@ -52,15 +52,31 @@ export default function Layout({ children }) {
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center">
           {/* LOGO */}
           <div className="flex items-center">
-            <Link href="/" aria-label="Ir al inicio - BENCOM S.R.L." className="inline-block">
+            <Link
+              href="/"
+              aria-label="Ir al inicio - BENCOM S.R.L."
+              className="inline-block"
+            >
               <div className="flex items-center">
-                <Image src="/logoBencom.png" alt="BENCOM S.R.L." width={50} height={15} priority />
+                <Image
+                  src="/logoBencom.png"
+                  alt="BENCOM S.R.L."
+                  width={50}
+                  height={15}
+                  priority
+                />
               </div>
             </Link>
           </div>
 
           {/* Nav escritorio (con dropdown por hover) */}
           <nav className="hidden md:flex items-center ml-auto space-x-6 text-sm">
+            <Link
+              href="/"
+              className="inline-block px-2 py-1 rounded transform transition hover:shadow-lg hover:-translate-y-0.5 focus:shadow-lg focus:outline-none"
+            >
+              Inicio
+            </Link>
             {/* Servicios: usar "group" para mostrar dropdown en hover/focus-within */}
             <div className="relative group">
               <button
@@ -69,8 +85,20 @@ export default function Layout({ children }) {
               >
                 Servicios
                 {/* caret */}
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
                 </svg>
               </button>
 
@@ -78,27 +106,42 @@ export default function Layout({ children }) {
               <div className="absolute left-0 mt-2 w-56 bg-primary text-white rounded shadow-lg border border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-150 z-50">
                 <ul className="py-2">
                   <li>
-                    <Link href="/servicios#destapaciones" className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90">
+                    <Link
+                      href="/servicios#destapaciones"
+                      className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                    >
                       Destapaciones
                     </Link>
                   </li>
                   <li>
-                    <Link href="/servicios#obra-civil-menor" className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90">
+                    <Link
+                      href="/servicios#obra-civil-menor"
+                      className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                    >
                       Obra civil menor
                     </Link>
                   </li>
                   <li>
-                    <Link href="/servicios#senalizacion-vial" className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90">
+                    <Link
+                      href="/servicios#senalizacion-vial"
+                      className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                    >
                       Demarcación vial
                     </Link>
                   </li>
                   <li>
-                    <Link href="/servicios#herrerias" className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90">
+                    <Link
+                      href="/servicios#herrerias"
+                      className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                    >
                       Herrerías
                     </Link>
                   </li>
                   <li>
-                    <Link href="/servicios#innovaciones" className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90">
+                    <Link
+                      href="/servicios#innovaciones"
+                      className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                    >
                       Innovaciones
                     </Link>
                   </li>
@@ -107,10 +150,12 @@ export default function Layout({ children }) {
             </div>
 
             {/* Otros links */}
-            <Link href="/nosotros" className="inline-block px-2 py-1 rounded transform transition hover:shadow-lg hover:-translate-y-0.5 focus:shadow-lg focus:outline-none">
+            <Link
+              href="/nosotros"
+              className="inline-block px-2 py-1 rounded transform transition hover:shadow-lg hover:-translate-y-0.5 focus:shadow-lg focus:outline-none"
+            >
               Nosotros
             </Link>
-
           </nav>
 
           {/* Botón hamburger (móvil) */}
@@ -122,12 +167,31 @@ export default function Layout({ children }) {
               aria-expanded={open}
               className="inline-flex items-center justify-center p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
             >
-              <span className="sr-only">{open ? "Cerrar menú" : "Abrir menú"}</span>
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+              <span className="sr-only">
+                {open ? "Cerrar menú" : "Abrir menú"}
+              </span>
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 {open ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8h16M4 16h16" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 8h16M4 16h16"
+                  />
                 )}
               </svg>
             </button>
@@ -135,21 +199,62 @@ export default function Layout({ children }) {
         </div>
 
         {/* MOBILE OVERLAY + BACKDROP */}
-        <div id="mobile-menu" aria-hidden={!open} role="dialog" aria-modal="true" className="md:hidden">
+        <div
+          id="mobile-menu"
+          aria-hidden={!open}
+          role="dialog"
+          aria-modal="true"
+          className="md:hidden"
+        >
           {/* Backdrop */}
-          <div onClick={() => setOpen(false)} className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`} />
+          <div
+            onClick={() => setOpen(false)}
+            className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 ${
+              open ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
+          />
 
           {/* Panel deslizante */}
-          <aside className={`fixed inset-y-0 right-0 z-50 w-full max-w-sm transform transition-transform duration-300 ${open ? "translate-x-0" : "translate-x-full"}`}>
+          <aside
+            className={`fixed inset-y-0 right-0 z-50 w-full max-w-sm transform transition-transform duration-300 ${
+              open ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
             <div className="h-full bg-primary text-white shadow-xl flex flex-col">
               {/* header del panel */}
               <div className="flex items-center justify-between px-4 py-4 border-b border-white/10">
-                <Link href="/" onClick={handleNavClick} className="inline-block">
-                  <Image src="/logoBencom.png" alt="BENCOM S.R.L." width={50} height={15} priority />
+                <Link
+                  href="/"
+                  onClick={handleNavClick}
+                  className="inline-block"
+                >
+                  <Image
+                    src="/logoBencom.png"
+                    alt="BENCOM S.R.L."
+                    width={50}
+                    height={15}
+                    priority
+                  />
                 </Link>
-                <button onClick={() => setOpen(false)} className="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white" aria-label="Cerrar menú">
-                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                <button
+                  onClick={() => setOpen(false)}
+                  className="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+                  aria-label="Cerrar menú"
+                >
+                  <svg
+                    className="h-6 w-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
@@ -157,6 +262,15 @@ export default function Layout({ children }) {
               {/* Links: mobile - incluye acordeón para Servicios */}
               <nav className="flex-1 px-4 py-6">
                 <ul className="flex flex-col gap-3">
+                  <li>
+                    <Link
+                      href="/"
+                      onClick={handleNavClick}
+                      className="block text-white px-4 py-3 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                    >
+                      Inicio
+                    </Link>
+                  </li>
                   {/* Servicios (acordeón) */}
                   <li>
                     <button
@@ -165,35 +279,75 @@ export default function Layout({ children }) {
                       className="w-full text-left flex items-center justify-between text-white px-4 py-3 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90 focus:shadow-lg focus:-translate-y-0.5 focus:bg-primary/90 focus:outline-none"
                     >
                       <span>Servicios</span>
-                      <svg className={`w-4 h-4 transform transition-transform ${mobileServiciosOpen ? "rotate-180" : "rotate-0"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                      <svg
+                        className={`w-4 h-4 transform transition-transform ${
+                          mobileServiciosOpen ? "rotate-180" : "rotate-0"
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M19 9l-7 7-7-7"
+                        ></path>
                       </svg>
                     </button>
 
                     {/* contenido del acordeón */}
-                    <ul className={`mt-2 ml-4 overflow-hidden transition-all duration-200 ${mobileServiciosOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"}`}>
+                    <ul
+                      className={`mt-2 ml-4 overflow-hidden transition-all duration-200 ${
+                        mobileServiciosOpen
+                          ? "max-h-[600px] opacity-100"
+                          : "max-h-0 opacity-0"
+                      }`}
+                    >
                       <li>
-                        <Link href="/servicios#destapaciones" onClick={handleNavClick} className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90">
+                        <Link
+                          href="/servicios#destapaciones"
+                          onClick={handleNavClick}
+                          className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                        >
                           Destapaciones
                         </Link>
                       </li>
                       <li>
-                        <Link href="/servicios#obra-civil-menor" onClick={handleNavClick} className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90">
+                        <Link
+                          href="/servicios#obra-civil-menor"
+                          onClick={handleNavClick}
+                          className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                        >
                           Obra civil menor
                         </Link>
                       </li>
                       <li>
-                        <Link href="/servicios#senalizacion-vial" onClick={handleNavClick} className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90">
+                        <Link
+                          href="/servicios#senalizacion-vial"
+                          onClick={handleNavClick}
+                          className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                        >
                           Demarcación vial
                         </Link>
                       </li>
                       <li>
-                        <Link href="/servicios#herrerias" onClick={handleNavClick} className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90">
+                        <Link
+                          href="/servicios#herrerias"
+                          onClick={handleNavClick}
+                          className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                        >
                           Herrerías
                         </Link>
                       </li>
                       <li>
-                        <Link href="/servicios#innovaciones" onClick={handleNavClick} className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90">
+                        <Link
+                          href="/servicios#innovaciones"
+                          onClick={handleNavClick}
+                          className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                        >
                           Innovaciones
                         </Link>
                       </li>
@@ -202,7 +356,11 @@ export default function Layout({ children }) {
 
                   {/* Otros links mobile */}
                   <li>
-                    <Link href="/nosotros" onClick={handleNavClick} className="block text-white px-4 py-3 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90">
+                    <Link
+                      href="/nosotros"
+                      onClick={handleNavClick}
+                      className="block text-white px-4 py-3 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                    >
                       Nosotros
                     </Link>
                   </li>
@@ -240,7 +398,9 @@ export default function Layout({ children }) {
         </div>
       </header>
 
-      <main className="flex-grow max-w-6xl mx-auto px-6 py-6 w-full">{children}</main>
+      <main className="flex-grow max-w-6xl mx-auto px-6 py-6 w-full">
+        {children}
+      </main>
 
       {/* FOOTER */}
       <footer className="bg-primary text-white">
@@ -269,7 +429,10 @@ export default function Layout({ children }) {
             </a>
           </div>
 
-          <div>&copy; {new Date().getFullYear()} BENCOM S.R.L. Todos los derechos reservados.</div>
+          <div>
+            &copy; {new Date().getFullYear()} BENCOM S.R.L. Todos los derechos
+            reservados.
+          </div>
         </div>
       </footer>
     </div>

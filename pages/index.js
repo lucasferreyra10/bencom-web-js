@@ -14,7 +14,7 @@ export default function Home() {
             aria-hidden="true"
           />
 
-          {/* Degradado L->R que se superpone a la imagen (ajustá color si querés) */}
+          {/* Degradado L->R que se superpone a la imagen (ajustar color en preferencia) */}
           <div
             className="absolute inset-0"
             style={{
@@ -48,7 +48,7 @@ export default function Home() {
                 </a>
                 <a
                   href="https://wa.me/+5491127797320"
-                  className="inline-block border border-white/30 text-white/90 px-6 py-3 rounded hover:bg-white/10 hover:-translate-y-0.5 transition"
+                  className="inline-block bg-[#2e358c] text-white font-medium px-6 py-3 rounded shadow hover:shadow-lg transform hover:-translate-y-0.5 transition"
                 >
                   Contactanos
                 </a>
@@ -59,7 +59,7 @@ export default function Home() {
       </section>
 
       {/* Aquí podés agregar más secciones debajo del hero */}
-      <section className="py-12">{/* ... resto del contenido ... */}</section>
+     /<section className="py-12">{/* ... resto del contenido ... */}</section>
     </Layout>
   );
 }
