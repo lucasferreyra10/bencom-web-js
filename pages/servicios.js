@@ -25,7 +25,7 @@ export default function Servicios() {
     "Proyectos",
     "Planeamiento de reformas",
     "Trabajos de Durlock",
-    "Señalización Vial",
+    "Demarcación Vial",
     "Herrerías",
     "Innovaciones",
     "Obra Civil Menor",
