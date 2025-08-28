@@ -12,13 +12,13 @@ import { useEffect, useRef, useState } from "react";
 export default function Carousel({ items = [], minSlides = 1 }) {
   const trackRef = useRef(null);
   const containerRef = useRef(null);
-
-  const [vw, setVw] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 1200
-  );
+  const [vw, setVw] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
   const [slidesPerView, setSlidesPerView] = useState(minSlides);
   const [slideWidth, setSlideWidth] = useState(300);
   const [firstIndex, setFirstIndex] = useState(0);
+
+  // NEW: detecta dispositivo táctil para ocultar flechas en mobile/tablets táctiles
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   // gap entre slides en px (mismo valor usado en CSS)
   const GAP = 24;
@@ -46,14 +46,20 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     };
   }, []);
 
+  // detectar si es dispositivo táctil (oculta flechas en móviles táctiles)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const touch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    setIsTouchDevice(Boolean(touch));
+  }, []);
+
   // calcular slideWidth basado en ancho real del track/container, restando gaps
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
 
     const recalc = () => {
-      const cw =
-        el.clientWidth || (containerRef.current?.clientWidth ?? window.innerWidth);
+      const cw = el.clientWidth || (containerRef.current?.clientWidth ?? window.innerWidth);
       const totalGap = GAP * (slidesPerView - 1);
       const available = Math.max(0, cw - totalGap);
       const w = Math.floor(available / slidesPerView);
@@ -132,7 +138,6 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     const onMove = (e) => {
       if (!dragging) return;
       lastX = e.touches ? e.touches[0].clientX : e.clientX;
-      // no preventDefault: dejamos scroll nativo para mejor UX
     };
 
     const onUp = () => {
@@ -186,7 +191,6 @@ export default function Carousel({ items = [], minSlides = 1 }) {
 
   /**
    * Sincronizar índice con scroll real (con debounce para estabilidad)
-   * Esto evita lecturas ruidosas cuando las imágenes cargan o hay momentum.
    */
   useEffect(() => {
     const el = trackRef.current;
@@ -197,7 +201,6 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     const onScroll = () => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
-        // debounce corto (80ms)
         window.clearTimeout(debounceTimeout);
         debounceTimeout = window.setTimeout(() => {
           const cur = el.scrollLeft || 0;
@@ -216,8 +219,8 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     };
   }, [slideTotal, items.length, slidesPerView, vw, maxFirstIndex]);
 
-  // flechas visibles en pantallas razonables
-  const showArrows = vw >= 420;
+  // flechas visibles en pantallas razonables y SOLO si NO es dispositivo táctil
+  const showArrows = vw >= 420 && !isTouchDevice;
   const leftVisible = showArrows && firstIndex > 0;
   const rightVisible = showArrows && firstIndex < maxFirstIndex;
   const dotsCount = Math.max(1, maxFirstIndex + 1);
