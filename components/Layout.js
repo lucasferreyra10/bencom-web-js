@@ -123,7 +123,7 @@ export default function Layout({ children }) {
                   </li>
                   <li>
                     <Link
-                      href="/servicios#senalizacion-vial"
+                      href="/servicios#demarcacion-vial"
                       className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
                     >
                       Demarcación vial
@@ -326,7 +326,7 @@ export default function Layout({ children }) {
                       </li>
                       <li>
                         <Link
-                          href="/servicios#senalizacion-vial"
+                          href="/servicios#demarcacion-vial"
                           onClick={handleNavClick}
                           className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
                         >
