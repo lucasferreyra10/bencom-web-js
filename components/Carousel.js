@@ -83,7 +83,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
       const totalWidth = el.scrollWidth || 0;
       const maxLeft = Math.max(0, totalWidth - viewportWidth);
 
-      // número de páginas estimado
+      // número de páginas estimado (páginas por viewport width)
       const pCount = viewportWidth > 0 ? Math.max(1, Math.ceil(totalWidth / viewportWidth)) : 1;
 
       // construyo array de posiciones: i * viewportWidth, pero la última es maxLeft
@@ -91,7 +91,6 @@ export default function Carousel({ items = [], minSlides = 1 }) {
       for (let i = 0; i < pCount; i++) {
         pos.push(Math.min(i * viewportWidth, maxLeft));
       }
-      // asegurar que la última sea exactamente maxLeft (evita páginas fantasmas por redondeo)
       if (pos.length > 0) pos[pos.length - 1] = maxLeft;
 
       setPositions(pos);
@@ -114,7 +113,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     };
   }, [slidesPerView, slideWidth, items.length, vw]);
 
-  // scrollToPage usando positions[] calculadas
+  // Helpers: page behavior (desktop)
   const scrollToPage = (p) => {
     const el = trackRef.current;
     if (!el) return;
@@ -123,11 +122,39 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     setPage(target);
     el.scrollTo({ left, behavior: "smooth" });
   };
+  const prevPage = () => scrollToPage(Math.max(0, page - 1));
+  const nextPage = () => scrollToPage(Math.min((positions.length || 1) - 1, page + 1));
 
-  const prev = () => scrollToPage(Math.max(0, page - 1));
-  const next = () => scrollToPage(Math.min((positions.length || 1) - 1, page + 1));
+  // Helpers: slide-by-slide (mobile)
+  const slideTotal = slideWidth + GAP;
+  const maxFirstSlideIndex = Math.max(0, items.length - slidesPerView);
+  const getCurrentSlideIndex = () => {
+    const el = trackRef.current;
+    if (!el) return 0;
+    return Math.round((el.scrollLeft || 0) / (slideTotal || 1));
+  };
+  const scrollToSlide = (index) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const firstIndex = Math.max(0, Math.min(index, maxFirstSlideIndex));
+    const desiredLeft = firstIndex * slideTotal;
+    const maxLeft = Math.max(0, el.scrollWidth - el.clientWidth);
+    const left = Math.min(desiredLeft, maxLeft);
+    el.scrollTo({ left, behavior: "smooth" });
+  };
+  const prevSlide = () => {
+    const cur = getCurrentSlideIndex();
+    scrollToSlide(Math.max(0, cur - 1));
+  };
+  const nextSlide = () => {
+    const cur = getCurrentSlideIndex();
+    scrollToSlide(Math.min(maxFirstSlideIndex, cur + 1));
+  };
 
-  // swipe / drag handling (idéntico, solo que ahora la página se decide por nearest position)
+  // Decide móviles vs desktop (umbral)
+  const isMobile = vw < 768;
+
+  // swipe / drag handling
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
@@ -151,25 +178,40 @@ export default function Carousel({ items = [], minSlides = 1 }) {
       if (!dragging) return;
       dragging = false;
       const dx = lastX - startX;
-      const threshold = (el.clientWidth || window.innerWidth) * 0.15;
-      if (dx < -threshold) next();
-      else if (dx > threshold) prev();
-      else {
-        const cur = el.scrollLeft || 0;
-        // elegir la posición más cercana
-        if (positions && positions.length) {
-          let nearest = 0;
-          let md = Infinity;
-          positions.forEach((pos, i) => {
-            const d = Math.abs(cur - pos);
-            if (d < md) {
-              md = d;
-              nearest = i;
-            }
-          });
-          scrollToPage(nearest);
+      const threshold = (el.clientWidth || window.innerWidth) * 0.12; // 12% mejor para mobile
+      if (isMobile) {
+        if (dx < -threshold) {
+          nextSlide();
+        } else if (dx > threshold) {
+          prevSlide();
+        } else {
+          // snap to nearest slide
+          const cur = el.scrollLeft || 0;
+          const nearest = Math.round(cur / (slideTotal || 1));
+          scrollToSlide(nearest);
+        }
+      } else {
+        // comportamiento por páginas en desktop
+        if (dx < -threshold) nextPage();
+        else if (dx > threshold) prevPage();
+        else {
+          const cur = el.scrollLeft || 0;
+          // elegir la posición más cercana de positions[]
+          if (positions && positions.length) {
+            let nearest = 0;
+            let md = Infinity;
+            positions.forEach((pos, i) => {
+              const d = Math.abs(cur - pos);
+              if (d < md) {
+                md = d;
+                nearest = i;
+              }
+            });
+            scrollToPage(nearest);
+          }
         }
       }
+
       setTimeout(() => {
         el.style.scrollSnapType = "x mandatory";
         el.style.scrollBehavior = "";
@@ -196,7 +238,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
       el.style.scrollBehavior = "";
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slidesPerView, page, items.length, positions]);
+  }, [slidesPerView, page, items.length, slideWidth, vw, positions]);
 
   // sincronizar page con scroll real: buscar posición más cercana en positions[]
   useEffect(() => {
@@ -207,18 +249,37 @@ export default function Carousel({ items = [], minSlides = 1 }) {
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
         const cur = el.scrollLeft || 0;
-        if (positions && positions.length) {
-          let nearest = 0;
-          let md = Infinity;
-          positions.forEach((pos, i) => {
-            const d = Math.abs(cur - pos);
-            if (d < md) {
-              md = d;
-              nearest = i;
-            }
-          });
-          const clamped = Math.max(0, Math.min(nearest, Math.max(0, positions.length - 1)));
-          setPage((prev) => (prev !== clamped ? clamped : prev));
+        if (isMobile) {
+          // en móvil no queremos tocar "pages" (que están basadas en viewportWidth),
+          // pero podemos dejar sincronizar 'page' con el índice de página basada en positions
+          if (positions && positions.length) {
+            let nearest = 0;
+            let md = Infinity;
+            positions.forEach((pos, i) => {
+              const d = Math.abs(cur - pos);
+              if (d < md) {
+                md = d;
+                nearest = i;
+              }
+            });
+            const clamped = Math.max(0, Math.min(nearest, Math.max(0, positions.length - 1)));
+            setPage((prev) => (prev !== clamped ? clamped : prev));
+          }
+        } else {
+          // desktop: normal (posiciones por viewport)
+          if (positions && positions.length) {
+            let nearest = 0;
+            let md = Infinity;
+            positions.forEach((pos, i) => {
+              const d = Math.abs(cur - pos);
+              if (d < md) {
+                md = d;
+                nearest = i;
+              }
+            });
+            const clamped = Math.max(0, Math.min(nearest, Math.max(0, positions.length - 1)));
+            setPage((prev) => (prev !== clamped ? clamped : prev));
+          }
         }
       });
     };
@@ -227,14 +288,24 @@ export default function Carousel({ items = [], minSlides = 1 }) {
       el.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(rafId);
     };
-  }, [positions]);
+  }, [positions, slideWidth, isMobile]);
 
   // mostrar flechas en pantallas razonables
   const showArrows = vw >= 420;
 
-  // visibilidad según extremos
+  // visibilidad según extremos para páginas (desktop); en móvil no se muestran flechas normalmente
   const leftVisible = showArrows && page > 0;
   const rightVisible = showArrows && page < (positions.length - 1);
+
+  // Flechas externas: siguen moviendo por páginas (desktop). En mobile las flechas están ocultas por showArrows.
+  const handlePrev = () => {
+    if (isMobile) prevSlide();
+    else prevPage();
+  };
+  const handleNext = () => {
+    if (isMobile) nextSlide();
+    else nextPage();
+  };
 
   return (
     <div className="relative">
@@ -243,7 +314,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
         {/* flechas: ahora ocultas cuando en extremos */}
         <button
           aria-label="Anterior"
-          onClick={prev}
+          onClick={handlePrev}
           className={`absolute left-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white text-primary shadow-md flex items-center justify-center transition-transform hover:scale-105 ${
             leftVisible ? "" : "hidden"
           }`}
@@ -255,7 +326,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
 
         <button
           aria-label="Siguiente"
-          onClick={next}
+          onClick={handleNext}
           className={`absolute right-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white text-primary shadow-md flex items-center justify-center transition-transform hover:scale-105 ${
             rightVisible ? "" : "hidden"
           }`}
