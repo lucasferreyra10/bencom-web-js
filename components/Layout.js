@@ -145,6 +145,22 @@ export default function Layout({ children }) {
                       Innovaciones
                     </Link>
                   </li>
+                  <li>
+                    <Link
+                      href="/servicios#equipos-de-frio"
+                      className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                    >
+                      Equipos de frío
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/servicios#otros"
+                      className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                    >
+                      Otros
+                    </Link>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -349,6 +365,22 @@ export default function Layout({ children }) {
                           className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
                         >
                           Innovaciones
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="/servicios#equipos-de-frio"
+                          className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                        >
+                          Equipos de frío
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="/servicios#otros"
+                          className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                        >
+                          Otros
                         </Link>
                       </li>
                     </ul>

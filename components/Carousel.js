@@ -1,20 +1,28 @@
 // components/Carousel.js
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Carousel mejorado (preparado para mobile swipe estable)
+ * Carousel horizontal robusto (desktop + mobile)
  * Props:
- * - items: array [{id,title,desc,img,href}]
- * - minGridBreakpoint: px desde el cuál querrás mostrar grid (opcional). Default 768 (md).
+ * - items: [{ id, title, desc, img, href }]
+ * - minSlides: número base de slides por viewport (opcional)
  */
-export default function Carousel({ items = [], minGridBreakpoint = 768 }) {
+export default function Carousel({ items = [], minSlides = 1 }) {
   const trackRef = useRef(null);
-  const [viewportWidth, setViewportWidth] = useState(0);
-  const [slidesPerView, setSlidesPerView] = useState(1);
+  const containerRef = useRef(null);
+  const [vw, setVw] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
+  const [slidesPerView, setSlidesPerView] = useState(minSlides);
+  const [slideWidth, setSlideWidth] = useState(300);
   const [page, setPage] = useState(0);
-  const [slideWidth, setSlideWidth] = useState(0);
-  const resizeObserverRef = useRef(null);
+  const [pages, setPages] = useState(1);
+  const [positions, setPositions] = useState([0]); // array con los left targets por página
 
+  // gap entre slides en px (mismo valor usado en CSS)
+  const GAP = 24;
+
+  // decide slidesPerView según ancho viewport
   useEffect(() => {
     const calcSPV = (w) => {
       if (w < 640) return 1;
@@ -23,114 +31,151 @@ export default function Carousel({ items = [], minGridBreakpoint = 768 }) {
       if (w < 1280) return 4;
       return 5;
     };
-
-    const update = () => {
+    const onResize = () => {
       const w = window.innerWidth;
-      setViewportWidth(w);
-      const spv = calcSPV(w);
-      setSlidesPerView(spv);
-      // recalc slideWidth based on actual container width
-      const el = trackRef.current;
-      if (el) {
-        const cw = el.clientWidth || window.innerWidth;
-        setSlideWidth(Math.floor(cw / spv));
-      }
+      setVw(w);
+      setSlidesPerView(calcSPV(w));
     };
-
-    update();
-    window.addEventListener("resize", update);
-    window.addEventListener("orientationchange", update);
+    onResize();
+    window.addEventListener("resize", onResize);
+    window.addEventListener("orientationchange", onResize);
     return () => {
-      window.removeEventListener("resize", update);
-      window.removeEventListener("orientationchange", update);
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("orientationchange", onResize);
     };
   }, []);
 
-  // keep slideWidth updated with ResizeObserver (handles dynamic container sizes)
+  // calcular slideWidth basado en ancho real del track/container, restando gaps
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
-    // initial calc
-    const recalc = () => {
-      const cw = el.clientWidth || window.innerWidth;
-      setSlideWidth(Math.floor(cw / slidesPerView));
-    };
-    recalc();
 
+    const recalc = () => {
+      const cw = el.clientWidth || (containerRef.current?.clientWidth ?? window.innerWidth);
+      const totalGap = GAP * (slidesPerView - 1);
+      const available = Math.max(0, cw - totalGap);
+      const w = Math.floor(available / slidesPerView);
+      setSlideWidth(w);
+    };
+
+    recalc();
+    let ro;
     if ("ResizeObserver" in window) {
-      resizeObserverRef.current = new ResizeObserver(recalc);
-      resizeObserverRef.current.observe(el);
+      ro = new ResizeObserver(recalc);
+      ro.observe(el);
     } else {
-      // fallback
       window.addEventListener("resize", recalc);
     }
+
     return () => {
-      if (resizeObserverRef.current) resizeObserverRef.current.disconnect();
+      if (ro) ro.disconnect();
       else window.removeEventListener("resize", recalc);
     };
-  }, [slidesPerView]);
+  }, [slidesPerView, vw]);
 
-  // number of pages
-  const pages = Math.max(1, Math.ceil(items.length / slidesPerView));
+  // recalcula posiciones/páginas usando el ancho visible real (viewportWidth)
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
 
+    const recompute = () => {
+      const viewportWidth = el.clientWidth || (containerRef.current?.clientWidth ?? window.innerWidth);
+      const totalWidth = el.scrollWidth || 0;
+      const maxLeft = Math.max(0, totalWidth - viewportWidth);
+
+      // número de páginas estimado
+      const pCount = viewportWidth > 0 ? Math.max(1, Math.ceil(totalWidth / viewportWidth)) : 1;
+
+      // construyo array de posiciones: i * viewportWidth, pero la última es maxLeft
+      const pos = [];
+      for (let i = 0; i < pCount; i++) {
+        pos.push(Math.min(i * viewportWidth, maxLeft));
+      }
+      // asegurar que la última sea exactamente maxLeft (evita páginas fantasmas por redondeo)
+      if (pos.length > 0) pos[pos.length - 1] = maxLeft;
+
+      setPositions(pos);
+      setPages(pos.length);
+      setPage((prev) => Math.min(prev, Math.max(0, pos.length - 1)));
+    };
+
+    recompute();
+    let ro;
+    if ("ResizeObserver" in window) {
+      ro = new ResizeObserver(recompute);
+      ro.observe(el);
+    } else {
+      window.addEventListener("resize", recompute);
+    }
+
+    return () => {
+      if (ro) ro.disconnect();
+      else window.removeEventListener("resize", recompute);
+    };
+  }, [slidesPerView, slideWidth, items.length, vw]);
+
+  // scrollToPage usando positions[] calculadas
   const scrollToPage = (p) => {
     const el = trackRef.current;
     if (!el) return;
-    const targetPage = Math.max(0, Math.min(p, pages - 1));
-    const left = targetPage * el.clientWidth;
+    const target = Math.max(0, Math.min(p, Math.max(0, positions.length - 1)));
+    const left = positions[target] ?? 0;
+    setPage(target);
     el.scrollTo({ left, behavior: "smooth" });
-    setPage(targetPage);
   };
 
-  const prev = () => scrollToPage(page - 1);
-  const next = () => scrollToPage(page + 1);
+  const prev = () => scrollToPage(Math.max(0, page - 1));
+  const next = () => scrollToPage(Math.min((positions.length || 1) - 1, page + 1));
 
-  // Pointer / swipe handling bound to the track. More stable on mobile.
+  // swipe / drag handling (idéntico, solo que ahora la página se decide por nearest position)
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
-    let down = false;
+
+    let dragging = false;
     let startX = 0;
     let lastX = 0;
-    // We disable native scroll snap while dragging and restore after.
+
     const onDown = (e) => {
-      down = true;
+      dragging = true;
       startX = e.touches ? e.touches[0].clientX : e.clientX;
       lastX = startX;
-      // stop native momentum
       el.style.scrollBehavior = "auto";
       el.style.scrollSnapType = "none";
     };
     const onMove = (e) => {
-      if (!down) return;
+      if (!dragging) return;
       lastX = e.touches ? e.touches[0].clientX : e.clientX;
-      // let the browser handle the actual scroll by default (we're not calling preventDefault)
     };
     const onUp = () => {
-      if (!down) return;
-      down = false;
+      if (!dragging) return;
+      dragging = false;
       const dx = lastX - startX;
-      const threshold = (el.clientWidth || window.innerWidth) * 0.15; // 15% of viewport
-      if (dx < -threshold) {
-        next();
-      } else if (dx > threshold) {
-        prev();
-      } else {
-        // snap to nearest page
-        // determine nearest page by current scrollLeft
+      const threshold = (el.clientWidth || window.innerWidth) * 0.15;
+      if (dx < -threshold) next();
+      else if (dx > threshold) prev();
+      else {
         const cur = el.scrollLeft || 0;
-        const approxPage = Math.round(cur / el.clientWidth);
-        scrollToPage(approxPage);
+        // elegir la posición más cercana
+        if (positions && positions.length) {
+          let nearest = 0;
+          let md = Infinity;
+          positions.forEach((pos, i) => {
+            const d = Math.abs(cur - pos);
+            if (d < md) {
+              md = d;
+              nearest = i;
+            }
+          });
+          scrollToPage(nearest);
+        }
       }
-      // restore snapping and smooth behavior
       setTimeout(() => {
         el.style.scrollSnapType = "x mandatory";
         el.style.scrollBehavior = "";
       }, 120);
     };
 
-    // Use passive: false for touchstart if we'd call preventDefault (we don't here),
-    // keep default passive true to avoid warnings. Binding to element only.
     el.addEventListener("touchstart", onDown, { passive: true });
     el.addEventListener("touchmove", onMove, { passive: true });
     el.addEventListener("touchend", onUp);
@@ -147,98 +192,154 @@ export default function Carousel({ items = [], minGridBreakpoint = 768 }) {
       el.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
       window.removeEventListener("touchcancel", onUp);
+      el.style.scrollSnapType = "x mandatory";
+      el.style.scrollBehavior = "";
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, slidesPerView, items.length]);
+  }, [slidesPerView, page, items.length, positions]);
 
-  // Hide arrows on very small viewports but keep accessible for keyboard users.
-  const showArrows = viewportWidth >= 420;
+  // sincronizar page con scroll real: buscar posición más cercana en positions[]
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    let rafId = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const cur = el.scrollLeft || 0;
+        if (positions && positions.length) {
+          let nearest = 0;
+          let md = Infinity;
+          positions.forEach((pos, i) => {
+            const d = Math.abs(cur - pos);
+            if (d < md) {
+              md = d;
+              nearest = i;
+            }
+          });
+          const clamped = Math.max(0, Math.min(nearest, Math.max(0, positions.length - 1)));
+          setPage((prev) => (prev !== clamped ? clamped : prev));
+        }
+      });
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(rafId);
+    };
+  }, [positions]);
 
-  // determine whether to use grid-like rendering on large screens (keeps desktop behavior)
-  const useGridOnDesktop = viewportWidth >= minGridBreakpoint;
+  // mostrar flechas en pantallas razonables
+  const showArrows = vw >= 420;
+
+  // visibilidad según extremos
+  const leftVisible = showArrows && page > 0;
+  const rightVisible = showArrows && page < (positions.length - 1);
 
   return (
     <div className="relative">
-      {/* Left arrow */}
-      <button
-        onClick={prev}
-        aria-label="Anterior"
-        className={`absolute left-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white text-primary shadow-md hover:scale-105 transform transition flex items-center justify-center ${
-          showArrows ? "" : "hidden"
-        }`}
-      >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
+      {/* wrapper que respeta márgenes globales */}
+      <div ref={containerRef} className="max-w-6xl mx-auto px-6 relative">
+        {/* flechas: ahora ocultas cuando en extremos */}
+        <button
+          aria-label="Anterior"
+          onClick={prev}
+          className={`absolute left-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white text-primary shadow-md flex items-center justify-center transition-transform hover:scale-105 ${
+            leftVisible ? "" : "hidden"
+          }`}
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
 
-      {/* Right arrow */}
-      <button
-        onClick={next}
-        aria-label="Siguiente"
-        className={`absolute right-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white text-primary shadow-md hover:scale-105 transform transition flex items-center justify-center ${
-          showArrows ? "" : "hidden"
-        }`}
-      >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
+        <button
+          aria-label="Siguiente"
+          onClick={next}
+          className={`absolute right-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white text-primary shadow-md flex items-center justify-center transition-transform hover:scale-105 ${
+            rightVisible ? "" : "hidden"
+          }`}
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
 
-      {/* Track */}
-      <div
-        ref={trackRef}
-        className={`overflow-x-auto no-scrollbar snap-x snap-mandatory touch-pan-x px-2 py-2 ${
-          useGridOnDesktop ? "md:overflow-visible md:flex md:flex-row md:gap-6" : "flex"
-        }`}
-        style={{
-          WebkitOverflowScrolling: "touch",
-        }}
-      >
-        {items.map((s, idx) => {
-          const isGrid = useGridOnDesktop;
-          const style = isGrid
-            ? { width: `${Math.floor(100 / Math.min(items.length, 5))}%`, minWidth: 0 }
-            : { flex: `0 0 ${slideWidth}px`, width: `${slideWidth}px` };
-
-          return (
-            <article
-              key={s.id || idx}
-              className="snap-start bg-white/95 text-primary rounded-lg shadow-sm hover:shadow-lg transform hover:-translate-y-0.5 transition flex-shrink-0"
-              style={style}
-            >
-              <div className="h-36 md:h-40 w-full overflow-hidden rounded-t-lg bg-gray-100 flex items-start justify-center">
-                {s.img ? (
-                  <img src={s.img} alt={s.title} className="object-cover object-top w-full h-full" />
-                ) : (
-                  <div className="text-sm text-gray-500">Imagen</div>
-                )}
-              </div>
-
-              <div className="p-4 flex-1 flex flex-col">
-                <h4 className="font-semibold text-lg">{s.title}</h4>
-                <p className="text-sm text-gray-600 mt-2 flex-1">{s.desc}</p>
-
-                <div className="mt-4">
-                  <a href={s.href} className="inline-block text-sm font-medium text-primary underline-offset-2 hover:underline">
-                    Ver más &rarr;
-                  </a>
+        {/* TRACK */}
+        <div
+          ref={trackRef}
+          className="flex gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory touch-pan-x py-2 scroll-smooth"
+          style={{
+            WebkitOverflowScrolling: "touch",
+            paddingLeft: 0,
+            paddingRight: 0,
+          }}
+          role="region"
+          aria-label="Carrusel de servicios"
+        >
+          {items.map((s, idx) => {
+            const w = slideWidth;
+            return (
+              <article
+                key={s.id ?? idx}
+                className="snap-start bg-white/95 text-primary rounded-lg shadow-sm hover:shadow-lg transform hover:-translate-y-0.5 transition flex-shrink-0"
+                style={{
+                  flex: `0 0 ${w}px`,
+                  width: `${w}px`,
+                }}
+              >
+                <div className="h-36 w-full overflow-hidden bg-gray-100 flex items-start justify-center">
+                  {s.img ? (
+                    <img src={s.img} alt={s.title} className="object-cover object-top w-full h-full" />
+                  ) : (
+                    <div className="text-sm text-gray-500">Imagen</div>
+                  )}
                 </div>
-              </div>
-            </article>
-          );
-        })}
-        <div className="flex items-center justify-center gap-2 mt-4">
-          {Array.from({ length: pages }).map((_, i) => (
-            <button
-              key={i}
-              onClick={() => scrollToPage(i)}
-              aria-label={`Ir a la página ${i + 1}`}
-              className={`w-2 h-2 rounded-full ${i === page ? "bg-primary" : "bg-gray-300"} transition`}
-            />
-          ))}
+
+                <div className="p-4 flex-1 flex flex-col">
+                  <h4 className="font-semibold text-lg">{s.title}</h4>
+                  <p className="text-sm text-gray-600 mt-2 flex-1">{s.desc}</p>
+
+                  <div className="mt-4">
+                    <a href={s.href} className="inline-block text-sm font-medium text-primary underline-offset-2 hover:underline">
+                      Ver más &rarr;
+                    </a>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
+
+        {/* Dots / paginación (solo si hay >1 páginas) */}
+        {pages > 1 && (
+          <div className="flex justify-center items-center gap-2 mt-4">
+            {Array.from({ length: pages }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => scrollToPage(i)}
+                aria-label={`Ir a la página ${i + 1}`}
+                className={`w-2 h-2 rounded-full ${i === page ? "bg-primary" : "bg-gray-300"} transition`}
+              />
+            ))}
+          </div>
+        )}
       </div>
+
+      {/* Oculta / estiliza scrollbar (opcional) */}
+      <style jsx>{`
+        .no-scrollbar::-webkit-scrollbar {
+          height: 10px;
+        }
+        .no-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(0, 0, 0, 0.08);
+          border-radius: 9999px;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: thin;
+        }
+      `}</style>
     </div>
   );
 }

@@ -13,3 +13,22 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-title);
 }
+
+/* Oculta scrollbars manteniendo el scroll funcional (Chrome, Safari, Edge, Firefox, IE) */
+.no-scrollbar {
+  -ms-overflow-style: none !important; /* IE y Edge */
+  scrollbar-width: none !important;    /* Firefox */
+}
+
+/* WebKit (Chrome, Safari, Opera) */
+.no-scrollbar::-webkit-scrollbar {
+  width: 0px !important;
+  height: 0px !important;
+  display: none !important;
+}
+.no-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent !important;
+}
+.no-scrollbar::-webkit-scrollbar-track {
+  background: transparent !important;
+}
