@@ -153,14 +153,6 @@ export default function Layout({ children }) {
                       Equipos de frío
                     </Link>
                   </li>
-                  <li>
-                    <Link
-                      href="/servicios#otros"
-                      className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                    >
-                      Otros
-                    </Link>
-                  </li>
                 </ul>
               </div>
             </div>
@@ -373,14 +365,6 @@ export default function Layout({ children }) {
                           className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
                         >
                           Equipos de frío
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href="/servicios#otros"
-                          className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                        >
-                          Otros
                         </Link>
                       </li>
                     </ul>
