@@ -9,7 +9,6 @@ const SERVICIOS = [
     desc: "Cloacas, pluviales, cocinas y lavaderos — atención a consorcios, restaurantes, comercios, industrias y domicilios.",
     img: "/bg-index.jpeg",
     href: "/servicios#destapaciones",
-    imgPosition: "top",
   },
   {
     id: "obra-civil-menor",
@@ -17,7 +16,6 @@ const SERVICIOS = [
     desc: "Pequeñas obras civiles con seguridad y calidad garantizada.",
     img: "/servicio-obra.jpg",
     href: "/servicios#obra-civil-menor",
-    imgPosition: "top",
   },
   {
     id: "demarcacion",
@@ -25,7 +23,6 @@ const SERVICIOS = [
     desc: "Demarcación vial profesional para todo tipo de proyectos.",
     img: "/servicio-demarcacion.jpg",
     href: "/servicios#demarcacion-vial",
-    imgPosition: "top",
   },
   {
     id: "herrerias",
@@ -33,7 +30,6 @@ const SERVICIOS = [
     desc: "Trabajos de herrería a medida: estructuras, rejas y más.",
     img: "/servicio-herrerias.jpg",
     href: "/servicios#herrerias",
-    imgPosition: "top",
   },
   {
     id: "innovaciones",
@@ -41,7 +37,13 @@ const SERVICIOS = [
     desc: "Soluciones innovadoras para optimizar procesos y mantenimiento.",
     img: "/servicio-innovaciones.jpg",
     href: "/servicios#innovaciones",
-    imgPosition: "top",
+  },
+  {
+    id: "equipos-de-frio",
+    title: "Equipos de frío",
+    desc: "",
+    img: "/servicio-equipos-frio.jpg",
+    href: "/servicios#equipos-de-frio",
   },
 ];
 
@@ -114,14 +116,13 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-2xl font-semibold text-primary mb-6">Nuestros servicios</h2>
 
-          {/* Carousel: el componente que pegaste en components/Carousel.js */}
-          {/* minGridBreakpoint: si quieres que en pantallas >= 1024 se muestre en grid en vez de carrusel, setear 1024 */}
-          <Carousel items={SERVICIOS} minGridBreakpoint={1024} />
+          {/* Carousel: ELIMINÉ minGridBreakpoint para que NUNCA se convierta en grid */}
+          <Carousel items={SERVICIOS} />
         </div>
       </section>
 
       {/* Aquí puedes agregar más secciones */}
-      <section className="py-12" />
+      {/*<section className="py-12" />*/}
     </Layout>
   );
 }
