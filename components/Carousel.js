@@ -46,13 +46,10 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     };
   }, []);
 
-  // detectar si es dispositivo táctil (más robusto)
+  // detectar si es dispositivo táctil (oculta flechas en móviles táctiles)
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const touch =
-      "ontouchstart" in window ||
-      navigator.maxTouchPoints > 0 ||
-      (window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
+    const touch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
     setIsTouchDevice(Boolean(touch));
   }, []);
 
@@ -107,7 +104,14 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     scrollToIndex(Math.min(maxFirstIndex, firstIndex + 1));
   }
 
-  // SWIPE (solo TOUCH). Se asegura que el desplazamiento final sea máximo +/-1 slide
+  /**
+   * --- SWIPE (solo TOUCH) ---
+   * Registramos touch handlers únicamente en dispositivos touch.
+   * Implementación:
+   * - guardamos startIndex al inicio del touch
+   * - al soltar, calculamos diferencia y permitimos un cambio máximo de ±1
+   * - usamos umbral en % del ancho para considerar swipe válido
+   */
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
@@ -141,7 +145,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
       dragging = false;
       const dx = lastX - startX;
       const absDx = Math.abs(dx);
-      const threshold = (el.clientWidth || window.innerWidth) * 0.12; // 12% umbral
+      const threshold = (el.clientWidth || window.innerWidth) * 0.12; // 12% del ancho como umbral
 
       const cur = el.scrollLeft || 0;
       const finalIndex = Math.round((cur || 0) / (slideTotal || 1));
@@ -151,7 +155,8 @@ export default function Carousel({ items = [], minSlides = 1 }) {
         if (delta === 0) {
           delta = dx < 0 ? 1 : -1;
         }
-        delta = Math.max(-1, Math.min(1, delta)); // clamp
+        // clamp a -1..1 para evitar saltos múltiples
+        delta = Math.max(-1, Math.min(1, delta));
       } else {
         delta = 0;
       }
@@ -184,7 +189,9 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slideTotal, slidesPerView, items.length, vw, maxFirstIndex]);
 
-  // sincronizar índice con scroll real (debounce ligero)
+  /**
+   * Sincronizar índice con scroll real (con debounce para estabilidad)
+   */
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
@@ -212,8 +219,8 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     };
   }, [slideTotal, items.length, slidesPerView, vw, maxFirstIndex]);
 
-  // flechas visibles SOLO si NO es dispositivo táctil y ancho >= 768 (umbral configurable)
-  const showArrows = vw >= 768 && !isTouchDevice;
+  // flechas visibles en pantallas razonables y SOLO si NO es dispositivo táctil
+  const showArrows = vw >= 420 && !isTouchDevice;
   const leftVisible = showArrows && firstIndex > 0;
   const rightVisible = showArrows && firstIndex < maxFirstIndex;
   const dotsCount = Math.max(1, maxFirstIndex + 1);
@@ -246,7 +253,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
           </svg>
         </button>
 
-        {/* TRACK */}
+        {/* TRACK: touch-action: pan-y para mejorar estabilidad en mobiles (vertical scroll sigue funcionando) */}
         <div
           ref={trackRef}
           className="flex gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory touch-pan-x py-2 scroll-smooth"
