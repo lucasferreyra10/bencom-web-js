@@ -192,14 +192,13 @@ export default function Carousel({ items = [], minGridBreakpoint = 768 }) {
           useGridOnDesktop ? "md:overflow-visible md:flex md:flex-row md:gap-6" : "flex"
         }`}
         style={{
-          // ensure consistent height on mobile (cards will adapt inside). Remove if you want auto-height.
           WebkitOverflowScrolling: "touch",
         }}
       >
         {items.map((s, idx) => {
           const isGrid = useGridOnDesktop;
           const style = isGrid
-            ? { width: `${Math.floor(100 / Math.min(items.length, 5))}%`, minWidth: 0 } // let CSS layout on desktop
+            ? { width: `${Math.floor(100 / Math.min(items.length, 5))}%`, minWidth: 0 }
             : { flex: `0 0 ${slideWidth}px`, width: `${slideWidth}px` };
 
           return (
@@ -208,10 +207,9 @@ export default function Carousel({ items = [], minGridBreakpoint = 768 }) {
               className="snap-start bg-white/95 text-primary rounded-lg shadow-sm hover:shadow-lg transform hover:-translate-y-0.5 transition flex-shrink-0"
               style={style}
             >
-              <div className="h-36 md:h-40 w-full overflow-hidden rounded-t-lg bg-gray-100 flex items-center justify-center">
+              <div className="h-36 md:h-40 w-full overflow-hidden rounded-t-lg bg-gray-100 flex items-start justify-center">
                 {s.img ? (
-                  // plain img for plug&play; podés cambiar a <Image/> si querés
-                  <img src={s.img} alt={s.title} className="object-cover w-full h-full" />
+                  <img src={s.img} alt={s.title} className="object-cover object-top w-full h-full" />
                 ) : (
                   <div className="text-sm text-gray-500">Imagen</div>
                 )}
@@ -230,18 +228,16 @@ export default function Carousel({ items = [], minGridBreakpoint = 768 }) {
             </article>
           );
         })}
-      </div>
-
-      {/* Dots */}
-      <div className="flex items-center justify-center gap-2 mt-4">
-        {Array.from({ length: pages }).map((_, i) => (
-          <button
-            key={i}
-            onClick={() => scrollToPage(i)}
-            aria-label={`Ir a la página ${i + 1}`}
-            className={`w-2 h-2 rounded-full ${i === page ? "bg-primary" : "bg-gray-300"} transition`}
-          />
-        ))}
+        <div className="flex items-center justify-center gap-2 mt-4">
+          {Array.from({ length: pages }).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => scrollToPage(i)}
+              aria-label={`Ir a la página ${i + 1}`}
+              className={`w-2 h-2 rounded-full ${i === page ? "bg-primary" : "bg-gray-300"} transition`}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

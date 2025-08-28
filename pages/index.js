@@ -7,8 +7,9 @@ const SERVICIOS = [
     id: "destapaciones",
     title: "Destapaciones",
     desc: "Cloacas, pluviales, cocinas y lavaderos — atención a consorcios, restaurantes, comercios, industrias y domicilios.",
-    img: "/servicio-destapaciones.jpg", // reemplaza por tu imagen en /public
+    img: "/bg-index.jpeg",
     href: "/servicios#destapaciones",
+    imgPosition: "top",
   },
   {
     id: "obra-civil-menor",
@@ -16,13 +17,15 @@ const SERVICIOS = [
     desc: "Pequeñas obras civiles con seguridad y calidad garantizada.",
     img: "/servicio-obra.jpg",
     href: "/servicios#obra-civil-menor",
+    imgPosition: "top",
   },
   {
-    id: "senalizacion",
+    id: "demarcacion",
     title: "Demarcación vial",
     desc: "Demarcación vial profesional para todo tipo de proyectos.",
-    img: "/servicio-senalizacion.jpg",
-    href: "/servicios#senalizacion-vial",
+    img: "/servicio-demarcacion.jpg",
+    href: "/servicios#demarcacion-vial",
+    imgPosition: "top",
   },
   {
     id: "herrerias",
@@ -30,6 +33,7 @@ const SERVICIOS = [
     desc: "Trabajos de herrería a medida: estructuras, rejas y más.",
     img: "/servicio-herrerias.jpg",
     href: "/servicios#herrerias",
+    imgPosition: "top",
   },
   {
     id: "innovaciones",
@@ -37,6 +41,7 @@ const SERVICIOS = [
     desc: "Soluciones innovadoras para optimizar procesos y mantenimiento.",
     img: "/servicio-innovaciones.jpg",
     href: "/servicios#innovaciones",
+    imgPosition: "top",
   },
 ];
 
@@ -87,7 +92,7 @@ export default function Home() {
                   href="/servicios"
                   className="inline-block bg-white text-[#2e358c] font-medium px-6 py-3 rounded shadow hover:shadow-lg transform hover:-translate-y-0.5 transition"
                 >
-                  Ver servicios
+                  Servicios
                 </a>
 
                 <a
