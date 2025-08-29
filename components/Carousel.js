@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 /**
  * Carousel horizontal robusto (desktop + mobile)
  * Props:
- * - items: [{ id, title, desc, img, href }]
+ * - items: [{ id, title, desc, img, href, icon }]
  * - minSlides: número base de slides por viewport (opcional)
  */
 export default function Carousel({ items = [], minSlides = 1 }) {
@@ -259,6 +259,18 @@ export default function Carousel({ items = [], minSlides = 1 }) {
         >
           {items.map((s, idx) => {
             const w = slideWidth;
+
+            // --- ICON: usa s.icon si está, sino deriva del título ---
+            const deriveFilename = (title = "") =>
+              "/" +
+              title
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, "")
+                .trim()
+                .replace(/\s+/g, "-") +
+              ".svg";
+            const iconSrc = s.icon ? s.icon : deriveFilename(s.title);
+
             return (
               <article
                 key={s.id ?? idx}
@@ -276,11 +288,32 @@ export default function Carousel({ items = [], minSlides = 1 }) {
                   )}
                 </div>
 
-                <div className="p-4 flex-1 flex flex-col">
-                  <h4 className="font-semibold text-lg">{s.title}</h4>
-                  <p className="text-sm text-gray-600 mt-2 flex-1">{s.desc}</p>
+                {/* TEXTO: items-start para que, si el título ocupa 2 líneas, todo quede alineado arriba */}
+                <div className="p-4 flex-1 flex flex-col items-start">
+                  {/* fila: icon + title */}
+                  <div className="flex items-start w-full">
+                    {/* icon wrapper */}
+                    <div className="w-8 h-8 flex-shrink-0 overflow-hidden rounded">
+                      {/* Zoom visual para compensar whitespace en algunos SVGs */}
+                      <img
+                        src={iconSrc}
+                        alt={s.title + " icon"}
+                        className="block w-7 h-7 object-contain transform -translate-x-2 -translate-y-1"
+                        onError={(e) => {
+                          // si no existe el svg derivado, ocultar la imagen para no romper el layout
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
+                    </div>
 
-                  <div className="mt-4">
+                    <h4 className="font-semibold text-lg leading-snug break-words">
+                      {s.title}
+                    </h4>
+                  </div>
+
+                  <p className="text-sm text-gray-600 mt-2 flex-1 w-full">{s.desc}</p>
+
+                  <div className="mt-4 w-full">
                     <a href={s.href} className="inline-block text-sm font-medium text-primary underline-offset-2 hover:underline">
                       Ver más &rarr;
                     </a>
