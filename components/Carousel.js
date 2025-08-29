@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 /**
  * Carousel horizontal robusto (desktop + mobile)
  * Props:
- * - items: [{ id, title, desc, img, href }]
+ * - items: [{ id, title, desc, img, href, icon }]
  * - minSlides: número base de slides por viewport (opcional)
  */
 export default function Carousel({ items = [], minSlides = 1 }) {
@@ -17,13 +17,17 @@ export default function Carousel({ items = [], minSlides = 1 }) {
   const [slideWidth, setSlideWidth] = useState(300);
   const [firstIndex, setFirstIndex] = useState(0);
 
-  // detectar si es dispositivo táctil (se mantiene por si lo querés usar)
+  // refs para títulos (para detectar si envuelven en 2+ líneas)
+  const titleRefs = useRef([]);
+  const [wrapped, setWrapped] = useState([]);
+
+  // detectar si es dispositivo táctil (oculta flechas en móviles táctiles si querés)
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   // gap entre slides en px (mismo valor usado en CSS)
   const GAP = 24;
 
-  // recalcula slidesPorVista segun ancho
+  // recalcula slidesPorVista según ancho
   useEffect(() => {
     const calcSPV = (w) => {
       if (w < 640) return 1;
@@ -49,7 +53,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
   // detectar si es dispositivo táctil
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const touch = "ontouchstart" in window || navigator.maxTouchPoints > 0 || (window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
+    const touch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
     setIsTouchDevice(Boolean(touch));
   }, []);
 
@@ -104,10 +108,14 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     scrollToIndex(Math.min(maxFirstIndex, firstIndex + 1));
   }
 
-  // SWIPE (solo TOUCH): permite avance máximo ±1 por swipe
+  /**
+   * --- SWIPE (solo TOUCH) ---
+   * Implementación: como tenías, limitando a +/-1 slide por gesto
+   */
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
+
     const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
     if (!isTouch) return;
 
@@ -137,7 +145,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
       dragging = false;
       const dx = lastX - startX;
       const absDx = Math.abs(dx);
-      const threshold = (el.clientWidth || window.innerWidth) * 0.12;
+      const threshold = (el.clientWidth || window.innerWidth) * 0.12; // 12%
 
       const cur = el.scrollLeft || 0;
       const finalIndex = Math.round((cur || 0) / (slideTotal || 1));
@@ -180,7 +188,9 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slideTotal, slidesPerView, items.length, vw, maxFirstIndex]);
 
-  // sincronizar índice con scroll real (con debounce para estabilidad)
+  /**
+   * Sincronizar índice con scroll real (con debounce para estabilidad)
+   */
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
@@ -208,8 +218,44 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     };
   }, [slideTotal, items.length, slidesPerView, vw, maxFirstIndex]);
 
-  // mostrar flechas si hay más items que los visibles
-  const showArrows = items.length > slidesPerView;
+  // --- DETECCIÓN DE WRAP EN TITULOS ---
+  useEffect(() => {
+    const checkWraps = () => {
+      const arr = items.map((_, i) => {
+        const el = titleRefs.current[i];
+        if (!el) return false;
+        const cs = getComputedStyle(el);
+        let lh = cs.lineHeight;
+        const fontSize = parseFloat(cs.fontSize) || 16;
+        let lineHeight = lh === "normal" ? fontSize * 1.2 : parseFloat(lh);
+        // si offsetHeight es mayor que una línea, entonces está envolviendo
+        return Math.round(el.offsetHeight) > Math.round(lineHeight + 0.5);
+      });
+      setWrapped(arr);
+    };
+
+    // chequeo inicial y al redimensionar
+    checkWraps();
+    window.addEventListener("resize", checkWraps);
+    window.addEventListener("orientationchange", checkWraps);
+
+    // también observar cambios en el track (por ejemplo recalculo de slideWidth)
+    let ro;
+    if ("ResizeObserver" in window) {
+      ro = new ResizeObserver(checkWraps);
+      if (trackRef.current) ro.observe(trackRef.current);
+    }
+
+    return () => {
+      window.removeEventListener("resize", checkWraps);
+      window.removeEventListener("orientationchange", checkWraps);
+      if (ro) ro.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items.length, slideWidth, slidesPerView, vw]);
+
+  // flechas visibles en pantallas razonables y SOLO si NO es dispositivo táctil
+  const showArrows = vw >= 420 && !isTouchDevice;
   const leftVisible = showArrows && firstIndex > 0;
   const rightVisible = showArrows && firstIndex < maxFirstIndex;
   const dotsCount = Math.max(1, maxFirstIndex + 1);
@@ -217,15 +263,13 @@ export default function Carousel({ items = [], minSlides = 1 }) {
   return (
     <div className="relative">
       <div ref={containerRef} className="max-w-6xl mx-auto px-6 relative">
-        {/* Flechas: en mobile floatan fuera con negative offset (-left / -right),
-            en md+ vuelven a su posición interna (md:left-2 / md:right-2).
-            También tamaño ligeramente menor en mobile (w-9 h-9). */}
+        {/* Flechas */}
         <button
           aria-label="Anterior"
           onClick={prev}
-          className={`absolute top-1/2 -translate-y-1/2 z-30 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white text-primary shadow-md flex items-center justify-center transition-transform hover:scale-105 ${
+          className={`absolute left-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white text-primary shadow-md flex items-center justify-center transition-transform hover:scale-105 ${
             leftVisible ? "" : "hidden"
-          } -left-4 md:left-2`}
+          }`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
@@ -235,16 +279,16 @@ export default function Carousel({ items = [], minSlides = 1 }) {
         <button
           aria-label="Siguiente"
           onClick={next}
-          className={`absolute top-1/2 -translate-y-1/2 z-30 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white text-primary shadow-md flex items-center justify-center transition-transform hover:scale-105 ${
+          className={`absolute right-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white text-primary shadow-md flex items-center justify-center transition-transform hover:scale-105 ${
             rightVisible ? "" : "hidden"
-          } -right-4 md:right-2`}
+          }`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
           </svg>
         </button>
 
-        {/* TRACK */}
+        {/* TRACK: touch-action: pan-y para mejorar estabilidad en mobiles */}
         <div
           ref={trackRef}
           className="flex gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory touch-pan-x py-2 scroll-smooth"
@@ -259,6 +303,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
         >
           {items.map((s, idx) => {
             const w = slideWidth;
+            const isWrapped = Boolean(wrapped[idx]);
             return (
               <article
                 key={s.id ?? idx}
@@ -276,8 +321,24 @@ export default function Carousel({ items = [], minSlides = 1 }) {
                   )}
                 </div>
 
-                <div className="p-4 flex-1 flex flex-col">
-                  <h4 className="font-semibold text-lg">{s.title}</h4>
+                {/* Título con icono: si el título está envuelto, usamos items-start, sino items-center */}
+                <div className={`p-4 flex-1 flex flex-col`}>
+                  <div className={`flex gap-3 ${isWrapped ? "items-start" : "items-center"}`}>
+                    {s.icon && (
+                      <img
+                        src={s.icon}
+                        alt={`${s.title} icon`}
+                        className="w-7 h-7 object-contain flex-shrink-0"
+                      />
+                    )}
+                    <h4
+                      ref={(el) => (titleRefs.current[idx] = el)}
+                      className="font-semibold text-lg leading-tight"
+                    >
+                      {s.title}
+                    </h4>
+                  </div>
+
                   <p className="text-sm text-gray-600 mt-2 flex-1">{s.desc}</p>
 
                   <div className="mt-4">
