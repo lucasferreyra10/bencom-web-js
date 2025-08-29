@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 /**
  * Carousel horizontal robusto (desktop + mobile)
  * Props:
- * - items: [{ id, title, desc, img, href, icon }]
+ * - items: [{ id, title, desc, img, href }]
  * - minSlides: número base de slides por viewport (opcional)
  */
 export default function Carousel({ items = [], minSlides = 1 }) {
@@ -17,7 +17,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
   const [slideWidth, setSlideWidth] = useState(300);
   const [firstIndex, setFirstIndex] = useState(0);
 
-  // detectar si es dispositivo táctil (oculta flechas en móviles táctiles)
+  // detectar si es dispositivo táctil (se mantiene por si lo querés usar)
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   // gap entre slides en px (mismo valor usado en CSS)
@@ -49,7 +49,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
   // detectar si es dispositivo táctil
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const touch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    const touch = "ontouchstart" in window || navigator.maxTouchPoints > 0 || (window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
     setIsTouchDevice(Boolean(touch));
   }, []);
 
@@ -104,18 +104,10 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     scrollToIndex(Math.min(maxFirstIndex, firstIndex + 1));
   }
 
-  /**
-   * --- SWIPE (solo TOUCH) ---
-   * Registramos touch handlers únicamente en dispositivos touch.
-   * Implementación:
-   * - guardamos startIndex al inicio del touch
-   * - al soltar, calculamos diferencia y permitimos un cambio máximo de ±1
-   * - usamos umbral en % del ancho para considerar swipe válido
-   */
+  // SWIPE (solo TOUCH): permite avance máximo ±1 por swipe
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
-
     const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
     if (!isTouch) return;
 
@@ -145,7 +137,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
       dragging = false;
       const dx = lastX - startX;
       const absDx = Math.abs(dx);
-      const threshold = (el.clientWidth || window.innerWidth) * 0.12; // 12% del ancho como umbral
+      const threshold = (el.clientWidth || window.innerWidth) * 0.12;
 
       const cur = el.scrollLeft || 0;
       const finalIndex = Math.round((cur || 0) / (slideTotal || 1));
@@ -155,7 +147,6 @@ export default function Carousel({ items = [], minSlides = 1 }) {
         if (delta === 0) {
           delta = dx < 0 ? 1 : -1;
         }
-        // clamp a -1..1 para evitar saltos múltiples
         delta = Math.max(-1, Math.min(1, delta));
       } else {
         delta = 0;
@@ -189,9 +180,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slideTotal, slidesPerView, items.length, vw, maxFirstIndex]);
 
-  /**
-   * Sincronizar índice con scroll real (con debounce para estabilidad)
-   */
+  // sincronizar índice con scroll real (con debounce para estabilidad)
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
@@ -219,8 +208,8 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     };
   }, [slideTotal, items.length, slidesPerView, vw, maxFirstIndex]);
 
-  // flechas visibles en pantallas razonables y SOLO si NO es dispositivo táctil
-  const showArrows = vw >= 420 && !isTouchDevice;
+  // mostrar flechas si hay más items que los visibles
+  const showArrows = items.length > slidesPerView;
   const leftVisible = showArrows && firstIndex > 0;
   const rightVisible = showArrows && firstIndex < maxFirstIndex;
   const dotsCount = Math.max(1, maxFirstIndex + 1);
@@ -228,13 +217,15 @@ export default function Carousel({ items = [], minSlides = 1 }) {
   return (
     <div className="relative">
       <div ref={containerRef} className="max-w-6xl mx-auto px-6 relative">
-        {/* Flechas */}
+        {/* Flechas: en mobile floatan fuera con negative offset (-left / -right),
+            en md+ vuelven a su posición interna (md:left-2 / md:right-2).
+            También tamaño ligeramente menor en mobile (w-9 h-9). */}
         <button
           aria-label="Anterior"
           onClick={prev}
-          className={`absolute left-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white text-primary shadow-md flex items-center justify-center transition-transform hover:scale-105 ${
+          className={`absolute top-1/2 -translate-y-1/2 z-30 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white text-primary shadow-md flex items-center justify-center transition-transform hover:scale-105 ${
             leftVisible ? "" : "hidden"
-          }`}
+          } -left-4 md:left-2`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
@@ -244,16 +235,16 @@ export default function Carousel({ items = [], minSlides = 1 }) {
         <button
           aria-label="Siguiente"
           onClick={next}
-          className={`absolute right-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white text-primary shadow-md flex items-center justify-center transition-transform hover:scale-105 ${
+          className={`absolute top-1/2 -translate-y-1/2 z-30 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white text-primary shadow-md flex items-center justify-center transition-transform hover:scale-105 ${
             rightVisible ? "" : "hidden"
-          }`}
+          } -right-4 md:right-2`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
           </svg>
         </button>
 
-        {/* TRACK: touch-action: pan-y para mejorar estabilidad en mobiles (vertical scroll sigue funcionando) */}
+        {/* TRACK */}
         <div
           ref={trackRef}
           className="flex gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory touch-pan-x py-2 scroll-smooth"
@@ -285,19 +276,8 @@ export default function Carousel({ items = [], minSlides = 1 }) {
                   )}
                 </div>
 
-                {/* ---------- Aquí se agregó el icono (opción rápida con <img>) ---------- */}
                 <div className="p-4 flex-1 flex flex-col">
-                  <div className="flex items-start gap-3">
-                    {s.icon && (
-                      <img
-                        src={s.icon}
-                        alt={`${s.title} icon`}
-                        className="w-7 h-7 object-contain flex-shrink-0"
-                      />
-                    )}
-                    <h4 className="font-semibold text-lg">{s.title}</h4>
-                  </div>
-
+                  <h4 className="font-semibold text-lg">{s.title}</h4>
                   <p className="text-sm text-gray-600 mt-2 flex-1">{s.desc}</p>
 
                   <div className="mt-4">
@@ -306,7 +286,6 @@ export default function Carousel({ items = [], minSlides = 1 }) {
                     </a>
                   </div>
                 </div>
-                {/* ------------------------------------------------------------------------- */}
               </article>
             );
           })}
