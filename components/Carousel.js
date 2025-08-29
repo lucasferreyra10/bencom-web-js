@@ -17,17 +17,13 @@ export default function Carousel({ items = [], minSlides = 1 }) {
   const [slideWidth, setSlideWidth] = useState(300);
   const [firstIndex, setFirstIndex] = useState(0);
 
-  // refs para títulos (para detectar si envuelven en 2+ líneas)
-  const titleRefs = useRef([]);
-  const [wrapped, setWrapped] = useState([]);
-
-  // detectar si es dispositivo táctil (oculta flechas en móviles táctiles si querés)
+  // detectar si es dispositivo táctil (oculta flechas en móviles táctiles)
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   // gap entre slides en px (mismo valor usado en CSS)
   const GAP = 24;
 
-  // recalcula slidesPorVista según ancho
+  // recalcula slidesPorVista segun ancho
   useEffect(() => {
     const calcSPV = (w) => {
       if (w < 640) return 1;
@@ -110,7 +106,11 @@ export default function Carousel({ items = [], minSlides = 1 }) {
 
   /**
    * --- SWIPE (solo TOUCH) ---
-   * Implementación: como tenías, limitando a +/-1 slide por gesto
+   * Registramos touch handlers únicamente en dispositivos touch.
+   * Implementación:
+   * - guardamos startIndex al inicio del touch
+   * - al soltar, calculamos diferencia y permitimos un cambio máximo de ±1
+   * - usamos umbral en % del ancho para considerar swipe válido
    */
   useEffect(() => {
     const el = trackRef.current;
@@ -145,7 +145,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
       dragging = false;
       const dx = lastX - startX;
       const absDx = Math.abs(dx);
-      const threshold = (el.clientWidth || window.innerWidth) * 0.12; // 12%
+      const threshold = (el.clientWidth || window.innerWidth) * 0.12; // 12% del ancho como umbral
 
       const cur = el.scrollLeft || 0;
       const finalIndex = Math.round((cur || 0) / (slideTotal || 1));
@@ -155,6 +155,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
         if (delta === 0) {
           delta = dx < 0 ? 1 : -1;
         }
+        // clamp a -1..1 para evitar saltos múltiples
         delta = Math.max(-1, Math.min(1, delta));
       } else {
         delta = 0;
@@ -218,42 +219,6 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     };
   }, [slideTotal, items.length, slidesPerView, vw, maxFirstIndex]);
 
-  // --- DETECCIÓN DE WRAP EN TITULOS ---
-  useEffect(() => {
-    const checkWraps = () => {
-      const arr = items.map((_, i) => {
-        const el = titleRefs.current[i];
-        if (!el) return false;
-        const cs = getComputedStyle(el);
-        let lh = cs.lineHeight;
-        const fontSize = parseFloat(cs.fontSize) || 16;
-        let lineHeight = lh === "normal" ? fontSize * 1.2 : parseFloat(lh);
-        // si offsetHeight es mayor que una línea, entonces está envolviendo
-        return Math.round(el.offsetHeight) > Math.round(lineHeight + 0.5);
-      });
-      setWrapped(arr);
-    };
-
-    // chequeo inicial y al redimensionar
-    checkWraps();
-    window.addEventListener("resize", checkWraps);
-    window.addEventListener("orientationchange", checkWraps);
-
-    // también observar cambios en el track (por ejemplo recalculo de slideWidth)
-    let ro;
-    if ("ResizeObserver" in window) {
-      ro = new ResizeObserver(checkWraps);
-      if (trackRef.current) ro.observe(trackRef.current);
-    }
-
-    return () => {
-      window.removeEventListener("resize", checkWraps);
-      window.removeEventListener("orientationchange", checkWraps);
-      if (ro) ro.disconnect();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items.length, slideWidth, slidesPerView, vw]);
-
   // flechas visibles en pantallas razonables y SOLO si NO es dispositivo táctil
   const showArrows = vw >= 420 && !isTouchDevice;
   const leftVisible = showArrows && firstIndex > 0;
@@ -288,7 +253,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
           </svg>
         </button>
 
-        {/* TRACK: touch-action: pan-y para mejorar estabilidad en mobiles */}
+        {/* TRACK: touch-action: pan-y para mejorar estabilidad en mobiles (vertical scroll sigue funcionando) */}
         <div
           ref={trackRef}
           className="flex gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory touch-pan-x py-2 scroll-smooth"
@@ -303,7 +268,6 @@ export default function Carousel({ items = [], minSlides = 1 }) {
         >
           {items.map((s, idx) => {
             const w = slideWidth;
-            const isWrapped = Boolean(wrapped[idx]);
             return (
               <article
                 key={s.id ?? idx}
@@ -321,9 +285,9 @@ export default function Carousel({ items = [], minSlides = 1 }) {
                   )}
                 </div>
 
-                {/* Título con icono: si el título está envuelto, usamos items-start, sino items-center */}
-                <div className={`p-4 flex-1 flex flex-col`}>
-                  <div className={`flex gap-3 ${isWrapped ? "items-start" : "items-center"}`}>
+                {/* ---------- Aquí se agregó el icono (opción rápida con <img>) ---------- */}
+                <div className="p-4 flex-1 flex flex-col">
+                  <div className="flex items-start gap-3">
                     {s.icon && (
                       <img
                         src={s.icon}
@@ -331,12 +295,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
                         className="w-7 h-7 object-contain flex-shrink-0"
                       />
                     )}
-                    <h4
-                      ref={(el) => (titleRefs.current[idx] = el)}
-                      className="font-semibold text-lg leading-tight"
-                    >
-                      {s.title}
-                    </h4>
+                    <h4 className="font-semibold text-lg">{s.title}</h4>
                   </div>
 
                   <p className="text-sm text-gray-600 mt-2 flex-1">{s.desc}</p>
@@ -347,6 +306,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
                     </a>
                   </div>
                 </div>
+                {/* ------------------------------------------------------------------------- */}
               </article>
             );
           })}
