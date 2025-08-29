@@ -11,7 +11,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <link rel="icon" href="/favicon.ico?v=1" sizes="any" />
+        <link rel="icon" href="/icons/favicon.ico?v=1" sizes="any" />
       </Head>
       <main className={`${inter.variable} ${roboto.variable} ${anton.variable}`}>
         <Component {...pageProps} />

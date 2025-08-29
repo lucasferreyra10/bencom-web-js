@@ -9,6 +9,7 @@ const SERVICIOS = [
     desc: "Cloacas, pluviales, cocinas y lavaderos — atención a consorcios, restaurantes, comercios, industrias y domicilios.",
     img: "/bg-index.jpeg",
     href: "/servicios#destapaciones",
+    icon: "/icons/destapaciones.svg",
   },
   {
     id: "obra-civil-menor",
@@ -16,6 +17,7 @@ const SERVICIOS = [
     desc: "Pequeñas obras civiles con seguridad y calidad garantizada.",
     img: "/servicio-obra.jpg",
     href: "/servicios#obra-civil-menor",
+    icon: "/icons/obra-civil-menor.svg",
   },
   {
     id: "demarcacion",
@@ -23,6 +25,7 @@ const SERVICIOS = [
     desc: "Demarcación vial profesional para todo tipo de proyectos.",
     img: "/servicio-demarcacion.jpg",
     href: "/servicios#demarcacion-vial",
+    icon: "/icons/demarcacion-vial.svg",
   },
   {
     id: "herrerias",
@@ -30,6 +33,7 @@ const SERVICIOS = [
     desc: "Trabajos de herrería a medida: estructuras, rejas y más.",
     img: "/servicio-herrerias.jpg",
     href: "/servicios#herrerias",
+    icon: "/icons/herrerias.svg",
   },
   {
     id: "innovaciones",
@@ -37,13 +41,15 @@ const SERVICIOS = [
     desc: "Soluciones innovadoras para optimizar procesos y mantenimiento.",
     img: "/servicio-innovaciones.jpg",
     href: "/servicios#innovaciones",
+    icon: "/icons/innovaciones.svg",
   },
   {
     id: "equipos-de-frio",
     title: "Equipos de frío",
-    desc: "",
+    desc: "Mantenimiento y reparación de equipos de refrigeración.",
     img: "/servicio-equipos-frio.jpg",
     href: "/servicios#equipos-de-frio",
+    icon: "/icons/equipos-de-frio.svg",
   },
 ];
 

@@ -73,6 +73,7 @@ export default function Nosotros() {
             <div className="p-4 border rounded-lg flex flex-col h-full">
               <h3 className="text-xl font-semibold mb-3">Medios de pago</h3>
               <ul className="list-inside list-disc space-y-2 text-lg">
+                <li>Efectivo</li>
                 <li>Transferencia</li>
                 <li>Cuenta corriente</li>
               </ul>
