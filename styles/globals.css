@@ -9,7 +9,10 @@
 
 body {
   font-family: var(--font-sans);
+  background-color: #fff; /* Fuerza fondo blanco en todos los navegadores */
+  color: #000;            /* Opcional: fuerza texto negro */
 }
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-title);
 }
