@@ -17,7 +17,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
   const [slideWidth, setSlideWidth] = useState(300);
   const [firstIndex, setFirstIndex] = useState(0);
 
-  // detectar si es dispositivo táctil (se mantiene si querés usarlo más tarde)
+  // detectar si es dispositivo táctil (se mantiene por si lo querés usar)
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   // gap entre slides en px (mismo valor usado en CSS)
@@ -46,7 +46,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     };
   }, []);
 
-  // detectar si es dispositivo táctil (no lo usamos para ocultar flechas ahora, lo dejamos por si lo necesitás)
+  // detectar si es dispositivo táctil
   useEffect(() => {
     if (typeof window === "undefined") return;
     const touch = "ontouchstart" in window || navigator.maxTouchPoints > 0 || (window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
@@ -104,7 +104,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     scrollToIndex(Math.min(maxFirstIndex, firstIndex + 1));
   }
 
-  // SWIPE (solo TOUCH): mantiene avance máximo ±1 slide por swipe
+  // SWIPE (solo TOUCH): permite avance máximo ±1 por swipe
   useEffect(() => {
     const el = trackRef.current;
     if (!el) return;
@@ -137,7 +137,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
       dragging = false;
       const dx = lastX - startX;
       const absDx = Math.abs(dx);
-      const threshold = (el.clientWidth || window.innerWidth) * 0.12; // 12% umbral
+      const threshold = (el.clientWidth || window.innerWidth) * 0.12;
 
       const cur = el.scrollLeft || 0;
       const finalIndex = Math.round((cur || 0) / (slideTotal || 1));
@@ -208,8 +208,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
     };
   }, [slideTotal, items.length, slidesPerView, vw, maxFirstIndex]);
 
-  // ---- CAMBIO CLAVE: mostrar flechas también en mobile ----
-  // Mostrar flechas si hay más items que los visibles (entonces tiene sentido)
+  // mostrar flechas si hay más items que los visibles
   const showArrows = items.length > slidesPerView;
   const leftVisible = showArrows && firstIndex > 0;
   const rightVisible = showArrows && firstIndex < maxFirstIndex;
@@ -218,13 +217,15 @@ export default function Carousel({ items = [], minSlides = 1 }) {
   return (
     <div className="relative">
       <div ref={containerRef} className="max-w-6xl mx-auto px-6 relative">
-        {/* Flechas (ahora se muestran también en mobile cuando hay desplazamiento posible) */}
+        {/* Flechas: en mobile floatan fuera con negative offset (-left / -right),
+            en md+ vuelven a su posición interna (md:left-2 / md:right-2).
+            También tamaño ligeramente menor en mobile (w-9 h-9). */}
         <button
           aria-label="Anterior"
           onClick={prev}
-          className={`absolute left-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white text-primary shadow-md flex items-center justify-center transition-transform hover:scale-105 ${
+          className={`absolute top-1/2 -translate-y-1/2 z-30 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white text-primary shadow-md flex items-center justify-center transition-transform hover:scale-105 ${
             leftVisible ? "" : "hidden"
-          }`}
+          } -left-4 md:left-2`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
@@ -234,9 +235,9 @@ export default function Carousel({ items = [], minSlides = 1 }) {
         <button
           aria-label="Siguiente"
           onClick={next}
-          className={`absolute right-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white text-primary shadow-md flex items-center justify-center transition-transform hover:scale-105 ${
+          className={`absolute top-1/2 -translate-y-1/2 z-30 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white text-primary shadow-md flex items-center justify-center transition-transform hover:scale-105 ${
             rightVisible ? "" : "hidden"
-          }`}
+          } -right-4 md:right-2`}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
