@@ -5,7 +5,7 @@ import Carousel from "../components/Carousel";
 const SERVICIOS = [
   {
     id: "destapaciones",
-    title: "Destapaciones",
+    title: "DESTAPACIONES",
     desc: "Cloacas, pluviales, cocinas y lavaderos — atención a consorcios, restaurantes, comercios, industrias y domicilios.",
     img: "/bg-index.jpeg",
     href: "/servicios#destapaciones",
@@ -13,7 +13,7 @@ const SERVICIOS = [
   },
   {
     id: "obra-civil-menor",
-    title: "Obra civil menor",
+    title: "OBRA CIVIL MENOR",
     desc: "Pequeñas obras civiles con seguridad y calidad garantizada.",
     img: "/servicio-obra.jpg",
     href: "/servicios#obra-civil-menor",
@@ -21,7 +21,7 @@ const SERVICIOS = [
   },
   {
     id: "demarcacion",
-    title: "Demarcación vial",
+    title: "DEMARCACIÓN VIAL",
     desc: "Demarcación vial profesional para todo tipo de proyectos.",
     img: "/servicio-demarcacion.jpg",
     href: "/servicios#demarcacion-vial",
@@ -29,7 +29,7 @@ const SERVICIOS = [
   },
   {
     id: "herrerias",
-    title: "Herrerías",
+    title: "HERRERÍAS",
     desc: "Trabajos de herrería a medida: estructuras, rejas y más.",
     img: "/servicio-herrerias.jpg",
     href: "/servicios#herrerias",
@@ -37,7 +37,7 @@ const SERVICIOS = [
   },
   {
     id: "innovaciones",
-    title: "Innovaciones",
+    title: "INNOVACIONES",
     desc: "Soluciones innovadoras para optimizar procesos y mantenimiento.",
     img: "/servicio-innovaciones.jpg",
     href: "/servicios#innovaciones",
@@ -45,7 +45,7 @@ const SERVICIOS = [
   },
   {
     id: "equipos-de-frio",
-    title: "Equipos de frío",
+    title: "EQUIPOS DE FRÍO",
     desc: "Mantenimiento y reparación de equipos de refrigeración.",
     img: "/servicio-equipos-frio.jpg",
     href: "/servicios#equipos-de-frio",
