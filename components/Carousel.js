@@ -298,7 +298,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
                       <img
                         src={iconSrc}
                         alt={s.title + " icon"}
-                        className="block w-7 h-7 object-contain transform -translate-x-2 -translate-y-1"
+                        className="block w-5 h-5 object-contain transform"
                         onError={(e) => {
                           // si no existe el svg derivado, ocultar la imagen para no romper el layout
                           e.currentTarget.style.display = "none";

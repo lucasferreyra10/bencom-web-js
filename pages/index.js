@@ -17,7 +17,7 @@ const SERVICIOS = [
     desc: "Pequeñas obras civiles con seguridad y calidad garantizada.",
     img: "/servicio-obra.jpg",
     href: "/servicios#obra-civil-menor",
-    icon: "/icons/obra-civil-menor.svg",
+    icon: "/icons/obra-civil-menor.png",
   },
   {
     id: "demarcacion",
@@ -25,7 +25,7 @@ const SERVICIOS = [
     desc: "Demarcación vial profesional para todo tipo de proyectos.",
     img: "/servicio-demarcacion.jpg",
     href: "/servicios#demarcacion-vial",
-    icon: "/icons/demarcacion-vial.svg",
+    icon: "/icons/demarcacion-vial.png",
   },
   {
     id: "herrerias",
@@ -33,7 +33,7 @@ const SERVICIOS = [
     desc: "Trabajos de herrería a medida: estructuras, rejas y más.",
     img: "/servicio-herrerias.jpg",
     href: "/servicios#herrerias",
-    icon: "/icons/herrerias.svg",
+    icon: "/icons/herrerias.png",
   },
   {
     id: "innovaciones",
@@ -41,7 +41,7 @@ const SERVICIOS = [
     desc: "Soluciones innovadoras para optimizar procesos y mantenimiento.",
     img: "/servicio-innovaciones.jpg",
     href: "/servicios#innovaciones",
-    icon: "/icons/innovaciones.svg",
+    icon: "/icons/innovaciones.png",
   },
   {
     id: "equipos-de-frio",
