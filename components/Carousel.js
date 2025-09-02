@@ -293,7 +293,7 @@ export default function Carousel({ items = [], minSlides = 1 }) {
                   {/* fila: icon + title */}
                   <div className="flex items-start w-full">
                     {/* icon wrapper */}
-                    <div className="w-8 h-8 flex-shrink-0 overflow-hidden rounded">
+                    <div className="w-6 h-6 flex-shrink-0 overflow-hidden rounded">
                       {/* Zoom visual para compensar whitespace en algunos SVGs */}
                       <img
                         src={iconSrc}
