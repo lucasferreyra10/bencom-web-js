@@ -39,12 +39,9 @@ export default function Servicios() {
     "Aceptamos transferencias, tarjetas y cuenta corriente",
     "Atención en CABA y AMBA",
   ];
-    const innovaciones = [
-
-  ];
-    const equiposDeFrio = [
-
-  ];
+  const pinturaEnAltura = [];
+  const innovaciones = [];
+  const equiposDeFrio = [];
 
   const imagePool = [
     "https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1200&auto=format&fit=crop",
@@ -56,6 +53,14 @@ export default function Servicios() {
 
   const servicesData = [
     {
+      id: "obra-civil-menor",
+      title: "Obra civil menor",
+      description:
+        "Pequeñas obras civiles con seguridad y calidad garantizada.",
+      list: obraCivilMenor,
+      images: [imagePool[0], imagePool[1]],
+    },
+    {
       id: "destapaciones",
       title: "Destapaciones",
       description:
@@ -64,18 +69,18 @@ export default function Servicios() {
       images: [imagePool[0], imagePool[1], imagePool[2]],
     },
     {
-      id: "obra-civil-menor",
-      title: "Obra civil menor",
-      description:
-        "Pequeñas obras civiles con seguridad y calidad garantizada.",
-      list: obraCivilMenor,
-      images: [imagePool[2], imagePool[3]],
-    },
-    {
       id: "demarcación-vial",
       title: "Demarcación vial",
       description: "Demarcación vial profesional para todo tipo de proyectos.",
       list: demarcacionVial,
+      images: [imagePool[1], imagePool[4], imagePool[0]],
+    },
+    {
+      id: "pintura-en-altura",
+      title: "Pintura en altura",
+      description:
+        "Servicios de pintura en altura con profesionales capacitados.",
+      list: pinturaEnAltura,
       images: [imagePool[1], imagePool[4], imagePool[0]],
     },
     {
@@ -86,17 +91,18 @@ export default function Servicios() {
       images: [imagePool[3], imagePool[4]],
     },
     {
-      id: "innovaciones",
-      title: "Innovaciones",
-      description: "Soluciones innovadoras para optimizar procesos y mantenimiento.",
-      list: innovaciones,
-      images: [imagePool[3], imagePool[4]],
-    },
-        {
       id: "equipos-de-frio",
       title: "Equipos de frío",
       description: "Mantenimiento y reparación de equipos de refrigeración.",
       list: equiposDeFrio,
+      images: [imagePool[3], imagePool[4]],
+    },
+    {
+      id: "innovaciones",
+      title: "Innovaciones",
+      description:
+        "Soluciones innovadoras para optimizar procesos y mantenimiento.",
+      list: innovaciones,
       images: [imagePool[3], imagePool[4]],
     },
   ];

@@ -4,52 +4,60 @@ import Carousel from "../components/Carousel";
 
 const SERVICIOS = [
   {
-    id: "destapaciones",
-    title: "Destapaciones",
-    desc: "Cloacas, pluviales, cocinas y lavaderos — atención a consorcios, restaurantes, comercios, industrias y domicilios.",
-    img: "/bg-index.jpeg",
-    href: "/servicios#destapaciones",
-    icon: "/icons/destapaciones.svg",
-  },
-  {
     id: "obra-civil-menor",
     title: "Obra civil menor",
     desc: "Pequeñas obras civiles con seguridad y calidad garantizada.",
     img: "/servicio-obra.jpg",
-    href: "/servicios#obra-civil-menor",
+    href: "/servicios/obra-civil-menor",
     icon: "/icons/obra-civil-menor.png",
+  },
+  {
+    id: "destapaciones",
+    title: "Destapaciones",
+    desc: "Cloacas, pluviales, cocinas y lavaderos — atención a consorcios, restaurantes, comercios, industrias y domicilios.",
+    img: "/bg-index.jpeg",
+    href: "/servicios/destapaciones",
+    icon: "/icons/destapaciones.svg",
   },
   {
     id: "demarcacion",
     title: "Demarcación vial",
     desc: "Demarcación vial profesional para todo tipo de proyectos.",
     img: "/servicio-demarcacion.jpg",
-    href: "/servicios#demarcacion-vial",
+    href: "/servicios/demarcacion-vial",
     icon: "/icons/demarcacion-vial.png",
+  },
+  {
+    id: "pintura-en-altura",
+    title: "Pintura en altura",
+    desc: "Servicios de pintura en altura con profesionales capacitados.",
+    img: "/servicio-pintura-altura.jpg",
+    href: "/servicios/pintura-en-altura",
+    icon: "/icons/pintura-en-altura.png",
   },
   {
     id: "herrerias",
     title: "Herrerías",
     desc: "Trabajos de herrería a medida: estructuras, rejas y más.",
     img: "/servicio-herrerias.jpg",
-    href: "/servicios#herrerias",
+    href: "/servicios/herrerias",
     icon: "/icons/herrerias.png",
-  },
-  {
-    id: "innovaciones",
-    title: "Innovaciones",
-    desc: "Soluciones innovadoras para optimizar procesos y mantenimiento.",
-    img: "/servicio-innovaciones.jpg",
-    href: "/servicios#innovaciones",
-    icon: "/icons/innovaciones.png",
   },
   {
     id: "equipos-de-frio",
     title: "Equipos de frío",
     desc: "Mantenimiento y reparación de equipos de refrigeración.",
     img: "/servicio-equipos-frio.jpg",
-    href: "/servicios#equipos-de-frio",
+    href: "/servicios/equipos-de-frio",
     icon: "/icons/equipos-de-frio.svg",
+  },
+  {
+    id: "innovaciones",
+    title: "Innovaciones",
+    desc: "Soluciones innovadoras para optimizar procesos y mantenimiento.",
+    img: "/servicio-innovaciones.jpg",
+    href: "/servicios/innovaciones",
+    icon: "/icons/innovaciones.png",
   },
 ];
 
@@ -90,9 +98,9 @@ export default function Home() {
               </h1>
 
               <p className="mt-4 text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
-                Somos una empresa que nace del conocimiento operativo, en busca de su
-                desarrollo dentro de la Red de Estaciones; basados en la seguridad y el
-                compromiso diario.
+                Somos una empresa que nace del conocimiento operativo, en busca
+                de su desarrollo dentro de la Red de Estaciones; basados en la
+                seguridad y el compromiso diario.
               </p>
 
               <div className="mt-8 flex justify-center gap-4">
@@ -120,7 +128,9 @@ export default function Home() {
       {/* SECCIÓN: Carrusel / Servicios */}
       <section className="py-12">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-2xl font-semibold text-primary mb-6">Nuestros servicios</h2>
+          <h2 className="text-2xl font-semibold text-primary mb-6">
+            Nuestros servicios
+          </h2>
 
           {/* Carousel: ELIMINÉ minGridBreakpoint para que NUNCA se convierta en grid */}
           <Carousel items={SERVICIOS} />
