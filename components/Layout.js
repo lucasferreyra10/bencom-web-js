@@ -38,13 +38,13 @@ export default function Layout({ children }) {
     setMobileServiciosOpen(false);
   };
 
-  const openTelInNewTab = (phone) => {
-    try {
-      window.open(`tel:${phone}`, "_blank", "noopener,noreferrer");
-    } catch {
-      location.href = `tel:${phone}`;
-    }
-  };
+  // const openTelInNewTab = (phone) => {
+  //   try {
+  //     window.open(`tel:${phone}`, "_blank", "noopener,noreferrer");
+  //   } catch {
+  //     location.href = `tel:${phone}`;
+  //   }
+  // };
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -106,15 +106,7 @@ export default function Layout({ children }) {
                 <ul className="py-2">
                   <li>
                     <Link
-                      href="/servicios#destapaciones"
-                      className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                    >
-                      Destapaciones
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/servicios#obra-civil-menor"
+                      href="/servicios/obra-civil-menor"
                       className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
                     >
                       Obra civil menor
@@ -122,7 +114,15 @@ export default function Layout({ children }) {
                   </li>
                   <li>
                     <Link
-                      href="/servicios#demarcacion-vial"
+                      href="/servicios/destapaciones"
+                      className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                    >
+                      Destapaciones
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/servicios/demarcacion-vial"
                       className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
                     >
                       Demarcación vial
@@ -130,7 +130,15 @@ export default function Layout({ children }) {
                   </li>
                   <li>
                     <Link
-                      href="/servicios#herrerias"
+                      href="/servicios/pintura-en-altura"
+                      className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                    >
+                      Pintura en altura
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/servicios/herrerias"
                       className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
                     >
                       Herrerías
@@ -138,18 +146,18 @@ export default function Layout({ children }) {
                   </li>
                   <li>
                     <Link
-                      href="/servicios#innovaciones"
+                      href="/servicios/equipos-de-frio"
                       className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
                     >
-                      Innovaciones
+                      Equipos de frío
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href="/servicios#equipos-de-frio"
+                      href="/servicios/innovaciones"
                       className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
                     >
-                      Equipos de frío
+                      Innovaciones
                     </Link>
                   </li>
                 </ul>
@@ -315,16 +323,7 @@ export default function Layout({ children }) {
                     >
                       <li>
                         <Link
-                          href="/servicios#destapaciones"
-                          onClick={handleNavClick}
-                          className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                        >
-                          Destapaciones
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href="/servicios#obra-civil-menor"
+                          href="/servicios/obra-civil-menor"
                           onClick={handleNavClick}
                           className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
                         >
@@ -333,7 +332,16 @@ export default function Layout({ children }) {
                       </li>
                       <li>
                         <Link
-                          href="/servicios#demarcacion-vial"
+                          href="/servicios/destapaciones"
+                          onClick={handleNavClick}
+                          className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                        >
+                          Destapaciones
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="/servicios/demarcacion-vial"
                           onClick={handleNavClick}
                           className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
                         >
@@ -342,7 +350,16 @@ export default function Layout({ children }) {
                       </li>
                       <li>
                         <Link
-                          href="/servicios#herrerias"
+                          href="/servicios/pintura-en-altura"
+                          onClick={handleNavClick}
+                          className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                        >
+                          Pintura en altura
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="/servicios/herrerias"
                           onClick={handleNavClick}
                           className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
                         >
@@ -351,24 +368,24 @@ export default function Layout({ children }) {
                       </li>
                       <li>
                         <Link
-                          href="/servicios#innovaciones"
+                          href="/servicios/equipos-de-frio"
+                          onClick={handleNavClick}
+                          className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                        >
+                          Equipos de frío
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="/servicios/innovaciones"
                           onClick={handleNavClick}
                           className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
                         >
                           Innovaciones
                         </Link>
                       </li>
-                      <li>
-                        <Link
-                          href="/servicios#equipos-de-frio"
-                          className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                        >
-                          Equipos de frío
-                        </Link>
-                      </li>
                     </ul>
                   </li>
-
                   {/* Otros links mobile */}
                   <li>
                     <Link
@@ -400,8 +417,9 @@ export default function Layout({ children }) {
             height={50}
             priority
           />
-          <p className="text-sm sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4">
-            &copy; {new Date().getFullYear()} BENCOM S.R.L. — Todos los derechos reservados.
+          <p className="text-sm sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4 text-center">
+            &copy; {new Date().getFullYear()} BENCOM S.R.L. — Todos los derechos
+            reservados.
           </p>
           <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
             {/* Facebook */}
