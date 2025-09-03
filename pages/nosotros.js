@@ -1,5 +1,5 @@
 // pages/nosotros.js
-import Layout from '../components/Layout'
+import Layout from "../components/Layout";
 
 export default function Nosotros() {
   return (
@@ -8,8 +8,9 @@ export default function Nosotros() {
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-3xl font-title mb-2">Nosotros</h2>
           <p className="text-lg mb-4">
-            Somos <strong>BENCOM S.R.L.</strong>, dedicados al mantenimiento integral y soluciones para empresas.
-            Nos orientamos a ofrecer un servicio profesional, rápido y garantizado en CABA y AMBA.
+            Somos <strong>BENCOM S.R.L.</strong>, dedicados al mantenimiento
+            integral y soluciones para empresas. Nos orientamos a ofrecer un
+            servicio profesional, rápido y garantizado en CABA y AMBA.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -26,6 +27,8 @@ export default function Nosotros() {
                         href="https://wa.me/+5491127797320"
                         className="text-secondary underline break-all"
                         aria-label="Llamar al 11 2779 7320"
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
                         11 2779-7320
                       </a>
@@ -42,6 +45,8 @@ export default function Nosotros() {
                         href="mailto:mantenimiento@bencom.com.ar"
                         className="text-secondary underline break-all"
                         aria-label="Enviar correo a mantenimiento"
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
                         mantenimiento@bencom.com.ar
                       </a>
@@ -83,6 +88,8 @@ export default function Nosotros() {
               <div>
                 <a
                   href="mailto:mantenimiento@bencom.com.ar"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="mt-2 px-4 py-2 bg-secondary text-white rounded shadow hover:opacity-90"
                 >
                   Enviar consulta
@@ -93,6 +100,5 @@ export default function Nosotros() {
         </div>
       </section>
     </Layout>
-  )
+  );
 }
-
