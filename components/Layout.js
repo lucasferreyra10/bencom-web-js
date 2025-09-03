@@ -461,6 +461,7 @@ export default function Layout({ children }) {
                 height={20}
                 loading="lazy"
                 decoding="async"
+                style={{ minWidth: 20, minHeight: 20 }}
               />
             </a>
 
