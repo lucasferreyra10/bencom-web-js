@@ -68,7 +68,6 @@ export default function Layout({ children }) {
               </div>
             </Link>
           </div>
-
           {/* Nav escritorio (con dropdown por hover) */}
           <nav className="hidden md:flex items-center ml-auto space-x-6 text-sm">
             <Link
@@ -382,33 +381,6 @@ export default function Layout({ children }) {
                   </li>
                 </ul>
               </nav>
-
-              {/* footer del panel */}
-              <div className="px-4 py-4 border-t border-white/10">
-                <a
-                  href="tel:+5491127797320"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    openTelInNewTab("+5491127797320");
-                    setOpen(false);
-                  }}
-                  className="block text-white font-medium"
-                >
-                  Tel: +54 9 11 2779-7320
-                </a>
-
-                <a
-                  href="mailto:info@bencom.com.ar"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-white/90 mt-1"
-                  onClick={() => setOpen(false)}
-                >
-                  info@bencom.com.ar
-                </a>
-              </div>
             </div>
           </aside>
         </div>
@@ -419,36 +391,105 @@ export default function Layout({ children }) {
       </main>
 
       {/* FOOTER */}
-      <footer className="bg-primary text-white">
-        <div className="max-w-6xl mx-auto px-6 py-4 text-center">
-          <div className="mb-2">
+      <footer className="bg-primary text-white body-font">
+        <div className="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
+          <Image
+            src="/footerBencom.svg"
+            alt="BENCOM S.R.L."
+            width={150}
+            height={50}
+            priority
+          />
+          <p className="text-sm sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4">
+            &copy; {new Date().getFullYear()} BENCOM S.R.L. — Todos los derechos reservados.
+          </p>
+          <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
+            {/* Facebook */}
             <a
+              href="https://www.facebook.com/bencomsrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+              title="Facebook"
+              className="text-white"
+            >
+              <svg
+                fill="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                className="w-5 h-5"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+              </svg>
+            </a>
+
+            {/* WhatsApp */}
+            <a
+              className="ml-3"
               href="https://wa.me/+5491127797320"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => {
-                e.preventDefault();
-                openTelInNewTab("+5491127797320");
-              }}
-              className="inline-block mr-4 text-white font-medium"
+              aria-label="WhatsApp"
+              title="WhatsApp"
             >
-              Tel: +54 9 11 2779-7320
+              <img
+                src="https://img.icons8.com/m_outlined/512/whatsapp--v2.png"
+                alt="WhatsApp"
+                className="w-5 h-5 filter invert object-contain"
+                width={20}
+                height={20}
+                loading="lazy"
+                decoding="async"
+              />
             </a>
 
+            {/* Instagram */}
             <a
-              href="mailto:info@bencom.com.ar"
+              className="ml-3 text-white"
+              href="https://instagram.com/bencomsrl"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block text-white/90"
+              aria-label="Instagram"
+              title="Instagram"
             >
-              info@bencom.com.ar
+              <svg
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                className="w-5 h-5"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
+              </svg>
             </a>
-          </div>
 
-          <div>
-            &copy; {new Date().getFullYear()} BENCOM S.R.L. Todos los derechos
-            reservados.
-          </div>
+            {/* Gmail (envelope, en currentColor para mantener estilo) */}
+            <a
+              className="ml-3 text-white"
+              href="mailto:mantenimiento@bencom.com.ar"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Email"
+              title="Email"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                className="w-5 h-5"
+                fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path d="M20 4H4C2.895 4 2 4.895 2 6v12c0 1.105.895 2 2 2h16c1.105 0 2-.895 2-2V6c0-1.105-.895-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+              </svg>
+            </a>
+          </span>
         </div>
       </footer>
     </div>
