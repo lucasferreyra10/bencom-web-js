@@ -19,7 +19,18 @@ export default function Nosotros() {
               <h3 className="text-xl font-semibold mb-3">Nuestros contactos</h3>
               <dl className="space-y-3 text-lg">
                 <div className="flex items-center flex-wrap">
-                  <span className="mr-3 text-2xl">📞</span>
+                  <span className="mr-3 text-2xl">
+                    {" "}
+                    <img
+                      src="https://img.icons8.com/m_outlined/512/whatsapp--v2.png"
+                      alt="WhatsApp"
+                      className="w-5 h-5 filter invert object-contain"
+                      width={20}
+                      height={20}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </span>
                   <div>
                     <dt className="font-medium">Teléfono</dt>
                     <dd>
@@ -30,14 +41,24 @@ export default function Nosotros() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        11 2779-7320
+                        Chat de WhatsApp
                       </a>
                     </dd>
                   </div>
                 </div>
 
                 <div className="flex items-center flex-wrap">
-                  <span className="mr-3 text-2xl">✉️</span>
+                  <span className="mr-3 text-2xl">
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="w-5 h-5"
+                      fill="#2e358c"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path d="M20 4H4C2.895 4 2 4.895 2 6v12c0 1.105.895 2 2 2h16c1.105 0 2-.895 2-2V6c0-1.105-.895-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+                    </svg>
+                  </span>
                   <div>
                     <dt className="font-medium">Email</dt>
                     <dd>
@@ -48,14 +69,35 @@ export default function Nosotros() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        mantenimiento@bencom.com.ar
+                        Nuestro correo
                       </a>
                     </dd>
                   </div>
                 </div>
 
                 <div className="flex items-center flex-wrap">
-                  <span className="mr-3 text-2xl">📸</span>
+                  <span className="mr-3 text-2xl">
+                    <svg
+                      fill="none"
+                      stroke="#2e358c"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="w-5 h-5"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <rect
+                        width="20"
+                        height="20"
+                        x="2"
+                        y="2"
+                        rx="5"
+                        ry="5"
+                      ></rect>
+                      <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
+                    </svg>
+                  </span>
                   <div>
                     <dt className="font-medium">Instagram</dt>
                     <dd>
@@ -66,7 +108,7 @@ export default function Nosotros() {
                         className="text-secondary underline break-all"
                         aria-label="Abrir Instagram de bencomsrl"
                       >
-                        @bencomsrl
+                        Ver más novedades
                       </a>
                     </dd>
                   </div>

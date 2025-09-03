@@ -49,7 +49,7 @@ const SERVICIOS = [
     desc: "Mantenimiento y reparación de equipos de refrigeración.",
     img: "/servicio-equipos-frio.jpg",
     href: "/servicios/equipos-de-frio",
-    icon: "/icons/equipos-de-frio.svg",
+    icon: "/icons/equipos-de-frio.png",
   },
   {
     id: "innovaciones",
