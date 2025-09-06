@@ -438,7 +438,11 @@ export default function Layout({ children }) {
 
             <h3 className="text-lg font-semibold text-primary text-primary text-primary text-gray-600">Trabajos en CABA y AMBA</h3>
             <p className="text-sm text-gray-600">
-              Cobertura en Ciudad Autónoma y Gran Buenos Aires.
+              Cobertura en 
+              Ciudad 
+              Autónoma y 
+              Gran Buenos 
+              Aires.
             </p>
           </article>
 
@@ -471,8 +475,10 @@ export default function Layout({ children }) {
 
             <h3 className="text-lg font-semibold text-primary text-primary">Servicio profesional</h3>
             <p className="text-sm text-gray-600">
-              Técnicos capacitados, tiempos de respuesta ágiles y trabajos con
-              garantía.
+              Técnicos 
+              capacitados y 
+              tiempos de respuesta 
+              ágiles.
             </p>
           </article>
 
@@ -507,7 +513,10 @@ export default function Layout({ children }) {
 
             <h3 className="text-lg font-semibold text-primary text-primary">Realizamos factura</h3>
             <p className="text-sm text-gray-600">
-              Facturamos nuestros servicios con factura A.
+              Facturamos 
+              nuestros 
+              servicios con 
+              factura A.
             </p>
           </article>
 
@@ -552,7 +561,10 @@ export default function Layout({ children }) {
               Medios de pago
             </h3>
             <p className="text-sm text-gray-600">
-              Nos adaptamos a la necesidad de cada cliente/empresa.
+              Nos adaptamos 
+              a la necesidad 
+              de cada 
+              cliente/empresa.
             </p>
           </article>
         </div>
