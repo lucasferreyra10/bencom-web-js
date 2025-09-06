@@ -505,9 +505,9 @@ export default function Layout({ children }) {
               </svg>
             </div>
 
-            <h3 className="text-lg font-semibold text-primary text-primary">Aceptamos efectivo</h3>
+            <h3 className="text-lg font-semibold text-primary text-primary">Realizamos factura</h3>
             <p className="text-sm text-gray-600">
-              Pago en el momento con efectivo si lo preferís.
+              Facturamos nuestros servicios con factura A.
             </p>
           </article>
 
@@ -549,11 +549,10 @@ export default function Layout({ children }) {
             </div>
 
             <h3 className="text-lg font-semibold text-primary text-primary">
-              Otros medios de pago
+              Medios de pago
             </h3>
             <p className="text-sm text-gray-600">
-              Aceptamos tarjetas y ofrecemos factura / cuenta corriente para
-              empresas.
+              Nos adaptamos a la necesidad de cada cliente/empresa.
             </p>
           </article>
         </div>
