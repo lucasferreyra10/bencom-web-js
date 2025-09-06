@@ -403,13 +403,167 @@ export default function Layout({ children }) {
         </div>
       </header>
 
+
       <main className="flex-grow max-w-6xl mx-auto px-6 py-6 w-full">
         {children}
+        {/* ---------- Feature grid: 4 items (2 cols on mobile, 4 cols on desktop) ---------- */}
+      <section className="max-w-5xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {/* Item 1 */}
+          <article className="bg-[#DFDFDF] rounded-lg p-6 flex flex-col items-center text-center gap-3">
+            <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-primary/10">
+              {/* icon: location pin */}
+              <svg
+                className="w-7 h-7 md:w-8 md:h-8 text-primary"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden
+              >
+                <path
+                  d="M12 11.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M12 21s8-5.5 8-11a8 8 0 1 0-16 0c0 5.5 8 11 8 11z"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+
+            <h3 className="text-lg font-semibold text-primary text-primary text-primary text-gray-600">Trabajos en CABA y AMBA</h3>
+            <p className="text-sm text-gray-600">
+              Cobertura en Ciudad Autónoma y Gran Buenos Aires.
+            </p>
+          </article>
+
+          {/* Item 2 */}
+          <article className="bg-[#DFDFDF] rounded-lg p-6 flex flex-col items-center text-center gap-3">
+            <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-primary/10">
+              {/* icon: shield / guarantee */}
+              <svg
+                className="w-7 h-7 md:w-8 md:h-8 text-primary"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden
+              >
+                <path
+                  d="M12 2l7 3v5c0 5-3.5 9.8-7 12-3.5-2.2-7-7-7-12V5l7-3z"
+                  stroke="currentColor"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M9 12l2 2 4-4"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+
+            <h3 className="text-lg font-semibold text-primary text-primary">Servicio profesional</h3>
+            <p className="text-sm text-gray-600">
+              Técnicos capacitados, tiempos de respuesta ágiles y trabajos con
+              garantía.
+            </p>
+          </article>
+
+          {/* Item 3 */}
+          <article className="bg-[#DFDFDF] rounded-lg p-6 flex flex-col items-center text-center gap-3">
+            <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-primary/10">
+              {/* icon: cash */}
+              <svg
+                className="w-7 h-7 md:w-8 md:h-8 text-primary"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden
+              >
+                <rect
+                  x="2"
+                  y="7"
+                  width="20"
+                  height="10"
+                  rx="2"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                />
+                <path
+                  d="M7 12a3 3 0 1 0 6 0 3 3 0 0 0-6 0z"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+
+            <h3 className="text-lg font-semibold text-primary text-primary">Aceptamos efectivo</h3>
+            <p className="text-sm text-gray-600">
+              Pago en el momento con efectivo si lo preferís.
+            </p>
+          </article>
+
+          {/* Item 4 */}
+          <article className="bg-[#DFDFDF] rounded-lg p-6 flex flex-col items-center text-center gap-3">
+            <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-primary/10">
+              {/* icon: card / cuenta corriente */}
+              <svg
+                className="w-7 h-7 md:w-8 md:h-8 text-primary"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden
+              >
+                <rect
+                  x="2"
+                  y="5"
+                  width="20"
+                  height="14"
+                  rx="2"
+                  stroke="currentColor"
+                  strokeWidth="1.4"
+                />
+                <path
+                  d="M2 10h20"
+                  stroke="currentColor"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                />
+                <rect
+                  x="6"
+                  y="13"
+                  width="6"
+                  height="2"
+                  rx="1"
+                  fill="currentColor"
+                  opacity="0.15"
+                />
+              </svg>
+            </div>
+
+            <h3 className="text-lg font-semibold text-primary text-primary">
+              Otros medios de pago
+            </h3>
+            <p className="text-sm text-gray-600">
+              Aceptamos tarjetas y ofrecemos factura / cuenta corriente para
+              empresas.
+            </p>
+          </article>
+        </div>
+      </section>
+      {/* ---------- /Feature grid ---------- */}
       </main>
 
       {/* FOOTER */}
       <footer className="bg-primary text-white body-font">
-        <div className="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
+        <div className="max-w-6xl mx-auto px-6 py-8 flex items-center sm:flex-row flex-col">
           <Image
             src="/footerBencom.svg"
             alt="BENCOM S.R.L."
@@ -417,10 +571,6 @@ export default function Layout({ children }) {
             height={50}
             priority
           />
-          <p className="text-sm sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4 text-center">
-            &copy; {new Date().getFullYear()} BENCOM S.R.L. — Todos los derechos
-            reservados.
-          </p>
           <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
             {/* Facebook */}
             <a
@@ -493,7 +643,6 @@ export default function Layout({ children }) {
             <a
               className="ml-3 text-white"
               href="mailto:mantenimiento@bencom.com.ar"
-              target="_blank"
               rel="noopener noreferrer"
               aria-label="Email"
               title="Email"
@@ -509,6 +658,10 @@ export default function Layout({ children }) {
               </svg>
             </a>
           </span>
+          <p className="text-sm sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4 text-center">
+            &copy; {new Date().getFullYear()} BENCOM S.R.L. — Todos los derechos
+            reservados.
+          </p>
         </div>
       </footer>
     </div>

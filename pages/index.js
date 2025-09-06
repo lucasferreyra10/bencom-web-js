@@ -15,7 +15,7 @@ const SERVICIOS = [
     id: "destapaciones",
     title: "Destapaciones",
     desc: "Cloacas, pluviales, cocinas y lavaderos — atención a consorcios, restaurantes, comercios, industrias y domicilios.",
-    img: "/bg-index.jpeg",
+    img: "/bg-index - copia.jpeg",
     href: "/servicios/destapaciones",
     icon: "/icons/destapaciones.svg",
   },
@@ -126,7 +126,7 @@ export default function Home() {
       </section>
 
       {/* SECCIÓN: Carrusel / Servicios */}
-      <section className="py-12">
+      <section className="py-8">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-2xl font-semibold text-primary mb-6">
             Nuestros servicios

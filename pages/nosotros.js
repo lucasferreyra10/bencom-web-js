@@ -66,7 +66,6 @@ export default function Nosotros() {
                         href="mailto:mantenimiento@bencom.com.ar"
                         className="text-secondary underline break-all"
                         aria-label="Enviar correo a mantenimiento"
-                        target="_blank"
                         rel="noopener noreferrer"
                       >
                         Nuestro correo
@@ -130,7 +129,6 @@ export default function Nosotros() {
               <div>
                 <a
                   href="mailto:mantenimiento@bencom.com.ar"
-                  target="_blank"
                   rel="noopener noreferrer"
                   className="mt-2 px-4 py-2 bg-secondary text-white rounded shadow hover:opacity-90"
                 >
