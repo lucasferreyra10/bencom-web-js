@@ -112,29 +112,134 @@ export default function Nosotros() {
                     </dd>
                   </div>
                 </div>
+                <div className="flex items-center flex-wrap">
+                  <span className="mr-3 text-2xl">
+                    {" "}
+                    <img
+                      src="https://img.icons8.com/m_outlined/512/whatsapp--v2.png"
+                      alt="WhatsApp"
+                      className="w-5 h-5 filter invert object-contain"
+                      width={20}
+                      height={20}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </span>
+                </div>
               </dl>
             </div>
 
-            {/* Quiénes somos / horario / ubicacion */}
+            {/* Contact form card (derecha) */}
             <div className="p-4 border rounded-lg flex flex-col h-full">
-              <h3 className="text-xl font-semibold mb-3">Medios de pago</h3>
-              <ul className="list-inside list-disc space-y-2 text-lg">
-                <li>Efectivo</li>
-                <li>Transferencia</li>
-                <li>Cuenta corriente</li>
-              </ul>
+              <h3 className="text-xl font-semibold mb-3">Contacto rápido</h3>
+              {/* --- Formulario que usa /api/send-email --- */}
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  const f = e.currentTarget;
+                  const name = f.name.value.trim();
+                  const email = f.email.value.trim();
+                  const subject = f.subject.value.trim();
+                  const message = f.message.value.trim();
 
-              <div className="mt-4 flex-1" />
+                  // validación mínima en cliente
+                  if (!email) {
+                    alert("Por favor ingresá tu email.");
+                    f.email.focus();
+                    return;
+                  }
+                  if (!message) {
+                    alert("Por favor ingresá un mensaje.");
+                    f.message.focus();
+                    return;
+                  }
 
-              <div>
-                <a
-                  href="mailto:mantenimiento@bencom.com.ar"
-                  rel="noopener noreferrer"
-                  className="mt-2 px-4 py-2 bg-secondary text-white rounded shadow hover:opacity-90"
-                >
-                  Enviar consulta
-                </a>
-              </div>
+                  // UI: bloqueo botón
+                  const btn = f.querySelector("button[type='submit']");
+                  btn.disabled = true;
+                  const original = btn.innerHTML;
+                  btn.innerHTML = "Enviando...";
+
+                  try {
+                    const res = await fetch("/api/send-email", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ name, email, subject, message }),
+                    });
+
+                    const data = await res.json();
+                    if (!res.ok)
+                      throw new Error(data?.error || "Error desconocido");
+
+                    // success
+                    alert(
+                      "Mensaje enviado correctamente. Te responderemos pronto."
+                    );
+                    f.reset();
+                  } catch (err) {
+                    console.error(err);
+                    alert(
+                      "Ocurrió un error al enviar el mensaje. Intentá de nuevo más tarde."
+                    );
+                  } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = original;
+                  }
+                }}
+                className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+              >
+                <label className="col-span-1 sm:col-span-1">
+                  <span className="sr-only">Tu nombre</span>
+                  <input
+                    name="name"
+                    type="text"
+                    placeholder="Tu nombre"
+                    className="w-full border rounded-md p-2 text-sm"
+                  />
+                </label>
+
+                <label className="col-span-1 sm:col-span-1">
+                  <span className="sr-only">Tu email</span>
+                  <input
+                    name="email"
+                    type="email"
+                    placeholder="Tu email (requerido)"
+                    className="w-full border rounded-md p-2 text-sm"
+                    required
+                  />
+                </label>
+
+                <label className="col-span-1 sm:col-span-2">
+                  <span className="sr-only">Asunto</span>
+                  <input
+                    name="subject"
+                    type="text"
+                    placeholder="Asunto"
+                    className="w-full border rounded-md p-2 text-sm"
+                  />
+                </label>
+
+                <label className="col-span-1 sm:col-span-2">
+                  <span className="sr-only">Mensaje</span>
+                  <textarea
+                    name="message"
+                    rows="4"
+                    placeholder="Tu mensaje"
+                    className="w-full border rounded-md p-2 text-sm"
+                    required
+                  />
+                </label>
+
+                <div className="col-span-1 sm:col-span-2 flex items-center gap-3">
+                  <button
+                    type="submit"
+                    className="px-4 py-2 rounded-md bg-secondary text-white text-sm"
+                    aria-label="Enviar mensaje"
+                  >
+                    Enviar
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
