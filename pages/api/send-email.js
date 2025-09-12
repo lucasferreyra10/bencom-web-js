@@ -1,14 +1,8 @@
 // pages/api/send-email.js
 import nodemailer from "nodemailer";
 
-const {
-  SMTP_HOST,
-  SMTP_PORT,
-  SMTP_USER,
-  SMTP_PASS,
-  EMAIL_FROM,
-  EMAIL_TO,
-} = process.env;
+const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_FROM, EMAIL_TO } =
+  process.env;
 
 function validateEmail(email) {
   return typeof email === "string" && /\S+@\S+\.\S+/.test(email);
@@ -24,12 +18,17 @@ function escapeHtml(unsafe = "") {
 }
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+  if (req.method !== "POST")
+    return res.status(405).json({ error: "Method not allowed" });
 
   try {
-    const { name = "", email = "", subject = "", message = "" } = req.body || {};
+    const {
+      name = "",
+      email = "",
+      subject = "",
+      message = "",
+    } = req.body || {};
 
-    // Validación mínima
     if (!email || !validateEmail(email)) {
       return res.status(400).json({ error: "Email inválido" });
     }
@@ -40,7 +39,6 @@ export default async function handler(req, res) {
     let transporter;
     let usingTestAccount = false;
 
-    // Si no hay SMTP configurado, usar cuenta de prueba (Ethereal) en dev
     if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
       const testAccount = await nodemailer.createTestAccount();
       transporter = nodemailer.createTransport({
@@ -59,7 +57,7 @@ export default async function handler(req, res) {
       transporter = nodemailer.createTransport({
         host: SMTP_HOST,
         port,
-        secure: port === 465, // true si 465
+        secure: port === 465,
         auth: {
           user: SMTP_USER,
           pass: SMTP_PASS,
@@ -67,7 +65,8 @@ export default async function handler(req, res) {
       });
     }
 
-    const subjectFinal = subject && subject.trim().length ? subject.trim() : "Consulta desde web";
+    const subjectFinal =
+      subject && subject.trim().length ? subject.trim() : "Consulta desde web";
 
     const textBody = `Nombre: ${name}\nEmail: ${email}\n\n${message}`;
     const htmlBody = `
@@ -77,8 +76,16 @@ export default async function handler(req, res) {
       <p>${escapeHtml(message).replace(/\n/g, "<br/>")}</p>
     `;
 
+    // Aseguramos formato "Nombre vía Bencom" con el SMTP real
+    const fromAddress =
+      name && name.trim().length
+        ? `${escapeHtml(name)} vía bencom.com.ar <${
+            SMTP_USER || "mantenimiento@bencom.com.ar"
+          }>`
+        : `Bencom <${SMTP_USER || "mantenimiento@bencom.com.ar"}>`;
+
     const mailOptions = {
-      from: EMAIL_FROM || SMTP_USER || "no-reply@example.com",
+      from: fromAddress,
       to: EMAIL_TO || "mantenimiento@bencom.com.ar",
       subject: subjectFinal,
       text: textBody,
@@ -88,13 +95,14 @@ export default async function handler(req, res) {
 
     const info = await transporter.sendMail(mailOptions);
 
-    // Si usamos test account, devolver preview URL para ver el correo en Ethereal
     let previewUrl = null;
     if (usingTestAccount) {
       previewUrl = nodemailer.getTestMessageUrl(info) || null;
     }
 
-    return res.status(200).json({ ok: true, messageId: info.messageId, previewUrl });
+    return res
+      .status(200)
+      .json({ ok: true, messageId: info.messageId, previewUrl });
   } catch (err) {
     console.error("Error sending mail:", err?.response || err);
     return res.status(500).json({ error: "Error al enviar el correo" });
