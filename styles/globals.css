@@ -1,3 +1,5 @@
+/* styles/globals.css */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,3 +37,51 @@ h1, h2, h3, h4, h5, h6 {
 .no-scrollbar::-webkit-scrollbar-track {
   background: transparent !important;
 }
+
+/* ---------- Fix global: evita franja blanca al desplazar .site-content ---------- */
+/* Aseguramos fondo global coherente */
+:root { --bg: #eeeeeF; --cart-width: 24rem; }
+html, body, #__next { height: 100%; background: var(--bg) !important; }
+
+/* Aseguramos que site-content no tenga fondo blanco por accidente */
+.site-content {
+  background: transparent !important;
+  transition: transform 0.3s ease;
+  will-change: transform;
+  /* evitar gaps por subpixel: usar translate3d */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Cuando el carrito está abierto, desplazamos con translate3d (menos glitches) */
+@media (min-width: 640px) {
+  body.cart-open .site-content {
+    transform: translate3d(calc(-1 * var(--cart-width)), 0, 0) !important;
+    overflow-x: auto; /* permitir scroll horizontal si es necesario */
+  }
+
+  /* scrollbar horizontal opcional */
+  body.cart-open .site-content::-webkit-scrollbar { height: 8px; }
+  body.cart-open .site-content::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 999px; }
+}
+
+/* Footer: que quede por debajo del drawer */
+footer {
+  position: relative;
+  z-index: 10; /* BAJAR de 60 a 10 */
+  width: 100%;
+  left: 0;
+  backface-visibility: hidden;
+}
+
+/* Evitar que el contenido quede oculto tras el footer */
+.site-content {
+  padding-bottom: 6rem; /* espacio suficiente para que el contenido no quede tapado por el footer */
+}
+
+
+/* Remueve márgenes extra que a veces muestran fondo blanco debajo */
+main, .site-content > main, .site-content { margin-bottom: 0; }
+
+/* Forzar que las tarjetas no creen columnas de fondo blanco fuera del container */
+[class*="bg-"] { background-clip: padding-box; }
