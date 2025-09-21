@@ -171,7 +171,7 @@ export default function Home() {
               Trabajos en AMBA
             </h3>
             <p className="text-sm text-gray-600">
-              Cobertura en CABA y Gran Buenos Aires.
+              Cobertura en Ciudad Autónoma y Gran Buenos Aires.
             </p>
           </article>
 
