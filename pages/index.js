@@ -73,7 +73,7 @@ export default function Home() {
           {/* Imagen de fondo tomada desde public/bg-index.jpeg, posicionada TOP para que en desktop muestre la parte superior */}
           <div
             className="absolute inset-0 bg-top bg-cover bg-no-repeat"
-            style={{ backgroundImage: "url('/bg-index.jpeg')" }}
+            style={{ backgroundImage: "url('')" }}
             aria-hidden="true"
           />
 
