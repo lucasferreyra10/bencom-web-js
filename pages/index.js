@@ -98,9 +98,9 @@ export default function Home() {
               </h1>
 
               <p className="mt-4 text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
-                Somos una empresa que nace del conocimiento operativo, en busca
-                de su desarrollo dentro de la Red de Estaciones; basados en la
-                seguridad y el compromiso diario.
+                Somos una empresa que nace del conocimiento operativo; tenemos la 
+                fortaleza de pensar de una manera integral generando aportes a las 
+                necesidades de nuestros clientes.
               </p>
 
               <div className="mt-8 flex justify-center gap-4">
