@@ -48,7 +48,7 @@ export default function Destapaciones() {
     {
       id: "obra-civil-menor",
       title: "Obra civil menor",
-      description: "Pequeñas obras civiles con seguridad y calidad garantizada.",
+      description: "Pequeñas obras civiles con calidad garantizada.",
       list: [
         "Consorcios",
         "Restaurantes",
@@ -61,7 +61,7 @@ export default function Destapaciones() {
     {
       id: "demarcacion-vial",
       title: "Demarcación vial",
-      description: "Demarcación vial profesional para todo tipo de proyectos.",
+      description: "Demarcación para todo tipo de proyectos.",
       list: [
         "Sendas",
         "Topes y Estacionamiento",
@@ -104,8 +104,8 @@ export default function Destapaciones() {
       images: [imagePool[3], imagePool[4]],
     },
     {
-      id: "innovaciones",
-      title: "Innovaciones",
+      id: "proyectos-ideas",
+      title: "Proyectos/ Ideas",
       description: "Soluciones innovadoras para optimizar procesos y mantenimiento.",
       list: ["Automatización", "Mejoras en procesos", "Diagnóstico y optimización"],
       images: [imagePool[3], imagePool[4]],
@@ -151,7 +151,7 @@ export default function Destapaciones() {
         {/* --- Tu header y descripción --- */}
         <h1 className="text-3xl font-title">Destapaciones</h1>
         <p className="text-gray-700">
-          Cloacas, pluviales, cocinas y lavaderos — atención a consorcios, restaurantes, comercios, industrias y domicilios.
+          Brindamos un servicio profesional, eficiente y confiable.
         </p>
 
         {/* --- Lista de items original --- */}
