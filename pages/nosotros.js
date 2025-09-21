@@ -10,7 +10,7 @@ export default function Nosotros() {
           <p className="text-lg mb-4">
             Somos <strong>BENCOM S.R.L.</strong>, dedicados al mantenimiento
             integral y soluciones para empresas. Nos orientamos a ofrecer un
-            servicio profesional, rápido y garantizado en CABA y AMBA.
+            servicio profesional, rápido y garantizado.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

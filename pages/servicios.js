@@ -21,7 +21,7 @@ export default function Servicios() {
     "Trabajos de Durlock",
     "Demarcación Vial",
     "Herrerías",
-    "Innovaciones",
+    "Proyectos/ Ideas",
     "Obra Civil Menor",
     "Plomería",
     "Destapaciones Pluviales",
@@ -40,7 +40,7 @@ export default function Servicios() {
     "Atención en CABA y AMBA",
   ];
   const pinturaEnAltura = [];
-  const innovaciones = [];
+  const proyectosIdeas = [];
   const equiposDeFrio = [];
 
   const imagePool = [
@@ -56,7 +56,7 @@ export default function Servicios() {
       id: "obra-civil-menor",
       title: "Obra civil menor",
       description:
-        "Pequeñas obras civiles con seguridad y calidad garantizada.",
+        "Pequeñas obras civiles con calidad garantizada.",
       list: obraCivilMenor,
       images: [imagePool[0], imagePool[1]],
     },
@@ -64,14 +64,14 @@ export default function Servicios() {
       id: "destapaciones",
       title: "Destapaciones",
       description:
-        "Cloacas, pluviales, cocinas y lavaderos — atención a consorcios, restaurantes, comercios, industrias y domicilios.",
+        "Brindamos un servicio profesional, eficiente y confiable.",
       list: destapaciones,
       images: [imagePool[0], imagePool[1], imagePool[2]],
     },
     {
       id: "demarcación-vial",
       title: "Demarcación vial",
-      description: "Demarcación vial profesional para todo tipo de proyectos.",
+      description: "Demarcación para todo tipo de proyectos.",
       list: demarcacionVial,
       images: [imagePool[1], imagePool[4], imagePool[0]],
     },
@@ -98,11 +98,11 @@ export default function Servicios() {
       images: [imagePool[3], imagePool[4]],
     },
     {
-      id: "innovaciones",
-      title: "Innovaciones",
+      id: "proyectos-ideas",
+      title: "Proyectos/ Ideas",
       description:
         "Soluciones innovadoras para optimizar procesos y mantenimiento.",
-      list: innovaciones,
+      list: proyectosIdeas,
       images: [imagePool[3], imagePool[4]],
     },
   ];

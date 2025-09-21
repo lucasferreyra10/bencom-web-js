@@ -6,7 +6,7 @@ const SERVICIOS = [
   {
     id: "obra-civil-menor",
     title: "Obra civil menor",
-    desc: "Pequeñas obras civiles con seguridad y calidad garantizada.",
+    desc: "Pequeñas obras civiles con calidad garantizada.",
     img: "/servicio-obra.jpg",
     href: "/servicios/obra-civil-menor",
     icon: "/icons/obra-civil-menor.png",
@@ -14,7 +14,7 @@ const SERVICIOS = [
   {
     id: "destapaciones",
     title: "Destapaciones",
-    desc: "Cloacas, pluviales, cocinas y lavaderos — atención a consorcios, restaurantes, comercios, industrias y domicilios.",
+    desc: "Brindamos un servicio profesional, eficiente y confiable.",
     img: "/bg-index - copia.jpeg",
     href: "/servicios/destapaciones",
     icon: "/icons/destapaciones.svg",
@@ -22,7 +22,7 @@ const SERVICIOS = [
   {
     id: "demarcacion",
     title: "Demarcación vial",
-    desc: "Demarcación vial profesional para todo tipo de proyectos.",
+    desc: "Demarcación para todo tipo de proyectos.",
     img: "/servicio-demarcacion.jpg",
     href: "/servicios/demarcacion-vial",
     icon: "/icons/demarcacion-vial.png",
@@ -52,12 +52,12 @@ const SERVICIOS = [
     icon: "/icons/equipos-de-frio.png",
   },
   {
-    id: "innovaciones",
-    title: "Innovaciones",
+    id: "proyectos-ideas",
+    title: "Proyectos/ Ideas",
     desc: "Soluciones innovadoras para optimizar procesos y mantenimiento.",
-    img: "/servicio-innovaciones.jpg",
-    href: "/servicios/innovaciones",
-    icon: "/icons/innovaciones.png",
+    img: "/servicio-Proyectos/ Ideas.jpg",
+    href: "/servicios/proyectos-ideas",
+    icon: "/icons/Proyectos/ Ideas.png",
   },
 ];
 
