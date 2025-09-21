@@ -171,6 +171,12 @@ export default function Layout({ children }) {
             >
               Nosotros
             </Link>
+            <Link
+              href="/productos"
+              className="inline-block px-2 py-1 rounded transform transition hover:shadow-lg hover:-translate-y-0.5 focus:shadow-lg focus:outline-none"
+            >
+              Productos
+            </Link>
           </nav>
 
           {/* Botón hamburger (móvil) */}
@@ -394,6 +400,15 @@ export default function Layout({ children }) {
                       className="block text-white px-4 py-3 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
                     >
                       Nosotros
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/productos"
+                      onClick={handleNavClick}
+                      className="block text-white px-4 py-3 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                    >
+                      Productos
                     </Link>
                   </li>
                 </ul>
