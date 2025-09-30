@@ -22,9 +22,8 @@ export default function Nosotros() {
                   <span className="mr-3 text-2xl">
                     {" "}
                     <img
-                      src="https://img.icons8.com/m_outlined/512/whatsapp--v2.png"
+                      src="icons/NUEVOS ICONOS BENCOM-12.svg"
                       alt="WhatsApp"
-                      className="w-5 h-5 filter invert object-contain"
                       width={20}
                       height={20}
                       loading="lazy"

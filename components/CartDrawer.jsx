@@ -1,39 +1,42 @@
 // components/CartDrawer.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useCart } from "./CartProvider";
 
 /**
  * CartDrawer: floating shopping cart drawer with editable quantity inputs
+ * and a floating button that never overlaps the footer.
  */
 export default function CartDrawer() {
-  const { cart, updateQty, removeItem, clearCart, getTotal, getCount } = useCart();
+  const { cart, updateQty, removeItem, clearCart, getTotal, getCount } =
+    useCart();
   const [open, setOpen] = useState(false);
   const [customer, setCustomer] = useState({ name: "", email: "" });
-
-  // Evita mismatch SSR/CSR para el contador del badge
   const [mounted, setMounted] = useState(false);
-
-  // local map of itemId -> string (the input value) so user can type freely
   const [qtyInput, setQtyInput] = useState({});
 
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
   const website = process.env.NEXT_PUBLIC_WEBSITE_URL || "";
 
-  // marcar como montado en cliente (para evitar hydration mismatch)
+  // botón ref y offset para evitar overlap con footer
+  const buttonRef = useRef(null);
+  const rafRef = useRef(null);
+  const [bottomOffset, setBottomOffset] = useState(24); // px, espacio mínimo desde viewport bottom
+
+  // marcar como montado en cliente (evitar hydration mismatch)
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // sync qtyInput when cart changes (initial load and when items added/removed)
+  // sincronizar qtyInput con cart
   useEffect(() => {
     const map = {};
     (cart.items || []).forEach((it) => {
       map[it.id] = String(it.quantity || 1);
     });
-    setQtyInput((prev) => ({ ...map, ...prev })); // set baseline but keep any in-progress inputs
+    setQtyInput((prev) => ({ ...map, ...prev }));
   }, [cart.items]);
 
-  // When drawer opens/closes, toggle body class for other behaviors
+  // Manejo del body class cuando drawer abre/cierra
   useEffect(() => {
     const body = document.body;
     if (open) {
@@ -50,6 +53,60 @@ export default function CartDrawer() {
     };
   }, [open]);
 
+  // Actualiza bottomOffset para que el botón no tape el footer.
+  useEffect(() => {
+    function update() {
+      // cancel previous frame
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+
+      rafRef.current = requestAnimationFrame(() => {
+        const spacing = 24; // espacio mínimo entre botón y viewport bottom
+        const footer = document.querySelector("footer");
+        if (!footer || !buttonRef.current) {
+          setBottomOffset(spacing);
+          return;
+        }
+
+        const footerRect = footer.getBoundingClientRect();
+        const btnRect = buttonRef.current.getBoundingClientRect();
+
+        // cuánto del footer está visible dentro del viewport desde el bottom
+        // si footerRect.top < innerHeight, entonces parte del footer está visible.
+        const overlap = Math.max(0, window.innerHeight - footerRect.top);
+
+        // Si overlap > 0, necesitamos empujar el botón hacia arriba: overlap + spacing
+        // Además sumamos un pequeño margen para que no quede pegado.
+        const newBottom = overlap > 0 ? overlap + spacing : spacing;
+
+        // solo actualizar si difiere en al menos 1px para evitar repaints innecesarios
+        setBottomOffset((current) =>
+          Math.abs(current - newBottom) > 1 ? newBottom : current
+        );
+      });
+    }
+
+    // inicial y eventos
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+
+    // opcional: observar cambios en el footer (si su tamaño cambia dinámicamente)
+    let io = null;
+    const footer = document.querySelector("footer");
+    if (footer && "ResizeObserver" in window) {
+      io = new ResizeObserver(update);
+      io.observe(footer);
+    }
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      if (io) io.disconnect();
+    };
+  }, []);
+
+  // Construcción del texto de WhatsApp
   function buildWhatsappText() {
     const lines = [];
     lines.push("Nuevo pedido desde la web:");
@@ -75,7 +132,9 @@ export default function CartDrawer() {
 
   function openWhatsapp() {
     if (!whatsappNumber) {
-      alert("Número de WhatsApp no configurado. Añadí NEXT_PUBLIC_WHATSAPP_NUMBER en .env.local");
+      alert(
+        "Número de WhatsApp no configurado. Añadí NEXT_PUBLIC_WHATSAPP_NUMBER en .env.local"
+      );
       return;
     }
     if (!cart.items.length) {
@@ -83,22 +142,21 @@ export default function CartDrawer() {
       return;
     }
     const text = buildWhatsappText();
-    const url = `https://wa.me/${encodeURIComponent(whatsappNumber)}?text=${encodeURIComponent(text)}`;
+    const url = `https://wa.me/${encodeURIComponent(
+      whatsappNumber
+    )}?text=${encodeURIComponent(text)}`;
     window.open(url, "_blank");
   }
 
-  // Handlers for direct input editing
+  // Handlers de cantidad editable
   function handleQtyInputChange(id, value) {
-    // Accept only digits and empty string; allow user to type freely
     const cleaned = value.replace(/[^\d]/g, "");
     setQtyInput((s) => ({ ...s, [id]: cleaned }));
   }
-
   function applyQtyFromInput(id) {
     const raw = qtyInput[id];
     const n = parseInt(raw, 10);
     if (Number.isNaN(n) || n < 1) {
-      // normalize to 1 if invalid or empty
       updateQty(id, 1);
       setQtyInput((s) => ({ ...s, [id]: "1" }));
     } else {
@@ -106,15 +164,12 @@ export default function CartDrawer() {
       setQtyInput((s) => ({ ...s, [id]: String(n) }));
     }
   }
-
   function handleQtyKeyDown(e, id) {
     if (e.key === "Enter") {
       e.currentTarget.blur();
       applyQtyFromInput(id);
     }
   }
-
-  // Helpers for +/- buttons
   function decreaseQty(it) {
     const next = Math.max(1, (Number(it.quantity) || 1) - 1);
     updateQty(it.id, next);
@@ -128,8 +183,12 @@ export default function CartDrawer() {
 
   return (
     <>
-      {/* Floating button */}
-      <div className="fixed bottom-6 right-6 z-50">
+      {/* Floating button: su posición bottom se calcula dinámicamente para no tapar el footer */}
+      <div
+        ref={buttonRef}
+        style={{ bottom: `${bottomOffset}px`, right: "1.5rem" }} // right coincide con tailwind bottom-6/right-6 (1.5rem)
+        className="fixed z-50"
+      >
         <button
           onClick={() => setOpen((v) => !v)}
           className="flex items-center gap-2 px-4 py-3 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700"
@@ -137,15 +196,22 @@ export default function CartDrawer() {
           aria-controls="cart-drawer"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" aria-hidden>
-            <path d="M3 3h2l.4 2M7 13h10l4-8H5.4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            <circle cx="10" cy="20" r="1" fill="currentColor"/>
-            <circle cx="18" cy="20" r="1" fill="currentColor"/>
+            <path
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <circle cx="10" cy="20" r="1" fill="currentColor" />
+            <circle cx="18" cy="20" r="1" fill="currentColor" />
           </svg>
+
           <span className="text-sm font-medium">Carrito</span>
 
-          {/* Render count only on client to avoid hydration mismatch */}
+          {/* contador renderizado solo en cliente para evitar hydration mismatch */}
           <span
-            className="inline-flex items-center justify-center w-6 h-6 text-xs bg-white text-green-700 rounded-full"
+            className="inline-flex items-center justify-center w-6 h-6 text-xs bg-white text-green-700 rounded-full ml-1"
             aria-hidden={!mounted}
           >
             {mounted ? getCount() : ""}
@@ -153,10 +219,12 @@ export default function CartDrawer() {
         </button>
       </div>
 
-      {/* Drawer */}
+      {/* Drawer (sin cambios funcionales) */}
       <div
         id="cart-drawer"
-        className={`fixed top-0 right-0 h-full z-50 transform bg-white shadow-xl transition-transform duration-300 ${open ? "translate-x-0" : "translate-x-full"} w-full sm:w-96`}
+        className={`fixed top-0 right-0 h-full z-50 transform bg-white shadow-xl transition-transform duration-300 ${
+          open ? "translate-x-0" : "translate-x-full"
+        } w-full sm:w-96`}
         aria-hidden={!open}
       >
         <div className="flex flex-col h-full">
@@ -164,19 +232,54 @@ export default function CartDrawer() {
           <div className="p-4 border-b flex items-center justify-between flex-none">
             <h3 className="text-lg font-semibold">Tu carrito</h3>
             <div className="flex items-center gap-2">
-              <button onClick={() => clearCart()} className="text-sm text-red-600 hover:underline">Vaciar</button>
-              <button onClick={() => setOpen(false)} aria-label="Cerrar" className="text-gray-600">✕</button>
+              <div className="flex items-center gap-2">
+                {cart.items.length > 0 && (
+                  <button
+                    onClick={() => {
+                      if (
+                        window.confirm(
+                          "¿Estás seguro que deseas vaciar el carrito?"
+                        )
+                      ) {
+                        clearCart();
+                      }
+                    }}
+                    className="text-sm text-red-600"
+                  >
+                    Vaciar
+                  </button>
+                )}
+                <button
+                  onClick={() => setOpen(false)}
+                  aria-label="Cerrar"
+                  className="text-gray-600"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Scrollable items */}
-          <div className="p-4 overflow-y-auto" style={{ WebkitOverflowScrolling: "touch" }}>
+          {/* Items */}
+          <div
+            className="p-4 overflow-y-auto"
+            style={{ WebkitOverflowScrolling: "touch" }}
+          >
             {cart.items.length === 0 ? (
-              <div className="text-sm text-gray-600">El carrito está vacío.</div>
+              <div className="text-sm text-gray-600">
+                El carrito está vacío.
+              </div>
             ) : (
               cart.items.map((it) => (
-                <div key={it.id} className="flex items-start gap-3 py-3 border-b">
-                  <img src={it.image} alt={it.title} className="w-16 h-16 object-cover rounded" />
+                <div
+                  key={it.id}
+                  className="flex items-start gap-3 py-3 border-b"
+                >
+                  <img
+                    src={it.image}
+                    alt={it.title}
+                    className="w-16 h-16 object-cover rounded"
+                  />
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <div className="font-medium">{it.title}</div>
@@ -192,14 +295,15 @@ export default function CartDrawer() {
                         -
                       </button>
 
-                      {/* Editable quantity input */}
                       <input
                         aria-label={`Cantidad de ${it.title}`}
                         className="w-16 text-center px-2 py-1 border rounded"
                         inputMode="numeric"
                         pattern="[0-9]*"
                         value={qtyInput[it.id] ?? String(it.quantity || 1)}
-                        onChange={(e) => handleQtyInputChange(it.id, e.target.value)}
+                        onChange={(e) =>
+                          handleQtyInputChange(it.id, e.target.value)
+                        }
                         onBlur={() => applyQtyFromInput(it.id)}
                         onKeyDown={(e) => handleQtyKeyDown(e, it.id)}
                       />
@@ -212,7 +316,12 @@ export default function CartDrawer() {
                         +
                       </button>
 
-                      <button onClick={() => removeItem(it.id)} className="ml-auto text-sm text-red-600">Eliminar</button>
+                      <button
+                        onClick={() => removeItem(it.id)}
+                        className="ml-auto text-sm text-red-600"
+                      >
+                        Eliminar
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -221,26 +330,56 @@ export default function CartDrawer() {
             <div className="h-4" />
           </div>
 
-          {/* Footer */}
+          {/* Footer form */}
           <div className="p-4 border-t flex-none">
             <div className="mb-3">
               <label className="text-xs text-gray-600">Tu nombre</label>
-              <input value={customer.name} onChange={(e) => setCustomer((c) => ({ ...c, name: e.target.value }))} className="w-full mt-1 p-2 border rounded text-sm" placeholder="Nombre" />
+              <input
+                value={customer.name}
+                onChange={(e) =>
+                  setCustomer((c) => ({ ...c, name: e.target.value }))
+                }
+                className="w-full mt-1 p-2 border rounded text-sm"
+                placeholder="Nombre"
+              />
             </div>
             <div className="mb-3">
               <label className="text-xs text-gray-600">Tu email</label>
-              <input value={customer.email} onChange={(e) => setCustomer((c) => ({ ...c, email: e.target.value }))} className="w-full mt-1 p-2 border rounded text-sm" placeholder="email@ejemplo.com" type="email" />
+              <input
+                value={customer.email}
+                onChange={(e) =>
+                  setCustomer((c) => ({ ...c, email: e.target.value }))
+                }
+                className="w-full mt-1 p-2 border rounded text-sm"
+                placeholder="email@ejemplo.com"
+                type="email"
+              />
             </div>
 
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm text-gray-600">Total</div>
-                <div className="font-semibold text-lg">${getTotal().toFixed(2)}</div>
+                <div className="font-semibold text-lg">
+                  ${getTotal().toFixed(2)}
+                </div>
               </div>
 
               <div className="flex flex-col gap-2">
-                <button onClick={openWhatsapp} className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Enviar por WhatsApp</button>
-                <button onClick={() => { clearCart(); setOpen(false); }} className="px-4 py-2 bg-gray-100 rounded">Cancelar</button>
+                <button
+                  onClick={openWhatsapp}
+                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                >
+                  Enviar por WhatsApp
+                </button>
+                <button
+                  onClick={() => {
+                    clearCart();
+                    setOpen(false);
+                  }}
+                  className="px-4 py-2 bg-gray-100 rounded"
+                >
+                  Cancelar
+                </button>
               </div>
             </div>
           </div>
