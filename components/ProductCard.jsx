@@ -9,11 +9,15 @@ export default function ProductCard({ product, onOpenGallery }) {
     <article className="bg-white border rounded-lg p-4 flex flex-col">
       <button
         type="button"
-        onClick={() => onOpenGallery?.(product.images || [], 0)}
+        onClick={() => onOpenGallery?.(product, 0)}
         className="block overflow-hidden rounded-md mb-3"
         aria-label={`Abrir galería de ${product.title}`}
       >
-        <img src={(product.images && product.images[0]) || product.image} alt={product.title} className="w-full h-40 object-cover rounded-md" />
+        <img
+          src={(product.images && product.images[0]) || product.image}
+          alt={product.title}
+          className="w-full h-40 object-cover rounded-md"
+        />
       </button>
 
       <h3 className="font-semibold">{product.title}</h3>
@@ -29,7 +33,7 @@ export default function ProductCard({ product, onOpenGallery }) {
             Agregar
           </button>
           <button
-            onClick={() => onOpenGallery?.(product.images || [], 0)}
+            onClick={() => onOpenGallery?.(product, 0)}
             className="px-2 py-1 border rounded text-sm"
             aria-label={`Ver más fotos de ${product.title}`}
           >
