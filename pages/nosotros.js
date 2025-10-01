@@ -75,26 +75,15 @@ export default function Nosotros() {
 
                 <div className="flex items-center flex-wrap">
                   <span className="mr-3 text-2xl">
-                    <svg
-                      fill="none"
-                      stroke="#2e358c"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      className="w-5 h-5"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <rect
-                        width="20"
-                        height="20"
-                        x="2"
-                        y="2"
-                        rx="5"
-                        ry="5"
-                      ></rect>
-                      <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
-                    </svg>
+                    {" "}
+                    <img
+                      src="icons/NUEVOS ICONOS BENCOM-13.svg"
+                      alt="Instagram"
+                      width={20}
+                      height={20}
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </span>
                   <div>
                     <dt className="font-medium">Instagram</dt>
