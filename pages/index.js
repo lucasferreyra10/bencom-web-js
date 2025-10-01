@@ -1,6 +1,7 @@
 // pages/index.js
 import Layout from "../components/Layout";
 import Carousel from "../components/Carousel";
+import { waLink } from "../lib/wa";
 
 const SERVICIOS = [
   {
@@ -112,7 +113,7 @@ export default function Home() {
                 </a>
 
                 <a
-                  href="https://wa.me/+5491127797320"
+                  href={waLink()}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-block bg-[#2e358c] text-white font-medium px-6 py-3 rounded shadow hover:shadow-lg transform hover:-translate-y-0.5 transition"

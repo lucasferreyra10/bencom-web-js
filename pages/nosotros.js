@@ -1,5 +1,6 @@
 // pages/nosotros.js
 import Layout from "../components/Layout";
+import { waLink } from "../lib/wa";
 
 export default function Nosotros() {
   return (
@@ -34,7 +35,7 @@ export default function Nosotros() {
                     <dt className="font-medium">Teléfono</dt>
                     <dd>
                       <a
-                        href="https://wa.me/+5491127797320"
+                        href={waLink()}
                         className="text-secondary underline break-all"
                         aria-label="Llamar al 11 2779 7320"
                         target="_blank"

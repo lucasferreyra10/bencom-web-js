@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { waLink } from "../lib/wa";
 
 export default function Layout({ children }) {
   const [open, setOpen] = useState(false); // mobile overlay
@@ -459,7 +460,7 @@ export default function Layout({ children }) {
             {/* WhatsApp */}
             <a
               className="ml-3"
-              href="https://wa.me/+5491127797320"
+              href={waLink()}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="WhatsApp"
