@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useCart } from "./CartProvider";
 import { useRouter } from "next/router";
+import { waLink } from "../lib/wa"; // ajusta la ruta si corresponde
 
 /**
  * Floating control:
@@ -29,13 +30,6 @@ export default function CartDrawer() {
   const buttonRef = useRef(null);
   const rafRef = useRef(null);
   const [bottomOffset, setBottomOffset] = useState(24);
-
-  // WhatsApp number to use when not on productos
-  const WA_LINK = "https://wa.me/+5491127797320";
-
-  const whatsappNumber =
-    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+5491127797320";
-  const website = process.env.NEXT_PUBLIC_WEBSITE_URL || "";
 
   // mounted guard (avoid hydration mismatch)
   useEffect(() => {
@@ -200,23 +194,22 @@ export default function CartDrawer() {
         </button>
       ) : (
         <a
-          href={WA_LINK}
+          href={waLink()}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2 px-4 py-3 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700"
           aria-label="Contactar por WhatsApp"
         >
-          {/* Custom WhatsApp logo */}
+          {/* WhatsApp Logo SVG from public/icons/NUEVOS ICONOS BENCOM-12.svg */}
           <img
-            src="icons/NUEVOS ICONOS BENCOM-12.svg"
+            src="/icons/NUEVOS ICONOS BENCOM-12.svg"
             alt="WhatsApp"
-            width={20}
-            height={20}
-            loading="lazy"
-            decoding="async"
+            width={22}
+            height={22}
+            className="mr-2"
             style={{ filter: "brightness(0) invert(1)" }}
           />
-          <span className="text-sm font-medium">WhatsApp</span>
+          WhatsApp
         </a>
       )}
     </div>
@@ -240,16 +233,22 @@ export default function CartDrawer() {
             <div className="p-4 border-b flex items-center justify-between flex-none">
               <h3 className="text-lg font-semibold">Tu carrito</h3>
               <div className="flex items-center gap-2">
-                <button
-                  onClick={() => {
-                    if (window.confirm("¿Estás seguro que deseas vaciar el carrito?")) {
-                      clearCart();
-                    }
-                  }}
-                  className="text-sm text-red-600"
-                >
-                  Vaciar
-                </button>
+                {cart.items.length > 0 && (
+                  <button
+                    onClick={() => {
+                      if (
+                        window.confirm(
+                          "¿Estás seguro que deseas vaciar el carrito?"
+                        )
+                      ) {
+                        clearCart();
+                      }
+                    }}
+                    className="text-sm text-red-600"
+                  >
+                    Vaciar
+                  </button>
+                )}
                 <button
                   onClick={() => setOpen(false)}
                   aria-label="Cerrar"
