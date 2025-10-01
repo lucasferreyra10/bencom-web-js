@@ -9,7 +9,7 @@ const SERVICIOS = [
     desc: "Pequeñas obras civiles con calidad garantizada.",
     img: "/servicio-obra.jpg",
     href: "/servicios/obra-civil-menor",
-    icon: "/icons/obra-civil-menor.png",
+    icon: "/icons/NUEVOS ICONOS BENCOM-01.svg",
   },
   {
     id: "destapaciones",
@@ -17,7 +17,7 @@ const SERVICIOS = [
     desc: "Brindamos un servicio profesional, eficiente y confiable.",
     img: "/bg-index - copia.jpeg",
     href: "/servicios/destapaciones",
-    icon: "/icons/destapaciones.svg",
+    icon: "/icons/NUEVOS ICONOS BENCOM-02.svg",
   },
   {
     id: "demarcacion",
@@ -25,7 +25,7 @@ const SERVICIOS = [
     desc: "Demarcación para todo tipo de proyectos.",
     img: "/servicio-demarcacion.jpg",
     href: "/servicios/demarcacion-vial",
-    icon: "/icons/demarcacion-vial.png",
+    icon: "/icons/NUEVOS ICONOS BENCOM-03.svg",
   },
   {
     id: "pintura-en-altura",
@@ -33,7 +33,7 @@ const SERVICIOS = [
     desc: "Servicios de pintura en altura con profesionales capacitados.",
     img: "/servicio-pintura-altura.jpg",
     href: "/servicios/pintura-en-altura",
-    icon: "/icons/pintura-en-altura.png",
+    icon: "/icons/NUEVOS ICONOS BENCOM-04.svg",
   },
   {
     id: "herrerias",
@@ -41,7 +41,7 @@ const SERVICIOS = [
     desc: "Trabajos de herrería a medida: estructuras, rejas y más.",
     img: "/servicio-herrerias.jpg",
     href: "/servicios/herrerias",
-    icon: "/icons/herrerias.png",
+    icon: "/icons/NUEVOS ICONOS BENCOM-05.svg",
   },
   {
     id: "equipos-de-frio",
@@ -49,7 +49,7 @@ const SERVICIOS = [
     desc: "Mantenimiento y reparación de equipos de refrigeración.",
     img: "/servicio-equipos-frio.jpg",
     href: "/servicios/equipos-de-frio",
-    icon: "/icons/equipos-de-frio.png",
+    icon: "/icons/NUEVOS ICONOS BENCOM-06.svg",
   },
   {
     id: "proyectos-ideas",
@@ -57,7 +57,7 @@ const SERVICIOS = [
     desc: "Soluciones innovadoras para optimizar procesos y mantenimiento.",
     img: "/servicio-Proyectos/ Ideas.jpg",
     href: "/servicios/proyectos-ideas",
-    icon: "/icons/Proyectos/ Ideas.png",
+    icon: "/icons/NUEVOS ICONOS BENCOM-07.svg",
   },
 ];
 
@@ -98,9 +98,9 @@ export default function Home() {
               </h1>
 
               <p className="mt-4 text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
-                Somos una empresa de mantenimiento que nace del conocimiento operativo; 
-                tenemos la fortaleza de pensar de una manera integral generando aportes 
-                a las necesidades de nuestros clientes.
+                Somos una empresa de mantenimiento que nace del conocimiento
+                operativo; tenemos la fortaleza de pensar de una manera integral
+                generando aportes a las necesidades de nuestros clientes.
               </p>
 
               <div className="mt-8 flex justify-center gap-4">
@@ -143,63 +143,30 @@ export default function Home() {
           {/* Item 1 */}
           <article className="bg-[#DFDFDF] rounded-lg p-6 flex flex-col items-center text-center gap-3">
             <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-primary/10">
-              {/* icon: location pin */}
-              <svg
-                className="w-7 h-7 md:w-8 md:h-8 text-primary"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden
-              >
-                <path
-                  d="M12 11.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M12 21s8-5.5 8-11a8 8 0 1 0-16 0c0 5.5 8 11 8 11z"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              {/* icon: NUEVOS ICONOS BENCOM-08.svg */}
+              <img
+                src="/icons/NUEVOS ICONOS BENCOM-08.svg"
+                alt="Trabajos en AMBA"
+                className="w-7 h-7 md:w-8 md:h-8"
+              />
             </div>
 
             <h3 className="text-lg font-semibold text-primary">
               Trabajos en AMBA
             </h3>
             <p className="text-sm text-gray-600">
-              Cobertura en Ciudad Autónoma y Gran Buenos Aires.
+              Realizamos trabajos en CABA y Gran Buenos Aires.
             </p>
           </article>
-
           {/* Item 2 */}
           <article className="bg-[#DFDFDF] rounded-lg p-6 flex flex-col items-center text-center gap-3">
             <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-primary/10">
-              {/* icon: shield / guarantee */}
-              <svg
-                className="w-7 h-7 md:w-8 md:h-8 text-primary"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden
-              >
-                <path
-                  d="M12 2l7 3v5c0 5-3.5 9.8-7 12-3.5-2.2-7-7-7-12V5l7-3z"
-                  stroke="currentColor"
-                  strokeWidth="1.4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M9 12l2 2 4-4"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              {/* icon: NUEVOS ICONOS BENCOM-09.svg */}
+              <img
+                src="/icons/NUEVOS ICONOS BENCOM-09.svg"
+                alt="Servicio profesional"
+                className="w-7 h-7 md:w-8 md:h-8"
+              />
             </div>
 
             <h3 className="text-lg font-semibold text-primary">
@@ -213,30 +180,12 @@ export default function Home() {
           {/* Item 3 */}
           <article className="bg-[#DFDFDF] rounded-lg p-6 flex flex-col items-center text-center gap-3">
             <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-primary/10">
-              {/* icon: cash */}
-              <svg
-                className="w-7 h-7 md:w-8 md:h-8 text-primary"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden
-              >
-                <rect
-                  x="2"
-                  y="7"
-                  width="20"
-                  height="10"
-                  rx="2"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                />
-                <path
-                  d="M7 12a3 3 0 1 0 6 0 3 3 0 0 0-6 0z"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              {/* icon: NUEVOS ICONOS BENCOM-10.svg */}
+              <img
+                src="/icons/NUEVOS ICONOS BENCOM-10.svg"
+                alt="Realizamos factura"
+                className="w-7 h-7 md:w-8 md:h-8"
+              />
             </div>
 
             <h3 className="text-lg font-semibold text-primary">
@@ -250,38 +199,12 @@ export default function Home() {
           {/* Item 4 */}
           <article className="bg-[#DFDFDF] rounded-lg p-6 flex flex-col items-center text-center gap-3">
             <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-primary/10">
-              {/* icon: card / cuenta corriente */}
-              <svg
-                className="w-7 h-7 md:w-8 md:h-8 text-primary"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden
-              >
-                <rect
-                  x="2"
-                  y="5"
-                  width="20"
-                  height="14"
-                  rx="2"
-                  stroke="currentColor"
-                  strokeWidth="1.4"
-                />
-                <path
-                  d="M2 10h20"
-                  stroke="currentColor"
-                  strokeWidth="1.4"
-                  strokeLinecap="round"
-                />
-                <rect
-                  x="6"
-                  y="13"
-                  width="6"
-                  height="2"
-                  rx="1"
-                  fill="currentColor"
-                  opacity="0.15"
-                />
-              </svg>
+              {/* icon: NUEVOS ICONOS BENCOM-11.svg */}
+              <img
+                src="/icons/NUEVOS ICONOS BENCOM-11.svg"
+                alt="Medios de pago"
+                className="w-7 h-7 md:w-8 md:h-8"
+              />
             </div>
 
             <h3 className="text-lg font-semibold text-primary">
