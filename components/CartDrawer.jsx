@@ -2,12 +2,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useCart } from "./CartProvider";
 import { useRouter } from "next/router";
-import { waLink } from "../lib/wa"; // ajusta la ruta si corresponde
+import { waLink } from "../lib/wa"; // helper centralizado para links de WhatsApp
 
 /**
  * Floating control:
  * - On /productos -> show Cart button + Drawer
- * - Else -> show WhatsApp button linking to company WA
+ * - Else -> show WhatsApp button linking to company WA (via waLink())
  */
 export default function CartDrawer() {
   const router = useRouter();
@@ -101,6 +101,7 @@ export default function CartDrawer() {
   }, []);
 
   // Build text for WhatsApp from cart (used in drawer on /productos)
+  const website = process.env.NEXT_PUBLIC_WEBSITE_URL || "";
   function buildWhatsappText() {
     const lines = [];
     lines.push("Nuevo pedido desde la web:");
@@ -124,15 +125,14 @@ export default function CartDrawer() {
     return lines.join("\n");
   }
 
+  // Use waLink helper to build full wa.me URL (handles normalizing number)
   function openWhatsappWithCart() {
-    if (!cart.items.length) {
+    if (!cart.items || !cart.items.length) {
       alert("El carrito está vacío.");
       return;
     }
     const text = buildWhatsappText();
-    const url = `https://wa.me/${encodeURIComponent(
-      whatsappNumber.replace(/\D/g, "")
-    )}?text=${encodeURIComponent(text)}`;
+    const url = waLink(null, text); // waLink builds https://wa.me/<digits>?text=...
     window.open(url, "_blank");
   }
 
@@ -200,7 +200,7 @@ export default function CartDrawer() {
           className="flex items-center gap-2 px-4 py-3 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700"
           aria-label="Contactar por WhatsApp"
         >
-          {/* WhatsApp Logo SVG from public/icons/NUEVOS ICONOS BENCOM-12.svg */}
+          {/* WhatsApp Logo */}
           <img
             src="/icons/NUEVOS ICONOS BENCOM-12.svg"
             alt="WhatsApp"
