@@ -36,11 +36,11 @@ export default function Destapaciones() {
 
   // --- Ahora: "Otros servicios" (acordeón igual que en services.js) ---
   const imagePool = [
-    "https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1200&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=1200&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=1200&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1508385082359-f2e6e9f6d3a2?q=80&w=1200&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=1200&auto=format&fit=crop",
+    "public/services/1_obra civil menor/Imagen de WhatsApp 2025-10-06 a las 13.19.15_5b2b344f.jpg",
+    "public/services/1_obra civil menor/Imagen de WhatsApp 2025-10-06 a las 13.19.15_5b2b344f.jpg",
+    "public/services/1_obra civil menor/Imagen de WhatsApp 2025-10-06 a las 13.19.15_5b2b344f.jpg",
+    "public/services/1_obra civil menor/Imagen de WhatsApp 2025-10-06 a las 13.19.15_5b2b344f.jpg",
+    "public/services/1_obra civil menor/Imagen de WhatsApp 2025-10-06 a las 13.19.15_5b2b344f.jpg",
   ];
 
   // Excluimos "destapaciones" para no duplicar su contenido
@@ -105,7 +105,7 @@ export default function Destapaciones() {
     },
     {
       id: "proyectos-ideas",
-      title: "Proyectos/ Ideas",
+      title: "Proyectos-Ideas",
       description: "Soluciones innovadoras para optimizar procesos y mantenimiento.",
       list: ["Automatización", "Mejoras en procesos", "Diagnóstico y optimización"],
       images: [imagePool[3], imagePool[4]],

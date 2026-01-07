@@ -120,7 +120,7 @@ export default function Nosotros() {
 
             {/* Contact form card (derecha) */}
             <div className="p-4 border rounded-lg flex flex-col h-full">
-              <h3 className="text-xl font-semibold mb-3">Contacto rápido</h3>
+              <h3 className="text-xl font-semibold mb-3">Envianos tu consulta</h3>
               {/* --- Formulario que usa /api/send-email --- */}
               <form
                 onSubmit={async (e) => {

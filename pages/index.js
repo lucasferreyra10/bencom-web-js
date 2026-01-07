@@ -54,9 +54,9 @@ const SERVICIOS = [
   },
   {
     id: "proyectos-ideas",
-    title: "Proyectos/ Ideas",
+    title: "Proyectos-Ideas",
     desc: "Soluciones innovadoras para optimizar procesos y mantenimiento.",
-    img: "/servicio-Proyectos/ Ideas.jpg",
+    img: "/servicio-Proyectos-Ideas.jpg",
     href: "/servicios/proyectos-ideas",
     icon: "/icons/NUEVOS ICONOS BENCOM-07.svg",
   },
