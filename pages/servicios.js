@@ -21,7 +21,7 @@ export default function Servicios() {
     "Trabajos de Durlock",
     "Demarcación Vial",
     "Herrerías",
-    "Proyectos/ Ideas",
+    "Proyectos-Ideas",
     "Obra Civil Menor",
     "Plomería",
     "Destapaciones Pluviales",
@@ -43,12 +43,40 @@ export default function Servicios() {
   const proyectosIdeas = [];
   const equiposDeFrio = [];
 
+  // Importar todas las imágenes únicas de /public/services y subcarpetas
+  // Si agregas nuevas imágenes a la carpeta, actualiza este array.
   const imagePool = [
-    "https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1200&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=1200&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=1200&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1508385082359-f2e6e9f6d3a2?q=80&w=1200&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=1200&auto=format&fit=crop",
+   // Subcarpeta: 1_obra civil menor
+    "/services/1_obra civil menor/Imagen de WhatsApp 2025-10-06 a las 13.19.15_5b2b344f.jpg", // 0
+    "/services/1_obra civil menor/Imagen de WhatsApp 2025-10-06 a las 13.19.15_e63dfe9a.jpg", // 1
+    "/services/1_obra civil menor/Imagen de WhatsApp 2025-10-06 a las 13.19.17_4150374d.jpg", // 2
+    "/services/1_obra civil menor/Imagen de WhatsApp 2025-10-06 a las 13.22.09_08c8c096.jpg", // 3
+
+    // Subcarpeta: destapaciones
+    "/services/destapaciones/destapaciones-1.jpg", // 4
+    "/services/destapaciones/destapaciones-2.jpg", // 5
+
+    // Subcarpeta: 3_demarcacion vial
+    "/services/3_demarcacion vial/Foto 1 Editada.jpg", // 6
+    "/services/3_demarcacion vial/Imagen de WhatsApp 2025-10-06 a las 13.16.37_ca068e05.jpg", // 7
+
+    // Subcarpeta: herreria
+    "/services/herreria/herreria-1.jpg", // 8
+    "/services/herreria/herreria-2.jpg", // 9
+
+    // Subcarpeta: pintura-altura
+    "/services/pintura-altura/pintura-altura-1.jpg", // 10
+    "/services/pintura-altura/pintura-altura-2.jpg", // 11
+
+    // Subcarpeta: equipos-frio
+    "/services/equipos-frio/equipos-frio-1.jpg",  // 12
+    "/services/equipos-frio/equipos-frio-2.jpg",  // 13
+
+    // Subcarpeta: proyectos-ideas
+    "/services/proyectos-ideas/proyectos-ideas-1.jpg", // 14
+    "/services/proyectos-ideas/proyectos-ideas-2.jpg", // 15
+
+    // Agrega aquí cualquier otra imagen nueva que esté en /public/services o sus subcarpetas
   ];
 
   const servicesData = [
@@ -58,7 +86,7 @@ export default function Servicios() {
       description:
         "Pequeñas obras civiles con calidad garantizada.",
       list: obraCivilMenor,
-      images: [imagePool[0], imagePool[1]],
+      images: [imagePool[0], imagePool[1], imagePool[2], imagePool[3]],
     },
     {
       id: "destapaciones",
@@ -66,14 +94,14 @@ export default function Servicios() {
       description:
         "Brindamos un servicio profesional, eficiente y confiable.",
       list: destapaciones,
-      images: [imagePool[0], imagePool[1], imagePool[2]],
+      images: [],
     },
     {
       id: "demarcación-vial",
       title: "Demarcación vial",
       description: "Demarcación para todo tipo de proyectos.",
       list: demarcacionVial,
-      images: [imagePool[1], imagePool[4], imagePool[0]],
+      images: [imagePool[6], imagePool[7]],
     },
     {
       id: "pintura-en-altura",
@@ -99,7 +127,7 @@ export default function Servicios() {
     },
     {
       id: "proyectos-ideas",
-      title: "Proyectos/ Ideas",
+      title: "Proyectos-Ideas",
       description:
         "Soluciones innovadoras para optimizar procesos y mantenimiento.",
       list: proyectosIdeas,

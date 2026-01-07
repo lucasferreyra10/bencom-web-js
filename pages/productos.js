@@ -12,7 +12,7 @@ const PRODUCTS = [
   {
     id: "p-1",
     title: "Equipo A",
-    price: 1200,
+    price: 1200.00,
     description: "Descripción breve del Equipo A",
     longDescription:
       "Descripción más exhaustiva y técnica del Equipo A. Incluye especificaciones, usos recomendados y notas de instalación.",
@@ -24,7 +24,7 @@ const PRODUCTS = [
   {
     id: "p-2",
     title: "Repuesto B",
-    price: 350,
+    price: 350.00,
     description: "Repuesto de alta calidad",
     longDescription:
       "Repuesto compatible con múltiples modelos. Fabricado con materiales resistentes a la corrosión.",
@@ -36,7 +36,7 @@ const PRODUCTS = [
   {
     id: "p-3",
     title: "Kit C",
-    price: 780,
+    price: 780.00,
     description: "Kit para mantenimiento",
     longDescription:
       "Kit completo para mantenimiento periódico, incluye piezas de recambio y lubricantes recomendados.",
@@ -48,7 +48,7 @@ const PRODUCTS = [
   {
     id: "p-4",
     title: "Servicio D",
-    price: 2200,
+    price: 2200.00,
     description: "Servicio especializado",
     longDescription:
       "Servicio a medida realizado por personal técnico certificado. Incluye garantía y reporte de trabajo.",
