@@ -8,7 +8,7 @@ const SERVICIOS = [
     id: "obra-civil-menor",
     title: "Obra civil menor",
     desc: "Pequeñas obras civiles con calidad garantizada.",
-    img: "/servicio-obra.jpg",
+    img: "/covers/obra-civil-menor.jpeg",
     href: "/servicios/obra-civil-menor",
     icon: "/icons/NUEVOS ICONOS BENCOM-01.svg",
   },
@@ -16,7 +16,7 @@ const SERVICIOS = [
     id: "destapaciones",
     title: "Destapaciones",
     desc: "Brindamos un servicio profesional, eficiente y confiable.",
-    img: "/bg-index - copia.jpeg",
+    img: "/covers/destapaciones.jpeg",
     href: "/servicios/destapaciones",
     icon: "/icons/NUEVOS ICONOS BENCOM-02.svg",
   },
@@ -24,7 +24,7 @@ const SERVICIOS = [
     id: "demarcacion",
     title: "Demarcación vial",
     desc: "Demarcación para todo tipo de proyectos.",
-    img: "/servicio-demarcacion.jpg",
+    img: "/covers/demarcacion.jpeg",
     href: "/servicios/demarcacion-vial",
     icon: "/icons/NUEVOS ICONOS BENCOM-03.svg",
   },
@@ -32,7 +32,7 @@ const SERVICIOS = [
     id: "pintura-en-altura",
     title: "Pintura en altura",
     desc: "Servicios de pintura en altura con profesionales capacitados.",
-    img: "/servicio-pintura-altura.jpg",
+    img: "/covers/pintura-en-altura.jpeg",
     href: "/servicios/pintura-en-altura",
     icon: "/icons/NUEVOS ICONOS BENCOM-04.svg",
   },
@@ -40,7 +40,7 @@ const SERVICIOS = [
     id: "herrerias",
     title: "Herrerías",
     desc: "Trabajos de herrería a medida: estructuras, rejas y más.",
-    img: "/servicio-herrerias.jpg",
+    img: "/covers/herrerias.jpeg",
     href: "/servicios/herrerias",
     icon: "/icons/NUEVOS ICONOS BENCOM-05.svg",
   },
@@ -48,7 +48,7 @@ const SERVICIOS = [
     id: "equipos-de-frio",
     title: "Equipos de frío",
     desc: "Mantenimiento y reparación de equipos de refrigeración.",
-    img: "/servicio-equipos-frio.jpg",
+    img: "/covers/equipos-de-frio.jpeg",
     href: "/servicios/equipos-de-frio",
     icon: "/icons/NUEVOS ICONOS BENCOM-06.svg",
   },
@@ -56,7 +56,7 @@ const SERVICIOS = [
     id: "proyectos-ideas",
     title: "Proyectos-Ideas",
     desc: "Soluciones innovadoras para optimizar procesos y mantenimiento.",
-    img: "/servicio-Proyectos-Ideas.jpg",
+    img: "/covers/proyectos-ideas.jpeg",
     href: "/servicios/proyectos-ideas",
     icon: "/icons/NUEVOS ICONOS BENCOM-07.svg",
   },
@@ -74,7 +74,7 @@ export default function Home() {
           {/* Imagen de fondo tomada desde public/bg-index.jpeg, posicionada TOP para que en desktop muestre la parte superior */}
           <div
             className="absolute inset-0 bg-top bg-cover bg-no-repeat"
-            style={{ backgroundImage: "url('')" }}
+            style={{ backgroundImage: "url('/covers/portada-inicio.jpeg')" }}
             aria-hidden="true"
           />
 
