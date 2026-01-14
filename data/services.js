@@ -10,8 +10,9 @@ export const services = [
       "Impermeabilizaciones",
       "Pintura de cañerías",
       "Nichos de incendio",
-      "Plomería",
       "Colocación de vinilos",
+      "Piso de islas de combustibles E/S",
+      "Tapas y descargas de combustibles E/S",
     ],
     folder: "1_obra-civil-menor",
     images: [
@@ -58,6 +59,7 @@ export const services = [
       "Flechas",
       "Zonas de estacionamiento",
       "Pintura de cordones",
+      "Pintura pisos surtidor eléctrico",
     ],
     folder: "3_demarcacion-vial",
     images: [
@@ -85,13 +87,7 @@ export const services = [
       "Servicio de pintura en altura con profesionales capacitados. Contamos con todos los medios de seguridad necesarios.",
     items: [],
     folder: "4_pintura-en-altura",
-    images: [
-      "img1.jpg",
-      "img2.jpg",
-      "img3.jpg",
-      "img4.jpg",
-      "img5.jpg",
-    ],
+    images: ["img1.jpg", "img2.jpg", "img3.jpg", "img4.jpg", "img5.jpg"],
   },
   {
     slug: "herrerias",
@@ -128,10 +124,9 @@ export const services = [
   {
     slug: "proyectos-ideas",
     title: "Innovaciones e ideas",
-    description:
-      "Soluciones innovadoras para optimizar procesos y mantenimiento.",
-    items: [],
-    folder: "innovaciones-ideas",
-    images: [],
+    description: "Análisis en conjunto de problemáticas existentes.",
+    items: ["Planteamiento de reformas", "Soluciones innovadoras"],
+    folder: "7_proyectos-ideas",
+    images: ["img1.jpg"],
   },
 ];

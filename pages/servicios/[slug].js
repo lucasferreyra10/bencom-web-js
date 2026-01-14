@@ -30,7 +30,7 @@ export default function ServicioDinamico() {
       id: s.slug,
       title: s.title,
       description: s.description,
-      list: s.items.slice(0, 8), // Mostrar solo los primeros 8 items
+      list: s.items.slice(0, 10), // Mostrar solo los primeros 10 items
       images: s.images.slice(0, 50).map((img) => `/services/${s.folder}/${img}`), // Mostrar solo 50 imágenes
     }));
 

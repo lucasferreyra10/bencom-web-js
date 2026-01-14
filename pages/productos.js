@@ -11,47 +11,86 @@ import ProductLightbox from "../components/ProductLightbox";
 const PRODUCTS = [
   {
     id: "p-1",
-    title: "Equipo A",
-    price: 1200.00,
-    description: "Descripción breve del Equipo A",
+    title: "Chapas identificadoras",
+    price: 0.0,
+    description: "De <strong>BOCA DE DESCARGA</strong> para combustibles",
     longDescription:
-      "Descripción más exhaustiva y técnica del Equipo A. Incluye especificaciones, usos recomendados y notas de instalación.",
-    images: [
-      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1200&auto=format&fit=crop",
-    ],
+      "Chapas de acero de 10cm x 5cm. Ofrecemos servicio de colocación respetando las medidas de seguridad en E/S.<br><strong>¡HACEMOS ENVIOS AL INTERIOR!</strong><br/><br>A continuación, indicar la cantidad de tanques.<br/>",
+    images: ["/products/chapas-identificadoras/img1.jpg"],
+    disclaimer:
+      "<strong>(*) LUEGO DE HACER TU PEDIDO</strong> te pedimos la descripción de cada uno detallando: número de tanque, producto y cantidad de litros correspondiente</div>",
   },
   {
     id: "p-2",
-    title: "Repuesto B",
-    price: 350.00,
-    description: "Repuesto de alta calidad",
+    title: "Chapas identificadoras",
+    price: 0.0,
+    description: "De <strong>RECUPERADORAS</strong> para combustibles",
     longDescription:
-      "Repuesto compatible con múltiples modelos. Fabricado con materiales resistentes a la corrosión.",
+      "Chapas de acero de 10cm x 5cm. Ofrecemos servicio de colocación respetando las medidas de seguridad en E/S. <br><strong>¡HACEMOS ENVIOS AL INTERIOR!</strong><br/><br>A continuación, indicar modelo y cantidades.<br/>",
     images: [
-      "https://images.unsplash.com/photo-1582719478186-0a6f9a3b7e81?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=1200&auto=format&fit=crop",
+      "/products/chapas-identificadoras/img2.jpg",
+      "/products/chapas-identificadoras/img3.jpg",
     ],
   },
   {
     id: "p-3",
-    title: "Kit C",
-    price: 780.00,
-    description: "Kit para mantenimiento",
+    title: "Chapas identificadoras",
+    price: 0.0,
+    description: "De <strong>PUESTA A TIERRA</strong> para combustibles",
     longDescription:
-      "Kit completo para mantenimiento periódico, incluye piezas de recambio y lubricantes recomendados.",
-    images: [
-      "https://images.unsplash.com/photo-1580910051072-8c3f5b1a1a0d?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=1200&auto=format&fit=crop",
-    ],
+      "Chapas de acero de 10cm x 5cm. Ofrecemos servicio de colocación respetando las medidas de seguridad en E/S. <br><strong>¡HACEMOS ENVIOS AL INTERIOR!</strong><br/><br>A continuación, indicar cantidades.<br/>",
+    images: ["/products/chapas-identificadoras/img4.jpg"],
   },
   {
     id: "p-4",
-    title: "Servicio D",
-    price: 2200.00,
-    description: "Servicio especializado",
-    longDescription:
-      "Servicio a medida realizado por personal técnico certificado. Incluye garantía y reporte de trabajo.",
+    title: "Pico prolongador",
+    price: 0.0,
+    description: "Para carga de combustible de 1 metro",
+    longDescription: `
+                      <strong>Modelo 11A</strong>: adecuado para pico de vehículos livianos.
+                      <strong>Modelo 11B</strong>: adecuado para picos de alto caudal.<br>
+                      Materiales aptos para uso en áreas clasificadas. Antichispas.
+                      Empuñadura y orejas de goma para su práctica manipulación.
+                      Caño de aluminio. Drenaje con corte a 45°.
+                      Medida: 1 metro.
+                      <strong>¡HACEMOS ENVIOS AL INTERIOR!</strong><br>
+                      A continuación, indicar cantidades.
+                      `.trim(),
+    images: [
+      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=1200&auto=format&fit=crop",
+    ],
+  },
+  {
+    id: "p-5",
+    title: "Pico prolongador",
+    price: 0.0,
+    description: "Modelo 11B, medida especial para batanes",
+    longDescription: `
+                      <strong>Modelo 11B</strong>: adecuado para picos de alto caudal.<br>
+                      Materiales aptos para uso en áreas clasificadas. Antichispas.
+                      Empuñadura y orejas de goma para su práctica manipulación.
+                      Caño de aluminio. Drenaje con corte a 45°.
+                      Medida: 1,5 metros.
+                      <strong>¡HACEMOS ENVIOS AL INTERIOR!</strong><br>
+                      A continuación, indicar cantidades.
+                      `.trim(),
+    images: [
+      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=1200&auto=format&fit=crop",
+    ],
+  },
+  {
+    id: "p-6",
+    title: "Guantes de nitrilo negros",
+    price: 0.0,
+    description: "Para sustancias, por talle",
+    longDescription: `
+                      Guantes de examinación de Nitrilo.
+                      Marca: <strong>POWERCREST</strong>.<br>
+                      1 caja de 1.000 unidades por talle (10 cajas x 100 unidades)<br>
+                      Elegir talles y cantidades.
+                      `.trim(),
     images: [
       "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=1200&auto=format&fit=crop",
@@ -61,7 +100,11 @@ const PRODUCTS = [
 
 export default function Productos() {
   // lightbox ahora guarda el product completo además de index
-  const [lightbox, setLightbox] = useState({ open: false, product: null, index: 0 });
+  const [lightbox, setLightbox] = useState({
+    open: false,
+    product: null,
+    index: 0,
+  });
 
   // abrir la galería para un producto concreto (ProductCard llamará con product, 0)
   function openGallery(product, start = 0) {
@@ -81,7 +124,9 @@ export default function Productos() {
       <section className="max-w-6xl mx-auto px-4 py-8 space-y-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="text-3xl font-title">Nuestros productos</h1>
-          <p className="text-gray-600">Elegí lo que necesitás y envíanos tu pedido por WhatsApp.</p>
+          <p className="text-gray-600">
+            Elegí lo que necesitás y envíanos tu pedido por WhatsApp.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

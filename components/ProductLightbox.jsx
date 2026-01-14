@@ -10,16 +10,23 @@ import { useCart } from "./CartProvider";
  * - onClose: () => void
  * - onIndexChange: (newIndex) => void
  */
-export default function ProductLightbox({ open, product = null, index = 0, onClose, onIndexChange }) {
+export default function ProductLightbox({
+  open,
+  product = null,
+  index = 0,
+  onClose,
+  onIndexChange,
+}) {
   const { addItem } = useCart();
 
   if (!open || !product) return null;
 
-  const images = Array.isArray(product.images) && product.images.length > 0
-    ? product.images
-    : product.image
-    ? [product.image]
-    : [];
+  const images =
+    Array.isArray(product.images) && product.images.length > 0
+      ? product.images
+      : product.image
+      ? [product.image]
+      : [];
 
   const maxIndex = Math.max(0, images.length - 1);
 
@@ -32,7 +39,8 @@ export default function ProductLightbox({ open, product = null, index = 0, onClo
     function onKey(e) {
       if (e.key === "Escape") onClose?.();
       if (e.key === "ArrowLeft") onIndexChange?.(Math.max(0, index - 1));
-      if (e.key === "ArrowRight") onIndexChange?.(Math.min(maxIndex, index + 1));
+      if (e.key === "ArrowRight")
+        onIndexChange?.(Math.min(maxIndex, index + 1));
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -112,16 +120,28 @@ export default function ProductLightbox({ open, product = null, index = 0, onClo
           {/* RIGHT: panel con detalle (poner z mayor para garantizar que esté por encima si hubiese solapamientos) */}
           <aside className="relative z-40 bg-white rounded-md shadow-lg p-4 text-gray-900 overflow-auto max-h-[80vh]">
             <h2 className="text-xl font-semibold mb-2">{product.title}</h2>
-            <div className="text-sm text-gray-600 mb-3">{product.description}</div>
+            <div
+              className="text-sm text-gray-600 mb-3"
+              dangerouslySetInnerHTML={{ __html: product.description }}
+            />
 
             <div className="mb-3">
-              <div className="text-xs text-gray-500">Precio</div>
-              <div className="text-2xl font-bold text-primary">${Number(product.price || 0).toFixed(2)}</div>
+              <div className="text-xs text-gray-500">Precio sin IVA</div>
+              <div className="flex items-baseline gap-2">
+                <div className="text-2xl font-bold text-primary">
+                  ${Number(product.price || 0).toFixed(2)}
+                </div>
+              </div>
             </div>
-
-            <div className="mb-4 text-sm text-gray-700 leading-relaxed">
-              {product.longDescription || product.description || "Sin descripción adicional."}
-            </div>
+            <div
+              className="mb-4 text-sm text-gray-700 leading-relaxed whitespace-pre-line"
+              dangerouslySetInnerHTML={{
+                __html:
+                  product.longDescription ||
+                  product.description ||
+                  "Sin descripción adicional.",
+              }}
+            />
 
             {/* Cantidad + Agregar (NO cierra la lightbox) */}
             <div className="flex items-center gap-3">
@@ -159,6 +179,14 @@ export default function ProductLightbox({ open, product = null, index = 0, onClo
               </button>
             </div>
 
+            {/* NUEVO: Disclaimer condicional */}
+            {product.disclaimer && (
+              <div
+                className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded text-sm text-gray-700"
+                dangerouslySetInnerHTML={{ __html: product.disclaimer }}
+              />
+            )}
+
             {/* Indicador + miniaturas */}
             <div className="mt-4 text-sm text-gray-500">
               {index + 1} / {Math.max(1, images.length)}
@@ -170,10 +198,17 @@ export default function ProductLightbox({ open, product = null, index = 0, onClo
                   <button
                     key={src + i}
                     onClick={() => onIndexChange?.(i)}
-                    className={`border rounded overflow-hidden ${i === index ? "ring-2 ring-primary" : ""}`}
+                    className={`border rounded overflow-hidden ${
+                      i === index ? "ring-2 ring-primary" : ""
+                    }`}
                     aria-label={`Ver imagen ${i + 1}`}
                   >
-                    <img src={src} alt={`Miniatura ${i + 1}`} className="w-full h-16 object-cover" loading="lazy" />
+                    <img
+                      src={src}
+                      alt={`Miniatura ${i + 1}`}
+                      className="w-full h-16 object-cover"
+                      loading="lazy"
+                    />
                   </button>
                 ))}
               </div>
