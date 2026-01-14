@@ -92,8 +92,9 @@ const PRODUCTS = [
                       Elegir talles y cantidades.
                       `.trim(),
     images: [
-      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=1200&auto=format&fit=crop",
+      "/products/guantes-de-nitrilo/img1.jpg",
+      "/products/guantes-de-nitrilo/img2.jpg",
+      "/products/guantes-de-nitrilo/img3.jpg",
     ],
   },
   {
