@@ -96,6 +96,36 @@ const PRODUCTS = [
       "https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=1200&auto=format&fit=crop",
     ],
   },
+  {
+    id: "p-7",
+    title: "Repelente de insectos",
+    price: 0.0,
+    description: "Escudo",
+    longDescription:
+      "Repelente de insectos en aerosol marca <strong>ESCUDO</strong>.<br/>Presentación: 130g.<br/>Ideal para uso personal y ambiental.<br/>A continuación, indicar cantidades.<br/>",
+    images: ["/products/repelentes/img1.jpg", "/products/repelentes/img2.jpg"],
+  },
+  {
+    id: "p-8",
+    title: "Mata moscas y mosquitos",
+    price: 0.0,
+    description: "Escudo",
+    longDescription:
+      "Mata moscas y mosquitos en aerosol marca <strong>ESCUDO</strong>.<br/>Presentación: 220g.<br/>Ideal para uso personal y ambiental.<br/>A continuación, indicar cantidades.<br/>",
+    images: [
+      "/products/insectisidas/img1.jpg",
+      "/products/insectisidas/img2.jpg",
+    ],
+  },
+  {
+    id: "p-9",
+    title: "Aromatizante de ambientes",
+    price: 0.0,
+    description: "Smell Fresh",
+    longDescription:
+      "Aromatizante de ambientes en aerosol marca <strong>SMELL FRESH</strong>.<br/>Presentación: 178g.<br/>Ideal para uso personal y ambiental.<br/>A continuación, indicar cantidades.<br/>",
+    images: ["/products/aromatizante-de-ambientes/img1.jpg"],
+  },
 ];
 
 export default function Productos() {
