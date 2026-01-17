@@ -162,7 +162,7 @@ export default function ProductLightbox({
         {/* Close btn */}
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 z-50 bg-white/10 hover:bg-white/20 rounded-md p-2 text-white"
+          className="absolute top-2 right-2 z-50 bg-white/10 hover:bg-white/20 rounded-md p-2 text-gray"
           aria-label="Cerrar"
         >
           ✕
