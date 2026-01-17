@@ -19,6 +19,7 @@ export default function ProductLightbox({
 }) {
   const { addItem } = useCart();
   const imageContainerRef = useRef(null);
+  const asideRef = useRef(null);
   
   const [qty, setQty] = useState(1);
 
@@ -50,6 +51,49 @@ export default function ProductLightbox({
     }
   }, [open]);
 
+  // Permitir scroll vertical en el panel lateral (mobile)
+  useEffect(() => {
+    if (!open) return;
+    
+    const aside = asideRef.current;
+    if (!aside) return;
+
+    let touchStartY = 0;
+
+    const onTouchStart = (e) => {
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const onTouchMove = (e) => {
+      const aside = asideRef.current;
+      if (!aside) return;
+
+      const scrollTop = aside.scrollTop;
+      const scrollHeight = aside.scrollHeight;
+      const clientHeight = aside.clientHeight;
+      const touchY = e.touches[0].clientY;
+      const deltaY = touchY - touchStartY;
+
+      // Si está en el tope y intenta scroll hacia arriba, bloquear
+      if (scrollTop === 0 && deltaY > 0) {
+        e.preventDefault();
+      }
+      // Si está en el fondo y intenta scroll hacia abajo, bloquear
+      else if (scrollTop + clientHeight >= scrollHeight && deltaY < 0) {
+        e.preventDefault();
+      }
+      // De lo contrario, permitir el scroll del aside
+    };
+
+    aside.addEventListener('touchstart', onTouchStart, { passive: true });
+    aside.addEventListener('touchmove', onTouchMove, { passive: false });
+
+    return () => {
+      aside.removeEventListener('touchstart', onTouchStart);
+      aside.removeEventListener('touchmove', onTouchMove);
+    };
+  }, [open]);
+
   // Reset cantidad cuando cambia el producto
   useEffect(() => {
     if (open && product?.id) {
@@ -71,7 +115,7 @@ export default function ProductLightbox({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, index, maxIndex, onClose, onIndexChange]);
 
-  // Touch/Swipe navigation
+  // Touch/Swipe navigation para imágenes
   useEffect(() => {
     if (!open || images.length <= 1) return;
     
@@ -173,11 +217,7 @@ export default function ProductLightbox({
           {/* LEFT: imagen con swipe */}
           <div
             ref={imageContainerRef}
-            className="relative flex items-center justify-center max-h-[80vh] overflow-hidden bg-transparent rounded-md touch-pan-y"
-            style={{
-              WebkitOverflowScrolling: "touch",
-              touchAction: "pan-y",
-            }}
+            className="relative flex items-center justify-center max-h-[80vh] overflow-hidden bg-transparent rounded-md"
           >
             {cur ? (
               <img
@@ -221,8 +261,15 @@ export default function ProductLightbox({
             )}
           </div>
 
-          {/* RIGHT: panel */}
-          <aside className="relative z-40 bg-white rounded-md shadow-lg p-4 text-gray-900 overflow-auto max-h-[80vh]">
+          {/* RIGHT: panel con scroll vertical habilitado */}
+          <aside 
+            ref={asideRef}
+            className="relative z-40 bg-white rounded-md shadow-lg p-4 text-gray-900 overflow-y-auto overflow-x-hidden max-h-[80vh]"
+            style={{
+              WebkitOverflowScrolling: 'touch',
+              overscrollBehavior: 'contain',
+            }}
+          >
             <h2 className="text-xl font-semibold mb-2">{product.title}</h2>
             <div
               className="text-sm text-gray-600 mb-3"
