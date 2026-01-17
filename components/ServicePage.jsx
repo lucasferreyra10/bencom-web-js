@@ -12,8 +12,10 @@ export default function ServicePage({
   const [openId, setOpenId] = useState(null);
   const [lightbox, setLightbox] = useState({ open: false, images: [], index: 0 });
   const contentRefs = useRef({});
+  const mainGalleryRef = useRef(null);
+  const otherGalleryRef = useRef(null);
 
-  /* ================= GALERÍA PRINCIPAL ================= */
+  /* ================= GALERÍA PRINCIPAL - KEYBOARD ================= */
   useEffect(() => {
     if (!modal.open) {
       document.body.style.overflow = "";
@@ -37,15 +39,73 @@ export default function ServicePage({
     return () => window.removeEventListener("keydown", onKey);
   }, [modal.open]);
 
-  function openGallery(start = 0) {
-    setModal({ open: true, index: start, images });
-  }
+  /* ================= GALERÍA PRINCIPAL - TOUCH/SWIPE ================= */
+  useEffect(() => {
+    if (!modal.open || modal.images.length <= 1) return;
 
-  function closeGallery() {
-    setModal({ open: false, index: 0, images: [] });
-  }
+    const el = mainGalleryRef.current;
+    if (!el) return;
 
-  /* ================= LIGHTBOX OTROS SERVICIOS ================= */
+    const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    if (!isTouch) return;
+
+    let startX = 0;
+    let startY = 0;
+    let isDragging = false;
+
+    const onTouchStart = (e) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      isDragging = true;
+    };
+
+    const onTouchMove = (e) => {
+      if (!isDragging) return;
+      
+      const currentX = e.touches[0].clientX;
+      const currentY = e.touches[0].clientY;
+      const diffX = Math.abs(currentX - startX);
+      const diffY = Math.abs(currentY - startY);
+
+      if (diffX > diffY) {
+        e.preventDefault();
+      }
+    };
+
+    const onTouchEnd = (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+
+      const endX = e.changedTouches[0].clientX;
+      const diffX = startX - endX;
+      const threshold = 50;
+
+      if (Math.abs(diffX) > threshold) {
+        if (diffX > 0) {
+          // Swipe izquierda -> siguiente
+          setModal((m) => ({
+            ...m,
+            index: Math.min(m.images.length - 1, m.index + 1),
+          }));
+        } else {
+          // Swipe derecha -> anterior
+          setModal((m) => ({ ...m, index: Math.max(0, m.index - 1) }));
+        }
+      }
+    };
+
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    el.addEventListener("touchend", onTouchEnd, { passive: true });
+
+    return () => {
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+      el.removeEventListener("touchend", onTouchEnd);
+    };
+  }, [modal.open, modal.images.length, modal.index]);
+
+  /* ================= LIGHTBOX OTROS SERVICIOS - KEYBOARD ================= */
   useEffect(() => {
     if (!lightbox.open) return;
 
@@ -69,6 +129,78 @@ export default function ServicePage({
       window.removeEventListener("keydown", onKey);
     };
   }, [lightbox.open]);
+
+  /* ================= LIGHTBOX OTROS SERVICIOS - TOUCH/SWIPE ================= */
+  useEffect(() => {
+    if (!lightbox.open || lightbox.images.length <= 1) return;
+
+    const el = otherGalleryRef.current;
+    if (!el) return;
+
+    const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    if (!isTouch) return;
+
+    let startX = 0;
+    let startY = 0;
+    let isDragging = false;
+
+    const onTouchStart = (e) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      isDragging = true;
+    };
+
+    const onTouchMove = (e) => {
+      if (!isDragging) return;
+      
+      const currentX = e.touches[0].clientX;
+      const currentY = e.touches[0].clientY;
+      const diffX = Math.abs(currentX - startX);
+      const diffY = Math.abs(currentY - startY);
+
+      if (diffX > diffY) {
+        e.preventDefault();
+      }
+    };
+
+    const onTouchEnd = (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+
+      const endX = e.changedTouches[0].clientX;
+      const diffX = startX - endX;
+      const threshold = 50;
+
+      if (Math.abs(diffX) > threshold) {
+        if (diffX > 0) {
+          setLightbox((m) => ({
+            ...m,
+            index: Math.min(m.images.length - 1, m.index + 1),
+          }));
+        } else {
+          setLightbox((m) => ({ ...m, index: Math.max(0, m.index - 1) }));
+        }
+      }
+    };
+
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    el.addEventListener("touchend", onTouchEnd, { passive: true });
+
+    return () => {
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+      el.removeEventListener("touchend", onTouchEnd);
+    };
+  }, [lightbox.open, lightbox.images.length, lightbox.index]);
+
+  function openGallery(start = 0) {
+    setModal({ open: true, index: start, images });
+  }
+
+  function closeGallery() {
+    setModal({ open: false, index: 0, images: [] });
+  }
 
   function toggle(id) {
     setOpenId((prev) => (prev === id ? null : id));
@@ -97,21 +229,23 @@ export default function ServicePage({
         )}
 
         {/* ================= GALERÍA ================= */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-          {images.map((src, i) => (
-            <button
-              key={src + i}
-              onClick={() => openGallery(i)}
-              className="group relative overflow-hidden rounded-md border bg-gray-50"
-            >
-              <img
-                src={src}
-                alt={`${title} ${i + 1}`}
-                className="w-full h-28 object-cover group-hover:scale-105 transition-transform duration-200"
-              />
-            </button>
-          ))}
-        </div>
+        {images.length > 0 && (
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+            {images.map((src, i) => (
+              <button
+                key={src + i}
+                onClick={() => openGallery(i)}
+                className="group relative overflow-hidden rounded-md border bg-gray-50"
+              >
+                <img
+                  src={src}
+                  alt={`${title} ${i + 1}`}
+                  className="w-full h-28 object-cover group-hover:scale-105 transition-transform duration-200"
+                />
+              </button>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* ================= MODAL PRINCIPAL ================= */}
@@ -121,53 +255,74 @@ export default function ServicePage({
           onClick={closeGallery}
         >
           <div
-            className="relative max-w-4xl w-full max-h-[90vh]"
+            ref={mainGalleryRef}
+            className="relative max-w-4xl w-full max-h-[90vh] touch-pan-y"
             onClick={(e) => e.stopPropagation()}
+            style={{
+              WebkitOverflowScrolling: "touch",
+              touchAction: "pan-y",
+            }}
           >
             {/* Cerrar */}
             <button
               onClick={closeGallery}
               className="absolute top-4 right-4 text-white text-2xl bg-black/40 px-3 py-1 rounded-md hover:bg-black/70 z-50"
+              aria-label="Cerrar galería"
             >
               ✕
             </button>
 
             {/* Flecha izquierda */}
-            <button
-              onClick={() =>
-                setModal((m) => ({ ...m, index: Math.max(0, m.index - 1) }))
-              }
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl bg-black/40 px-3 py-1 rounded-full hover:bg-black/70 z-50"
-            >
-              ‹
-            </button>
+            {modal.images.length > 1 && (
+              <button
+                onClick={() =>
+                  setModal((m) => ({ ...m, index: Math.max(0, m.index - 1) }))
+                }
+                className={`absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl bg-black/40 px-3 py-1 rounded-full hover:bg-black/70 z-50 transition-opacity ${
+                  modal.index === 0 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                disabled={modal.index === 0}
+                aria-label="Imagen anterior"
+              >
+                ‹
+              </button>
+            )}
 
             {/* Imagen */}
             <div className="flex items-center justify-center h-full">
               <img
                 src={modal.images[modal.index]}
-                alt=""
-                className="max-h-[85vh] max-w-full object-contain rounded-md"
+                alt={`${title} imagen ${modal.index + 1}`}
+                className="max-h-[85vh] max-w-full object-contain rounded-md select-none"
+                draggable="false"
               />
             </div>
 
             {/* Flecha derecha */}
-            <button
-              onClick={() =>
-                setModal((m) => ({
-                  ...m,
-                  index: Math.min(m.images.length - 1, m.index + 1),
-                }))
-              }
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl bg-black/40 px-3 py-1 rounded-full hover:bg-black/70 z-50"
-            >
-              ›
-            </button>
+            {modal.images.length > 1 && (
+              <button
+                onClick={() =>
+                  setModal((m) => ({
+                    ...m,
+                    index: Math.min(m.images.length - 1, m.index + 1),
+                  }))
+                }
+                className={`absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl bg-black/40 px-3 py-1 rounded-full hover:bg-black/70 z-50 transition-opacity ${
+                  modal.index === modal.images.length - 1 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                disabled={modal.index === modal.images.length - 1}
+                aria-label="Imagen siguiente"
+              >
+                ›
+              </button>
+            )}
 
             {/* Contador */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm bg-black/60 px-3 py-1 rounded-full">
-              {modal.index + 1} / {modal.images.length}
-            </div>
+            {modal.images.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm bg-black/60 px-3 py-1 rounded-full">
+                {modal.index + 1} / {modal.images.length}
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -184,13 +339,13 @@ export default function ServicePage({
                 <div key={s.id} className="border rounded-md overflow-hidden">
                   <button
                     onClick={() => toggle(s.id)}
-                    className="w-full px-4 py-3 flex justify-between items-center"
+                    className="w-full px-4 py-3 flex justify-between items-center hover:bg-gray-50 transition"
                   >
                     <div className="text-left">
                       <div className="font-medium">{s.title}</div>
                       <div className="text-sm text-gray-500">{s.description}</div>
                     </div>
-                    <span>{isOpen ? "▲" : "▼"}</span>
+                    <span className="text-gray-400">{isOpen ? "▲" : "▼"}</span>
                   </button>
 
                   <div
@@ -203,22 +358,34 @@ export default function ServicePage({
                     }}
                   >
                     <div className="px-4 pb-4 space-y-4">
-                      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {s.list.map((i) => (
-                          <li key={i}>• {i}</li>
-                        ))}
-                      </ul>
+                      {s.list && s.list.length > 0 && (
+                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-gray-700">
+                          {s.list.map((i) => (
+                            <li key={i} className="flex items-start gap-2">
+                              <span className="inline-block w-2 h-2 bg-secondary rounded-full mt-2" />
+                              <span>{i}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
 
-                      <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                        {s.images.map((img, i) => (
-                          <img
-                            key={img + i}
-                            src={img}
-                            onClick={() => openImageGallery(s.images, i)}
-                            className="h-28 w-full object-cover cursor-pointer rounded-md"
-                          />
-                        ))}
-                      </div>
+                      {s.images && s.images.length > 0 && (
+                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                          {s.images.map((img, i) => (
+                            <button
+                              key={img + i}
+                              onClick={() => openImageGallery(s.images, i)}
+                              className="group relative overflow-hidden rounded-md border bg-gray-50"
+                            >
+                              <img
+                                src={img}
+                                alt={`${s.title} ${i + 1}`}
+                                className="h-28 w-full object-cover group-hover:scale-105 transition-transform duration-200"
+                              />
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -231,49 +398,78 @@ export default function ServicePage({
       {/* ================= LIGHTBOX OTROS SERVICIOS ================= */}
       {lightbox.open && (
         <div
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
           onClick={() => setLightbox({ ...lightbox, open: false })}
         >
           <div
-            className="relative max-w-4xl w-full"
+            ref={otherGalleryRef}
+            className="relative max-w-4xl w-full touch-pan-y"
             onClick={(e) => e.stopPropagation()}
+            style={{
+              WebkitOverflowScrolling: "touch",
+              touchAction: "pan-y",
+            }}
           >
+            {/* Cerrar */}
             <button
               onClick={() => setLightbox({ ...lightbox, open: false })}
-              className="absolute top-4 right-4 text-white text-2xl bg-black/40 px-3 py-1 rounded-md z-50"
+              className="absolute top-4 right-4 text-white text-2xl bg-black/40 px-3 py-1 rounded-md hover:bg-black/70 z-50"
+              aria-label="Cerrar galería"
             >
               ✕
             </button>
 
-            <button
-              onClick={() =>
-                setLightbox((m) => ({ ...m, index: Math.max(0, m.index - 1) }))
-              }
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl bg-black/40 px-3 py-1 rounded-full z-50"
-            >
-              ‹
-            </button>
+            {/* Flecha izquierda */}
+            {lightbox.images.length > 1 && (
+              <button
+                onClick={() =>
+                  setLightbox((m) => ({ ...m, index: Math.max(0, m.index - 1) }))
+                }
+                className={`absolute left-4 top-1/2 -translate-y-1/2 text-white text-4xl bg-black/40 px-3 py-1 rounded-full hover:bg-black/70 z-50 transition-opacity ${
+                  lightbox.index === 0 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                disabled={lightbox.index === 0}
+                aria-label="Imagen anterior"
+              >
+                ‹
+              </button>
+            )}
 
-            <img
-              src={lightbox.images[lightbox.index]}
-              className="max-h-[85vh] mx-auto object-contain rounded-md"
-            />
-
-            <button
-              onClick={() =>
-                setLightbox((m) => ({
-                  ...m,
-                  index: Math.min(m.images.length - 1, m.index + 1),
-                }))
-              }
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl bg-black/40 px-3 py-1 rounded-full z-50"
-            >
-              ›
-            </button>
-
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm bg-black/60 px-3 py-1 rounded-full">
-              {lightbox.index + 1} / {lightbox.images.length}
+            {/* Imagen */}
+            <div className="flex items-center justify-center h-full">
+              <img
+                src={lightbox.images[lightbox.index]}
+                alt={`Imagen ${lightbox.index + 1}`}
+                className="max-h-[85vh] mx-auto object-contain rounded-md select-none"
+                draggable="false"
+              />
             </div>
+
+            {/* Flecha derecha */}
+            {lightbox.images.length > 1 && (
+              <button
+                onClick={() =>
+                  setLightbox((m) => ({
+                    ...m,
+                    index: Math.min(m.images.length - 1, m.index + 1),
+                  }))
+                }
+                className={`absolute right-4 top-1/2 -translate-y-1/2 text-white text-4xl bg-black/40 px-3 py-1 rounded-full hover:bg-black/70 z-50 transition-opacity ${
+                  lightbox.index === lightbox.images.length - 1 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                disabled={lightbox.index === lightbox.images.length - 1}
+                aria-label="Imagen siguiente"
+              >
+                ›
+              </button>
+            )}
+
+            {/* Contador */}
+            {lightbox.images.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm bg-black/60 px-3 py-1 rounded-full">
+                {lightbox.index + 1} / {lightbox.images.length}
+              </div>
+            )}
           </div>
         </div>
       )}
