@@ -20,7 +20,6 @@ export default function ProductLightbox({
   const { addItem } = useCart();
   const imageContainerRef = useRef(null);
   
-  // TODOS LOS HOOKS DEBEN IR ANTES DE CUALQUIER RETURN CONDICIONAL
   const [qty, setQty] = useState(1);
 
   const images =
@@ -32,6 +31,25 @@ export default function ProductLightbox({
 
   const maxIndex = Math.max(0, images.length - 1);
 
+  // Bloquear scroll del body cuando el lightbox está abierto
+  useEffect(() => {
+    if (open) {
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+      
+      return () => {
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [open]);
+
   // Reset cantidad cuando cambia el producto
   useEffect(() => {
     if (open && product?.id) {
@@ -39,7 +57,7 @@ export default function ProductLightbox({
     }
   }, [product?.id, open]);
 
-  // keyboard navigation
+  // Keyboard navigation
   useEffect(() => {
     if (!open) return;
     
@@ -53,7 +71,7 @@ export default function ProductLightbox({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, index, maxIndex, onClose, onIndexChange]);
 
-  // TOUCH/SWIPE navigation
+  // Touch/Swipe navigation
   useEffect(() => {
     if (!open || images.length <= 1) return;
     
@@ -114,7 +132,6 @@ export default function ProductLightbox({
     };
   }, [open, images.length, index, maxIndex, onIndexChange]);
 
-  // AHORA SÍ PODEMOS HACER EL EARLY RETURN
   if (!open || !product) return null;
 
   function changeQty(v) {
@@ -145,7 +162,7 @@ export default function ProductLightbox({
         {/* Close btn */}
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 z-50 bg-white/10 hover:bg-white/20 rounded-md p-2 text-gray"
+          className="absolute top-2 right-2 z-50 bg-white/10 hover:bg-white/20 rounded-md p-2 text-white"
           aria-label="Cerrar"
         >
           ✕
