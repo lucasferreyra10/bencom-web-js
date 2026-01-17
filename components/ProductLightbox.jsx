@@ -19,7 +19,6 @@ export default function ProductLightbox({
 }) {
   const { addItem } = useCart();
   const imageContainerRef = useRef(null);
-  const asideRef = useRef(null);
   
   const [qty, setQty] = useState(1);
 
@@ -32,66 +31,23 @@ export default function ProductLightbox({
 
   const maxIndex = Math.max(0, images.length - 1);
 
-  // Bloquear scroll del body cuando el lightbox está abierto
+  // Bloquear scroll del body (versión simplificada)
   useEffect(() => {
     if (open) {
+      // Guardar el scroll actual
       const scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
+      
+      // Agregar clase al body para bloquear scroll
       document.body.style.overflow = 'hidden';
+      document.body.style.height = '100vh';
       
       return () => {
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
+        // Restaurar
         document.body.style.overflow = '';
+        document.body.style.height = '';
         window.scrollTo(0, scrollY);
       };
     }
-  }, [open]);
-
-  // Permitir scroll vertical en el panel lateral (mobile)
-  useEffect(() => {
-    if (!open) return;
-    
-    const aside = asideRef.current;
-    if (!aside) return;
-
-    let touchStartY = 0;
-
-    const onTouchStart = (e) => {
-      touchStartY = e.touches[0].clientY;
-    };
-
-    const onTouchMove = (e) => {
-      const aside = asideRef.current;
-      if (!aside) return;
-
-      const scrollTop = aside.scrollTop;
-      const scrollHeight = aside.scrollHeight;
-      const clientHeight = aside.clientHeight;
-      const touchY = e.touches[0].clientY;
-      const deltaY = touchY - touchStartY;
-
-      // Si está en el tope y intenta scroll hacia arriba, bloquear
-      if (scrollTop === 0 && deltaY > 0) {
-        e.preventDefault();
-      }
-      // Si está en el fondo y intenta scroll hacia abajo, bloquear
-      else if (scrollTop + clientHeight >= scrollHeight && deltaY < 0) {
-        e.preventDefault();
-      }
-      // De lo contrario, permitir el scroll del aside
-    };
-
-    aside.addEventListener('touchstart', onTouchStart, { passive: true });
-    aside.addEventListener('touchmove', onTouchMove, { passive: false });
-
-    return () => {
-      aside.removeEventListener('touchstart', onTouchStart);
-      aside.removeEventListener('touchmove', onTouchMove);
-    };
   }, [open]);
 
   // Reset cantidad cuando cambia el producto
@@ -143,7 +99,8 @@ export default function ProductLightbox({
       const diffX = Math.abs(currentX - startX);
       const diffY = Math.abs(currentY - startY);
 
-      if (diffX > diffY) {
+      // Solo prevenir si el swipe es más horizontal que vertical
+      if (diffX > diffY && diffX > 10) {
         e.preventDefault();
       }
     };
@@ -193,182 +150,180 @@ export default function ProductLightbox({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4"
+      className="fixed inset-0 z-50 bg-black bg-opacity-70 overflow-hidden"
       role="dialog"
       aria-modal="true"
       aria-label={`Galería de ${product.title || "producto"}`}
       onClick={onClose}
     >
-      <div
-        className="relative w-full max-w-6xl max-h-[90vh] bg-transparent"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Close btn */}
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-2 z-50 bg-white/10 hover:bg-white/20 rounded-md p-2 text-white"
-          aria-label="Cerrar"
+      {/* Contenedor principal scrolleable */}
+      <div className="h-full w-full overflow-y-auto overflow-x-hidden p-4">
+        <div
+          className="min-h-full flex items-center justify-center"
+          onClick={(e) => e.stopPropagation()}
         >
-          ✕
-        </button>
+          <div className="relative w-full max-w-6xl my-8">
+            {/* Close btn */}
+            <button
+              onClick={onClose}
+              className="absolute -top-10 right-0 md:top-2 md:right-2 text-white text-2xl bg-black/40 px-3 py-1 rounded-md hover:bg-black/70 z-50"
+              aria-label="Cerrar"
+            >
+              ✕
+            </button>
 
-        {/* Content area */}
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_360px] gap-4 items-start">
-          {/* LEFT: imagen con swipe */}
-          <div
-            ref={imageContainerRef}
-            className="relative flex items-center justify-center max-h-[80vh] overflow-hidden bg-transparent rounded-md"
-          >
-            {cur ? (
-              <img
-                src={cur}
-                alt={`${product.title || "Producto"} imagen ${index + 1}`}
-                className="max-h-[80vh] w-auto max-w-full rounded-md shadow-lg select-none"
-                loading="lazy"
-                draggable="false"
-              />
-            ) : (
-              <div className="w-full h-64 flex items-center justify-center bg-gray-100 text-gray-500 rounded-md">
-                Sin imagen
-              </div>
-            )}
-
-            {/* Flechas */}
-            {images.length > 1 && (
-              <>
-                <button
-                  onClick={() => onIndexChange?.(Math.max(0, index - 1))}
-                  className={`absolute left-2 top-1/2 -translate-y-1/2 z-30 bg-white/10 hover:bg-white/20 rounded-full p-2 text-white transition-opacity ${
-                    index === 0 ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                  aria-label="Anterior"
-                  disabled={index === 0}
-                >
-                  ‹
-                </button>
-
-                <button
-                  onClick={() => onIndexChange?.(Math.min(maxIndex, index + 1))}
-                  className={`absolute right-2 top-1/2 -translate-y-1/2 z-30 bg-white/10 hover:bg-white/20 rounded-full p-2 text-white transition-opacity ${
-                    index === maxIndex ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                  aria-label="Siguiente"
-                  disabled={index === maxIndex}
-                >
-                  ›
-                </button>
-              </>
-            )}
-          </div>
-
-          {/* RIGHT: panel con scroll vertical habilitado */}
-          <aside 
-            ref={asideRef}
-            className="relative z-40 bg-white rounded-md shadow-lg p-4 text-gray-900 overflow-y-auto overflow-x-hidden max-h-[80vh]"
-            style={{
-              WebkitOverflowScrolling: 'touch',
-              overscrollBehavior: 'contain',
-            }}
-          >
-            <h2 className="text-xl font-semibold mb-2">{product.title}</h2>
-            <div
-              className="text-sm text-gray-600 mb-3"
-              dangerouslySetInnerHTML={{ __html: product.description }}
-            />
-
-            <div className="mb-3">
-              <div className="text-xs text-gray-500">Precio sin IVA</div>
-              <div className="flex items-baseline gap-2">
-                <div className="text-2xl font-bold text-primary">
-                  ${Number(product.price || 0).toFixed(2)}
-                </div>
-              </div>
-            </div>
-            
-            <div
-              className="mb-4 text-sm text-gray-700 leading-relaxed"
-              dangerouslySetInnerHTML={{
-                __html:
-                  product.longDescription ||
-                  product.description ||
-                  "Sin descripción adicional.",
-              }}
-            />
-
-            {/* Cantidad + Agregar */}
-            <div className="flex items-center gap-3">
-              <div className="flex items-center border rounded">
-                <button
-                  onClick={() => changeQty(Math.max(1, qty - 1))}
-                  className="px-3 py-2 text-sm"
-                  aria-label="Disminuir cantidad"
-                >
-                  -
-                </button>
-                <input
-                  aria-label="Cantidad"
-                  className="w-16 text-center px-2 py-2 text-sm"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  value={String(qty)}
-                  onChange={(e) => changeQty(e.target.value)}
-                />
-                <button
-                  onClick={() => changeQty(qty + 1)}
-                  className="px-3 py-2 text-sm"
-                  aria-label="Aumentar cantidad"
-                >
-                  +
-                </button>
-              </div>
-
-              <button
-                onClick={addToCartKeepOpen}
-                className="ml-auto px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                aria-label={`Agregar ${product.title} al carrito`}
-              >
-                Agregar ({qty})
-              </button>
-            </div>
-
-            {/* Disclaimer */}
-            {product.disclaimer && (
+            {/* Content area */}
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_360px] gap-4 items-start">
+              {/* LEFT: imagen con swipe */}
               <div
-                className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded text-sm text-gray-700"
-                dangerouslySetInnerHTML={{ __html: product.disclaimer }}
-              />
-            )}
+                ref={imageContainerRef}
+                className="relative flex items-center justify-center min-h-[300px] md:min-h-[500px] bg-transparent rounded-md"
+              >
+                {cur ? (
+                  <img
+                    src={cur}
+                    alt={`${product.title || "Producto"} imagen ${index + 1}`}
+                    className="max-h-[70vh] w-auto max-w-full rounded-md shadow-lg select-none"
+                    loading="lazy"
+                    draggable="false"
+                  />
+                ) : (
+                  <div className="w-full h-64 flex items-center justify-center bg-gray-100 text-gray-500 rounded-md">
+                    Sin imagen
+                  </div>
+                )}
 
-            {/* Indicador */}
-            {images.length > 1 && (
-              <div className="mt-4 text-sm text-gray-500">
-                {index + 1} / {images.length}
+                {/* Flechas */}
+                {images.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => onIndexChange?.(Math.max(0, index - 1))}
+                      className={`absolute left-2 top-1/2 -translate-y-1/2 z-30 bg-white/20 hover:bg-white/30 rounded-full w-10 h-10 flex items-center justify-center text-white text-2xl transition-opacity ${
+                        index === 0 ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
+                      aria-label="Anterior"
+                      disabled={index === 0}
+                    >
+                      ‹
+                    </button>
+
+                    <button
+                      onClick={() => onIndexChange?.(Math.min(maxIndex, index + 1))}
+                      className={`absolute right-2 top-1/2 -translate-y-1/2 z-30 bg-white/20 hover:bg-white/30 rounded-full w-10 h-10 flex items-center justify-center text-white text-2xl transition-opacity ${
+                        index === maxIndex ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
+                      aria-label="Siguiente"
+                      disabled={index === maxIndex}
+                    >
+                      ›
+                    </button>
+                  </>
+                )}
               </div>
-            )}
 
-            {/* Miniaturas */}
-            {images.length > 1 && (
-              <div className="mt-3 grid grid-cols-5 gap-2">
-                {images.map((src, i) => (
-                  <button
-                    key={src + i}
-                    onClick={() => onIndexChange?.(i)}
-                    className={`border rounded overflow-hidden ${
-                      i === index ? "ring-2 ring-primary" : ""
-                    }`}
-                    aria-label={`Ver imagen ${i + 1}`}
-                  >
-                    <img
-                      src={src}
-                      alt={`Miniatura ${i + 1}`}
-                      className="w-full h-16 object-cover"
-                      loading="lazy"
+              {/* RIGHT: panel */}
+              <aside className="bg-white rounded-md shadow-lg p-4 text-gray-900">
+                <h2 className="text-xl font-semibold mb-2">{product.title}</h2>
+                <div
+                  className="text-sm text-gray-600 mb-3"
+                  dangerouslySetInnerHTML={{ __html: product.description }}
+                />
+
+                <div className="mb-3">
+                  <div className="text-xs text-gray-500">Precio sin IVA</div>
+                  <div className="flex items-baseline gap-2">
+                    <div className="text-2xl font-bold text-primary">
+                      ${Number(product.price || 0).toFixed(2)}
+                    </div>
+                  </div>
+                </div>
+                
+                <div
+                  className="mb-4 text-sm text-gray-700 leading-relaxed"
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      product.longDescription ||
+                      product.description ||
+                      "Sin descripción adicional.",
+                  }}
+                />
+
+                {/* Cantidad + Agregar */}
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center border rounded">
+                    <button
+                      onClick={() => changeQty(Math.max(1, qty - 1))}
+                      className="px-3 py-2 text-sm"
+                      aria-label="Disminuir cantidad"
+                    >
+                      -
+                    </button>
+                    <input
+                      aria-label="Cantidad"
+                      className="w-16 text-center px-2 py-2 text-sm"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      value={String(qty)}
+                      onChange={(e) => changeQty(e.target.value)}
                     />
+                    <button
+                      onClick={() => changeQty(qty + 1)}
+                      className="px-3 py-2 text-sm"
+                      aria-label="Aumentar cantidad"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  <button
+                    onClick={addToCartKeepOpen}
+                    className="ml-auto px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                    aria-label={`Agregar ${product.title} al carrito`}
+                  >
+                    Agregar ({qty})
                   </button>
-                ))}
-              </div>
-            )}
-          </aside>
+                </div>
+
+                {/* Disclaimer */}
+                {product.disclaimer && (
+                  <div
+                    className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded text-sm text-gray-700"
+                    dangerouslySetInnerHTML={{ __html: product.disclaimer }}
+                  />
+                )}
+
+                {/* Indicador */}
+                {images.length > 1 && (
+                  <div className="mt-4 text-sm text-gray-500">
+                    {index + 1} / {images.length}
+                  </div>
+                )}
+
+                {/* Miniaturas */}
+                {images.length > 1 && (
+                  <div className="mt-3 grid grid-cols-5 gap-2">
+                    {images.map((src, i) => (
+                      <button
+                        key={src + i}
+                        onClick={() => onIndexChange?.(i)}
+                        className={`border rounded overflow-hidden ${
+                          i === index ? "ring-2 ring-primary" : ""
+                        }`}
+                        aria-label={`Ver imagen ${i + 1}`}
+                      >
+                        <img
+                          src={src}
+                          alt={`Miniatura ${i + 1}`}
+                          className="w-full h-16 object-cover"
+                          loading="lazy"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </aside>
+            </div>
+          </div>
         </div>
       </div>
     </div>
