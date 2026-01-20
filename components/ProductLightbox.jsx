@@ -5,7 +5,7 @@ import { useCart } from "./CartProvider";
 /**
  * ProductLightbox
  * - open: boolean
- * - product: object { id, title, description, longDescription, price, images: [], disclaimer }
+ * - product: object { id, title, description, longDescription, price, images: [], disclaimer, variants: [] }
  * - index: number
  * - onClose: () => void
  * - onIndexChange: (newIndex) => void
@@ -21,6 +21,8 @@ export default function ProductLightbox({
   const imageContainerRef = useRef(null);
   
   const [qty, setQty] = useState(1);
+  // NUEVO: Estado para manejar cantidades por variante
+  const [variantQty, setVariantQty] = useState({});
 
   const images =
     Array.isArray(product?.images) && product.images.length > 0
@@ -30,6 +32,9 @@ export default function ProductLightbox({
       : [];
 
   const maxIndex = Math.max(0, images.length - 1);
+  
+  // Verificar si el producto tiene variantes
+  const hasVariants = product?.variants && product.variants.length > 0;
 
   // Bloquear scroll del body
   useEffect(() => {
@@ -54,8 +59,16 @@ export default function ProductLightbox({
   useEffect(() => {
     if (open && product?.id) {
       setQty(1);
+      // Inicializar cantidades de variantes en 0
+      if (hasVariants) {
+        const initialQty = {};
+        product.variants.forEach(v => {
+          initialQty[v.id] = 0;
+        });
+        setVariantQty(initialQty);
+      }
     }
-  }, [product?.id, open]);
+  }, [product?.id, open, hasVariants]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -140,10 +153,42 @@ export default function ProductLightbox({
     setQty(Math.max(1, Math.floor(n)));
   }
 
-  function addToCartKeepOpen() {
-    const itemToAdd = { ...product, quantity: qty };
-    addItem(itemToAdd);
+  function changeVariantQty(variantId, v) {
+    const n = Number(v);
+    if (Number.isNaN(n)) return;
+    setVariantQty(prev => ({
+      ...prev,
+      [variantId]: Math.max(0, Math.floor(n))
+    }));
   }
+
+  function addToCartKeepOpen() {
+    if (hasVariants) {
+      // Agregar cada variante con cantidad > 0
+      product.variants.forEach(variant => {
+        const quantity = variantQty[variant.id] || 0;
+        if (quantity > 0) {
+          const itemToAdd = {
+            ...product,
+            id: `${product.id}-${variant.id}`, // ID único por variante
+            title: `${product.title} - ${variant.label}`,
+            variant: variant.label,
+            quantity: quantity
+          };
+          addItem(itemToAdd);
+        }
+      });
+    } else {
+      // Producto normal sin variantes
+      const itemToAdd = { ...product, quantity: qty };
+      addItem(itemToAdd);
+    }
+  }
+
+  // Calcular total de items para productos con variantes
+  const totalVariantItems = hasVariants 
+    ? Object.values(variantQty).reduce((sum, q) => sum + q, 0)
+    : 0;
 
   const cur = images[index] ?? "";
 
@@ -251,41 +296,89 @@ export default function ProductLightbox({
                 }}
               />
 
-              {/* Cantidad + Agregar */}
-              <div className="flex items-center gap-3">
-                <div className="flex items-center border rounded">
+              {/* Cantidad - Con variantes o sin variantes */}
+              {hasVariants ? (
+                // Productos CON VARIANTES (guantes): Selectores verticales + botón debajo
+                <>
+                  <div className="mb-3 space-y-3">
+                    {product.variants.map((variant) => (
+                      <div key={variant.id} className="flex items-center justify-between border rounded p-2">
+                        <span className="text-sm font-medium">{variant.label}</span>
+                        <div className="flex items-center border rounded">
+                          <button
+                            onClick={() => changeVariantQty(variant.id, Math.max(0, (variantQty[variant.id] || 0) - 1))}
+                            className="px-3 py-1 text-sm"
+                            aria-label={`Disminuir ${variant.label}`}
+                          >
+                            -
+                          </button>
+                          <input
+                            aria-label={`Cantidad ${variant.label}`}
+                            className="w-16 text-center px-2 py-1 text-sm"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            value={String(variantQty[variant.id] || 0)}
+                            onChange={(e) => changeVariantQty(variant.id, e.target.value)}
+                          />
+                          <button
+                            onClick={() => changeVariantQty(variant.id, (variantQty[variant.id] || 0) + 1)}
+                            className="px-3 py-1 text-sm"
+                            aria-label={`Aumentar ${variant.label}`}
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Botón Agregar DEBAJO para productos con variantes */}
                   <button
-                    onClick={() => changeQty(Math.max(1, qty - 1))}
-                    className="px-3 py-2 text-sm"
-                    aria-label="Disminuir cantidad"
+                    onClick={addToCartKeepOpen}
+                    className="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    aria-label={`Agregar ${product.title} al carrito`}
+                    disabled={totalVariantItems === 0}
                   >
-                    -
+                    Agregar ({totalVariantItems})
                   </button>
-                  <input
-                    aria-label="Cantidad"
-                    className="w-16 text-center px-2 py-2 text-sm"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    value={String(qty)}
-                    onChange={(e) => changeQty(e.target.value)}
-                  />
+                </>
+              ) : (
+                // Productos SIN VARIANTES: Cantidad + Botón en línea
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center border rounded">
+                    <button
+                      onClick={() => changeQty(Math.max(1, qty - 1))}
+                      className="px-3 py-2 text-sm"
+                      aria-label="Disminuir cantidad"
+                    >
+                      -
+                    </button>
+                    <input
+                      aria-label="Cantidad"
+                      className="w-16 text-center px-2 py-2 text-sm"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      value={String(qty)}
+                      onChange={(e) => changeQty(e.target.value)}
+                    />
+                    <button
+                      onClick={() => changeQty(qty + 1)}
+                      className="px-3 py-2 text-sm"
+                      aria-label="Aumentar cantidad"
+                    >
+                      +
+                    </button>
+                  </div>
+
                   <button
-                    onClick={() => changeQty(qty + 1)}
-                    className="px-3 py-2 text-sm"
-                    aria-label="Aumentar cantidad"
+                    onClick={addToCartKeepOpen}
+                    className="ml-auto px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                    aria-label={`Agregar ${product.title} al carrito`}
                   >
-                    +
+                    Agregar ({qty})
                   </button>
                 </div>
-
-                <button
-                  onClick={addToCartKeepOpen}
-                  className="ml-auto px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                  aria-label={`Agregar ${product.title} al carrito`}
-                >
-                  Agregar ({qty})
-                </button>
-              </div>
+              )}
 
               {/* Disclaimer */}
               {product.disclaimer && (

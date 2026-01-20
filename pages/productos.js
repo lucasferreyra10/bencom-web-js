@@ -86,15 +86,21 @@ const PRODUCTS = [
     price: 0.0,
     description: "Para sustancias, por talle",
     longDescription: `
-                      Guantes de examinación de Nitrilo.
-                      Marca: <strong>POWERCREST</strong>.<br>
-                      1 caja de 1.000 unidades por talle (10 cajas x 100 unidades)<br>
-                      Elegir talles y cantidades.
-                      `.trim(),
+    Guantes de examinación de Nitrilo.
+    Marca: <strong>POWERCREST</strong>.<br>
+    1 caja de 1.000 unidades por talle (10 cajas x 100 unidades)<br>
+    Elegir talles y cantidades.
+  `.trim(),
     images: [
       "/products/guantes-de-nitrilo/img1.jpg",
       "/products/guantes-de-nitrilo/img2.jpg",
       "/products/guantes-de-nitrilo/img3.jpg",
+    ],
+    // NUEVO: campo variants para productos con talles/variantes
+    variants: [
+      { id: "talle-s", label: "Talle S" },
+      { id: "talle-m", label: "Talle M" },
+      { id: "talle-l", label: "Talle L" },
     ],
   },
   {
