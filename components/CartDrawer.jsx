@@ -2,13 +2,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useCart } from "./CartProvider";
 import { useRouter } from "next/router";
-import { waLink } from "../lib/wa"; // helper centralizado para links de WhatsApp
+import { waLink } from "../lib/wa";
 
-/**
- * Floating control:
- * - On /productos -> show Cart button + Drawer
- * - Else -> show WhatsApp button linking to company WA (via waLink())
- */
 export default function CartDrawer() {
   const router = useRouter();
   const isProducts =
@@ -18,25 +13,19 @@ export default function CartDrawer() {
   const { cart, updateQty, removeItem, clearCart, getTotal, getCount } =
     useCart();
 
-  // Shared state
-  const [open, setOpen] = useState(false); // drawer open
+  const [open, setOpen] = useState(false);
   const [customer, setCustomer] = useState({ name: "", email: "" });
   const [mounted, setMounted] = useState(false);
-
-  // qty inputs local map
   const [qtyInput, setQtyInput] = useState({});
 
-  // floating button positioning
   const buttonRef = useRef(null);
   const rafRef = useRef(null);
   const [bottomOffset, setBottomOffset] = useState(24);
 
-  // mounted guard (avoid hydration mismatch)
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // sync qtyInput when cart changes
   useEffect(() => {
     const map = {};
     (cart.items || []).forEach((it) => {
@@ -45,7 +34,6 @@ export default function CartDrawer() {
     setQtyInput((prev) => ({ ...map, ...prev }));
   }, [cart.items]);
 
-  // body class when drawer open (only relevant for drawer usage)
   useEffect(() => {
     const body = document.body;
     if (open) {
@@ -62,7 +50,6 @@ export default function CartDrawer() {
     };
   }, [open]);
 
-  // compute bottomOffset so button never overlaps footer
   useEffect(() => {
     function update() {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
@@ -77,7 +64,7 @@ export default function CartDrawer() {
         const overlap = Math.max(0, window.innerHeight - footerRect.top);
         const newBottom = overlap > 0 ? overlap + spacing : spacing;
         setBottomOffset((current) =>
-          Math.abs(current - newBottom) > 1 ? newBottom : current
+          Math.abs(current - newBottom) > 1 ? newBottom : current,
         );
       });
     }
@@ -100,7 +87,6 @@ export default function CartDrawer() {
     };
   }, []);
 
-  // Build text for WhatsApp from cart (used in drawer on /productos)
   const website = process.env.NEXT_PUBLIC_WEBSITE_URL || "";
   function buildWhatsappText() {
     const lines = [];
@@ -110,11 +96,23 @@ export default function CartDrawer() {
     lines.push("");
     lines.push("Productos:");
     cart.items.forEach((it) => {
-      lines.push(
-        `- ${it.title} x${it.quantity} — $${(
-          (Number(it.price) || 0) * Number(it.quantity)
-        ).toFixed(2)}`
-      );
+      // Título y cantidad
+      const itemLine = `- ${it.title} x${it.quantity}`;
+
+      // Agregar descripción si existe (limpiando HTML)
+      const desc = it.description ? stripHTML(it.description) : "";
+
+      // Precio
+      const price = `$${((Number(it.price) || 0) * Number(it.quantity)).toFixed(2)}`;
+
+      // Armar la línea completa
+      if (desc) {
+        lines.push(`${itemLine}`);
+        lines.push(`  (${desc})`);
+        lines.push(`  Subtotal: ${price}`);
+      } else {
+        lines.push(`${itemLine} — ${price}`);
+      }
     });
     lines.push("");
     lines.push(`Total: $${getTotal().toFixed(2)}`);
@@ -125,18 +123,16 @@ export default function CartDrawer() {
     return lines.join("\n");
   }
 
-  // Use waLink helper to build full wa.me URL (handles normalizing number)
   function openWhatsappWithCart() {
     if (!cart.items || !cart.items.length) {
       alert("El carrito está vacío.");
       return;
     }
     const text = buildWhatsappText();
-    const url = waLink(null, text); // waLink builds https://wa.me/<digits>?text=...
+    const url = waLink(null, text);
     window.open(url, "_blank");
   }
 
-  // quantity handlers
   function handleQtyInputChange(id, value) {
     const cleaned = value.replace(/[^\d]/g, "");
     setQtyInput((s) => ({ ...s, [id]: cleaned }));
@@ -169,7 +165,28 @@ export default function CartDrawer() {
     setQtyInput((s) => ({ ...s, [it.id]: String(next) }));
   }
 
-  // Render floating button - behavior depends on route
+  // Helper para obtener la imagen del producto
+  function getProductImage(item) {
+    // Si tiene array de images, tomar la primera
+    if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+      return item.images[0];
+    }
+    // Si tiene image directo
+    if (item.image) {
+      return item.image;
+    }
+    // Fallback a una imagen por defecto
+    return "/placeholder.jpg";
+  }
+
+  // Helper para limpiar HTML de la descripción
+  function stripHTML(html) {
+    if (!html) return "";
+    const tmp = document.createElement("div");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+  }
+
   const FloatingButton = (
     <div
       ref={buttonRef}
@@ -200,7 +217,6 @@ export default function CartDrawer() {
           className="flex items-center gap-2 px-4 py-3 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700"
           aria-label="Contactar por WhatsApp"
         >
-          {/* WhatsApp Logo */}
           <img
             src="/icons/NUEVOS ICONOS BENCOM-12.svg"
             alt="WhatsApp"
@@ -219,7 +235,6 @@ export default function CartDrawer() {
     <>
       {FloatingButton}
 
-      {/* Only mount drawer when on /productos */}
       {isProducts && (
         <div
           id="cart-drawer"
@@ -238,7 +253,7 @@ export default function CartDrawer() {
                     onClick={() => {
                       if (
                         window.confirm(
-                          "¿Estás seguro que deseas vaciar el carrito?"
+                          "¿Estás seguro que deseas vaciar el carrito?",
                         )
                       ) {
                         clearCart();
@@ -274,21 +289,38 @@ export default function CartDrawer() {
                     key={it.id}
                     className="flex items-start gap-3 py-3 border-b"
                   >
+                    {/* Imagen del producto */}
                     <img
-                      src={it.image}
+                      src={getProductImage(it)}
                       alt={it.title}
-                      className="w-16 h-16 object-cover rounded"
+                      className="w-16 h-16 object-cover rounded flex-shrink-0"
                     />
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <div className="font-medium">{it.title}</div>
-                        <div className="text-sm text-gray-700">${it.price}</div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          {/* Título */}
+                          <div className="font-medium text-sm leading-tight">
+                            {it.title}
+                          </div>
+                          {/* Descripción en gris */}
+                          {it.description && (
+                            <div className="text-xs text-gray-500 mt-1 line-clamp-2">
+                              {stripHTML(it.description)}
+                            </div>
+                          )}
+                        </div>
+                        {/* Precio */}
+                        <div className="text-sm text-gray-700 font-medium flex-shrink-0">
+                          ${it.price}
+                        </div>
                       </div>
 
+                      {/* Controles de cantidad */}
                       <div className="mt-2 flex items-center gap-2">
                         <button
                           onClick={() => decreaseQty(it)}
-                          className="px-2 py-1 bg-gray-100 rounded"
+                          className="px-2 py-1 bg-gray-100 rounded text-sm"
                           aria-label={`Disminuir cantidad de ${it.title}`}
                         >
                           -
@@ -296,7 +328,7 @@ export default function CartDrawer() {
 
                         <input
                           aria-label={`Cantidad de ${it.title}`}
-                          className="w-16 text-center px-2 py-1 border rounded"
+                          className="w-12 text-center px-1 py-1 border rounded text-sm"
                           inputMode="numeric"
                           pattern="[0-9]*"
                           value={qtyInput[it.id] ?? String(it.quantity || 1)}
@@ -309,7 +341,7 @@ export default function CartDrawer() {
 
                         <button
                           onClick={() => increaseQty(it)}
-                          className="px-2 py-1 bg-gray-100 rounded"
+                          className="px-2 py-1 bg-gray-100 rounded text-sm"
                           aria-label={`Aumentar cantidad de ${it.title}`}
                         >
                           +
@@ -317,7 +349,7 @@ export default function CartDrawer() {
 
                         <button
                           onClick={() => removeItem(it.id)}
-                          className="ml-auto text-sm text-red-600"
+                          className="ml-auto text-xs text-red-600"
                         >
                           Eliminar
                         </button>

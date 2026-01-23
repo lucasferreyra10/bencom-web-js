@@ -20,8 +20,7 @@ export default function ProductLightbox({
   const { addItem } = useCart();
   const imageContainerRef = useRef(null);
   
-  const [qty, setQty] = useState(1);
-  // NUEVO: Estado para manejar cantidades por variante
+  const [qty, setQty] = useState(0); // Cambiado a 0
   const [variantQty, setVariantQty] = useState({});
 
   const images =
@@ -33,7 +32,6 @@ export default function ProductLightbox({
 
   const maxIndex = Math.max(0, images.length - 1);
   
-  // Verificar si el producto tiene variantes
   const hasVariants = product?.variants && product.variants.length > 0;
 
   // Bloquear scroll del body
@@ -58,8 +56,7 @@ export default function ProductLightbox({
   // Reset cantidad cuando cambia el producto
   useEffect(() => {
     if (open && product?.id) {
-      setQty(1);
-      // Inicializar cantidades de variantes en 0
+      setQty(0); // Cambiado a 0
       if (hasVariants) {
         const initialQty = {};
         product.variants.forEach(v => {
@@ -150,7 +147,7 @@ export default function ProductLightbox({
   function changeQty(v) {
     const n = Number(v);
     if (Number.isNaN(n)) return;
-    setQty(Math.max(1, Math.floor(n)));
+    setQty(Math.max(0, Math.floor(n))); // Cambiado mínimo a 0
   }
 
   function changeVariantQty(variantId, v) {
@@ -164,13 +161,12 @@ export default function ProductLightbox({
 
   function addToCartKeepOpen() {
     if (hasVariants) {
-      // Agregar cada variante con cantidad > 0
       product.variants.forEach(variant => {
         const quantity = variantQty[variant.id] || 0;
         if (quantity > 0) {
           const itemToAdd = {
             ...product,
-            id: `${product.id}-${variant.id}`, // ID único por variante
+            id: `${product.id}-${variant.id}`,
             title: `${product.title} - ${variant.label}`,
             variant: variant.label,
             quantity: quantity
@@ -179,13 +175,13 @@ export default function ProductLightbox({
         }
       });
     } else {
-      // Producto normal sin variantes
-      const itemToAdd = { ...product, quantity: qty };
-      addItem(itemToAdd);
+      if (qty > 0) { // Solo agregar si qty > 0
+        const itemToAdd = { ...product, quantity: qty };
+        addItem(itemToAdd);
+      }
     }
   }
 
-  // Calcular total de items para productos con variantes
   const totalVariantItems = hasVariants 
     ? Object.values(variantQty).reduce((sum, q) => sum + q, 0)
     : 0;
@@ -298,7 +294,7 @@ export default function ProductLightbox({
 
               {/* Cantidad - Con variantes o sin variantes */}
               {hasVariants ? (
-                // Productos CON VARIANTES (guantes): Selectores verticales + botón debajo
+                // Productos CON VARIANTES (guantes)
                 <>
                   <div className="mb-3 space-y-3">
                     {product.variants.map((variant) => (
@@ -332,10 +328,9 @@ export default function ProductLightbox({
                     ))}
                   </div>
                   
-                  {/* Botón Agregar DEBAJO para productos con variantes */}
                   <button
                     onClick={addToCartKeepOpen}
-                    className="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
                     aria-label={`Agregar ${product.title} al carrito`}
                     disabled={totalVariantItems === 0}
                   >
@@ -343,11 +338,11 @@ export default function ProductLightbox({
                   </button>
                 </>
               ) : (
-                // Productos SIN VARIANTES: Cantidad + Botón en línea
+                // Productos SIN VARIANTES
                 <div className="flex items-center gap-3">
                   <div className="flex items-center border rounded">
                     <button
-                      onClick={() => changeQty(Math.max(1, qty - 1))}
+                      onClick={() => changeQty(Math.max(0, qty - 1))}
                       className="px-3 py-2 text-sm"
                       aria-label="Disminuir cantidad"
                     >
@@ -372,8 +367,9 @@ export default function ProductLightbox({
 
                   <button
                     onClick={addToCartKeepOpen}
-                    className="ml-auto px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                    className="ml-auto px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
                     aria-label={`Agregar ${product.title} al carrito`}
+                    disabled={qty === 0}
                   >
                     Agregar ({qty})
                   </button>

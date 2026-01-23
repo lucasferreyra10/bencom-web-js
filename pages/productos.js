@@ -57,8 +57,12 @@ const PRODUCTS = [
                       A continuación, indicar cantidades.
                       `.trim(),
     images: [
-      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=1200&auto=format&fit=crop",
+      "/products/picos-prolongadores-1m/img1.png",
+      "/products/picos-prolongadores-1m/img2.png",
+      "/products/picos-prolongadores-1m/img3.png",
+      "/products/picos-prolongadores-1m/img4.png",
+      "/products/picos-prolongadores-1m/img5.png",
+      "/products/picos-prolongadores-1m/img6.png",
     ],
   },
   {
@@ -76,8 +80,9 @@ const PRODUCTS = [
                       A continuación, indicar cantidades.
                       `.trim(),
     images: [
-      "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=1200&auto=format&fit=crop",
+      "/products/picos-prolongadores-1.5m/img1.png",
+      "/products/picos-prolongadores-1.5m/img2.png",
+      "/products/picos-prolongadores-1.5m/img3.png",
     ],
   },
   {
