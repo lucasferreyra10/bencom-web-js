@@ -16,7 +16,7 @@ export default function ProductCard({ product, onOpenGallery }) {
         <img
           src={(product.images && product.images[0]) || product.image}
           alt={product.title}
-          className="w-full h-40 object-cover rounded-md"
+          className="w-full aspect-[3/2] object-cover rounded-md"
         />
       </button>
 

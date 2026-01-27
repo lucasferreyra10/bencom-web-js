@@ -289,11 +289,11 @@ export default function CartDrawer() {
                     key={it.id}
                     className="flex items-start gap-3 py-3 border-b"
                   >
-                    {/* Imagen del producto */}
+                    {/* Imagen del producto - mantiene ratio 3:2 */}
                     <img
                       src={getProductImage(it)}
                       alt={it.title}
-                      className="w-16 h-16 object-cover rounded flex-shrink-0"
+                      className="w-24 h-16 object-cover rounded flex-shrink-0"
                     />
 
                     <div className="flex-1 min-w-0">
