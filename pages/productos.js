@@ -31,6 +31,11 @@ const PRODUCTS = [
       "/products/chapas-identificadoras/img2.jpg",
       "/products/chapas-identificadoras/img3.jpg",
     ],
+    variants: [
+      { id: "gases-naftas", label: "Recuperadora de gases naftas" },
+      { id: "gases-diesel", label: "Recuperadora de gases diesel" },
+      { id: "gases-tanque", label: "Recuperadora de gases tanque" },
+    ],
   },
   {
     id: "p-3",
@@ -63,6 +68,10 @@ const PRODUCTS = [
       "/products/picos-prolongadores-1m/img4.png",
       "/products/picos-prolongadores-1m/img5.png",
       "/products/picos-prolongadores-1m/img6.png",
+    ],
+            variants: [
+      { id: "modelo-11-a", label: "Modelo 11 A" },
+      { id: "modelo-11-b", label: "Modelo 11 B" },
     ],
   },
   {

@@ -33,14 +33,8 @@ export default function ProductCard({ product, onOpenGallery }) {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => addItem(product)}
-            className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
-          >
-            Agregar
-          </button>
-          <button
             onClick={() => onOpenGallery?.(product, 0)}
-            className="px-2 py-1 border rounded text-sm"
+            className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
             aria-label={`Ver más fotos de ${product.title}`}
           >
             Ver
