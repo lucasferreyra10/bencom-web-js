@@ -4,152 +4,43 @@ import Layout from "../components/Layout";
 import ProductCard from "../components/ProductCard";
 import ProductLightbox from "../components/ProductLightbox";
 
-/*
-  Catálogo de ejemplo. Cada producto tiene un array `images`.
-  Reemplazá / cargá desde tu CMS cuando quieras.
-*/
-const PRODUCTS = [
-  {
-    id: "p-1",
-    title: "Chapas identificadoras",
-    price: 0.0,
-    description: "De <strong>BOCA DE DESCARGA</strong> para combustibles",
-    longDescription:
-      "Chapas de acero de 10cm x 5cm. Ofrecemos servicio de colocación respetando las medidas de seguridad en E/S.<br><strong>¡HACEMOS ENVIOS AL INTERIOR!</strong><br/><br>A continuación, indicar la cantidad de tanques.<br/>",
-    images: ["/products/chapas-identificadoras/img1.jpg"],
-    disclaimer:
-      "<strong>(*) LUEGO DE HACER TU PEDIDO</strong> te pedimos la descripción de cada uno detallando: número de tanque, producto y cantidad de litros correspondiente</div>",
-  },
-  {
-    id: "p-2",
-    title: "Chapas identificadoras",
-    price: 0.0,
-    description: "De <strong>RECUPERADORAS</strong> para combustibles",
-    longDescription:
-      "Chapas de acero de 10cm x 5cm. Ofrecemos servicio de colocación respetando las medidas de seguridad en E/S. <br><strong>¡HACEMOS ENVIOS AL INTERIOR!</strong><br/><br>A continuación, indicar modelo y cantidades.<br/>",
-    images: [
-      "/products/chapas-identificadoras/img2.jpg",
-      "/products/chapas-identificadoras/img3.jpg",
-    ],
-    variants: [
-      { id: "gases-naftas", label: "Recuperadora de gases naftas" },
-      { id: "gases-diesel", label: "Recuperadora de gases diesel" },
-      { id: "gases-tanque", label: "Recuperadora de gases tanque" },
-    ],
-  },
-  {
-    id: "p-3",
-    title: "Chapas identificadoras",
-    price: 0.0,
-    description: "De <strong>PUESTA A TIERRA</strong> para combustibles",
-    longDescription:
-      "Chapas de acero de 10cm x 5cm. Ofrecemos servicio de colocación respetando las medidas de seguridad en E/S. <br><strong>¡HACEMOS ENVIOS AL INTERIOR!</strong><br/><br>A continuación, indicar cantidades.<br/>",
-    images: ["/products/chapas-identificadoras/img4.jpg"],
-  },
-  {
-    id: "p-4",
-    title: "Pico prolongador",
-    price: 0.0,
-    description: "Para carga de combustible de 1 metro",
-    longDescription: `
-                      <strong>Modelo 11A</strong>: adecuado para pico de vehículos livianos.
-                      <strong>Modelo 11B</strong>: adecuado para picos de alto caudal.<br>
-                      Materiales aptos para uso en áreas clasificadas. Antichispas.
-                      Empuñadura y orejas de goma para su práctica manipulación.
-                      Caño de aluminio. Drenaje con corte a 45°.
-                      Medida: 1 metro.
-                      <strong>¡HACEMOS ENVIOS AL INTERIOR!</strong><br>
-                      A continuación, indicar cantidades.
-                      `.trim(),
-    images: [
-      "/products/picos-prolongadores-1m/img1.png",
-      "/products/picos-prolongadores-1m/img2.png",
-      "/products/picos-prolongadores-1m/img3.png",
-      "/products/picos-prolongadores-1m/img4.png",
-      "/products/picos-prolongadores-1m/img5.png",
-      "/products/picos-prolongadores-1m/img6.png",
-    ],
-            variants: [
-      { id: "modelo-11-a", label: "Modelo 11 A" },
-      { id: "modelo-11-b", label: "Modelo 11 B" },
-    ],
-  },
-  {
-    id: "p-5",
-    title: "Pico prolongador",
-    price: 0.0,
-    description: "Modelo 11B, medida especial para batanes",
-    longDescription: `
-                      <strong>Modelo 11B</strong>: adecuado para picos de alto caudal.<br>
-                      Materiales aptos para uso en áreas clasificadas. Antichispas.
-                      Empuñadura y orejas de goma para su práctica manipulación.
-                      Caño de aluminio. Drenaje con corte a 45°.
-                      Medida: 1,5 metros.
-                      <strong>¡HACEMOS ENVIOS AL INTERIOR!</strong><br>
-                      A continuación, indicar cantidades.
-                      `.trim(),
-    images: [
-      "/products/picos-prolongadores-1.5m/img1.png",
-      "/products/picos-prolongadores-1.5m/img2.png",
-      "/products/picos-prolongadores-1.5m/img3.png",
-    ],
-  },
-  {
-    id: "p-6",
-    title: "Guantes de nitrilo negros",
-    price: 0.0,
-    description: "Para sustancias, por talle",
-    longDescription: `
-    Guantes de examinación de Nitrilo.
-    Marca: <strong>POWERCREST</strong>.<br>
-    1 caja de 1.000 unidades por talle (10 cajas x 100 unidades)<br>
-    Elegir talles y cantidades.
-  `.trim(),
-    images: [
-      "/products/guantes-de-nitrilo/img1.jpg",
-      "/products/guantes-de-nitrilo/img2.jpg",
-      "/products/guantes-de-nitrilo/img3.jpg",
-    ],
-    // NUEVO: campo variants para productos con talles/variantes
-    variants: [
-      { id: "talle-s", label: "Talle S" },
-      { id: "talle-m", label: "Talle M" },
-      { id: "talle-l", label: "Talle L" },
-    ],
-  },
-  {
-    id: "p-7",
-    title: "Repelente de insectos",
-    price: 0.0,
-    description: "Escudo",
-    longDescription:
-      "Repelente de insectos en aerosol marca <strong>ESCUDO</strong>.<br/>Presentación: 130g.<br/>Ideal para uso personal y ambiental.<br/>A continuación, indicar cantidades.<br/>",
-    images: ["/products/repelentes/img1.jpg", "/products/repelentes/img2.jpg"],
-  },
-  {
-    id: "p-8",
-    title: "Mata moscas y mosquitos",
-    price: 0.0,
-    description: "Escudo",
-    longDescription:
-      "Mata moscas y mosquitos en aerosol marca <strong>ESCUDO</strong>.<br/>Presentación: 220g.<br/>Ideal para uso personal y ambiental.<br/>A continuación, indicar cantidades.<br/>",
-    images: [
-      "/products/insectisidas/img1.jpg",
-      "/products/insectisidas/img2.jpg",
-    ],
-  },
-  {
-    id: "p-9",
-    title: "Aromatizante de ambientes",
-    price: 0.0,
-    description: "Smell Fresh",
-    longDescription:
-      "Aromatizante de ambientes en aerosol marca <strong>SMELL FRESH</strong>.<br/>Presentación: 178g.<br/>Ideal para uso personal y ambiental.<br/>A continuación, indicar cantidades.<br/>",
-    images: ["/products/aromatizante-de-ambientes/img1.jpg"],
-  },
-];
+/**
+ * Ahora traemos los productos desde /api/products (SSR).
+ * getServerSideProps construye la base URL desde la request para que
+ * funcione tanto en desarrollo (localhost) como en producción.
+ */
+export async function getServerSideProps(context) {
+  try {
+    // Construir baseUrl a partir de la request (funciona local y en deploy)
+    const req = context.req;
+    const protocol = req.headers["x-forwarded-proto"] || (req.connection && req.connection.encrypted ? "https" : "http");
+    const host = req.headers["x-forwarded-host"] || req.headers.host;
+    const baseUrl = `${protocol}://${host}`;
 
-export default function Productos() {
+    const res = await fetch(`${baseUrl}/api/products`);
+    if (!res.ok) {
+      console.error("Error fetching /api/products:", res.status, await res.text());
+      return { props: { products: [] } };
+    }
+
+    const products = await res.json();
+    // Asegurarnos de devolver un array
+    return {
+      props: {
+        products: Array.isArray(products) ? products : [],
+      },
+    };
+  } catch (error) {
+    console.error("getServerSideProps error:", error);
+    return {
+      props: {
+        products: [],
+      },
+    };
+  }
+}
+
+export default function Productos({ products = [] }) {
   // lightbox ahora guarda el product completo además de index
   const [lightbox, setLightbox] = useState({
     open: false,
@@ -157,7 +48,7 @@ export default function Productos() {
     index: 0,
   });
 
-  // abrir la galería para un producto concreto (ProductCard llamará con product, 0)
+  // abrir la galería para un producto concreto (ProductCard llamará con product, startIndex)
   function openGallery(product, start = 0) {
     setLightbox({ open: true, product, index: start });
   }
@@ -181,9 +72,13 @@ export default function Productos() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {PRODUCTS.map((p) => (
-            <ProductCard key={p.id} product={p} onOpenGallery={openGallery} />
-          ))}
+          {products.length === 0 ? (
+            <p className="text-gray-500">No hay productos disponibles.</p>
+          ) : (
+            products.map((p) => (
+              <ProductCard key={p.id} product={p} onOpenGallery={openGallery} />
+            ))
+          )}
         </div>
       </section>
 
