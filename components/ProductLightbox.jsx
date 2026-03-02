@@ -19,7 +19,7 @@ export default function ProductLightbox({
 }) {
   const { addItem } = useCart();
   const imageContainerRef = useRef(null);
-  
+
   const [qty, setQty] = useState(0); // Cambiado a 0
   const [variantQty, setVariantQty] = useState({});
 
@@ -27,27 +27,68 @@ export default function ProductLightbox({
     Array.isArray(product?.images) && product.images.length > 0
       ? product.images
       : product?.image
-      ? [product.image]
-      : [];
+        ? [product.image]
+        : [];
 
   const maxIndex = Math.max(0, images.length - 1);
-  
+
   const hasVariants = product?.variants && product.variants.length > 0;
+
+  // ---- Funciones y constantes para precio / formato ----
+  const IVA = 0.21;
+  const multiplier = 1 / (1 + IVA); // 0.826446281...
+  const multiplierStr = multiplier.toFixed(9);
+
+  // parseo robusto: acepta number o string con formatos "14.271,00", "14271.00", "$14.271,00", etc.
+  function parsePrice(value) {
+    if (typeof value === "number" && !Number.isNaN(value)) return value;
+    if (typeof value !== "string") return 0;
+    let s = value.replace(/[^\d.,-]/g, "").trim(); // quita símbolos tipo $
+    if (s === "") return 0;
+    // Si tiene coma y punto -> asumimos "14.271,00" => quitar puntos y cambiar coma por punto
+    if (s.indexOf(",") > -1 && s.indexOf(".") > -1) {
+      s = s.replace(/\./g, "").replace(",", ".");
+    } else if (s.indexOf(",") > -1 && s.indexOf(".") === -1) {
+      // "14271,00" -> "14271.00"
+      s = s.replace(",", ".");
+    }
+    const n = parseFloat(s);
+    return Number.isFinite(n) ? n : 0;
+  }
+
+  // Formateo estilo Argentina: separador de miles ".", decimales ","
+  function fmtNumber(n) {
+    return Number.isFinite(n)
+      ? n.toLocaleString("es-AR", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })
+      : "0,00";
+  }
+  function fmtCurrency(n) {
+    return `$${fmtNumber(n)}`;
+  }
+
+  // precio original (viene con impuestos ya incluidos en la hoja de cálculo)
+  const originalPrice = parsePrice(product?.price ?? product?.precio ?? 0);
+  // precio sin impuestos
+  const netPrice = originalPrice * multiplier;
+  // -----------------------------------------------------------
 
   // Bloquear scroll del body
   useEffect(() => {
     if (open) {
       const scrollY = window.scrollY;
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
       document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-      
+      document.body.style.width = "100%";
+
       return () => {
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
+        document.body.style.overflow = "";
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.width = "";
         window.scrollTo(0, scrollY);
       };
     }
@@ -59,7 +100,7 @@ export default function ProductLightbox({
       setQty(0); // Cambiado a 0
       if (hasVariants) {
         const initialQty = {};
-        product.variants.forEach(v => {
+        product.variants.forEach((v) => {
           initialQty[v.id] = 0;
         });
         setVariantQty(initialQty);
@@ -70,7 +111,7 @@ export default function ProductLightbox({
   // Keyboard navigation
   useEffect(() => {
     if (!open) return;
-    
+
     function onKey(e) {
       if (e.key === "Escape") onClose?.();
       if (e.key === "ArrowLeft") onIndexChange?.(Math.max(0, index - 1));
@@ -84,7 +125,7 @@ export default function ProductLightbox({
   // Touch/Swipe navigation para imágenes
   useEffect(() => {
     if (!open || images.length <= 1) return;
-    
+
     const el = imageContainerRef.current;
     if (!el) return;
 
@@ -103,7 +144,7 @@ export default function ProductLightbox({
 
     const onTouchMove = (e) => {
       if (!isDragging) return;
-      
+
       const currentX = e.touches[0].clientX;
       const currentY = e.touches[0].clientY;
       const diffX = Math.abs(currentX - startX);
@@ -153,15 +194,15 @@ export default function ProductLightbox({
   function changeVariantQty(variantId, v) {
     const n = Number(v);
     if (Number.isNaN(n)) return;
-    setVariantQty(prev => ({
+    setVariantQty((prev) => ({
       ...prev,
-      [variantId]: Math.max(0, Math.floor(n))
+      [variantId]: Math.max(0, Math.floor(n)),
     }));
   }
 
   function addToCartKeepOpen() {
     if (hasVariants) {
-      product.variants.forEach(variant => {
+      product.variants.forEach((variant) => {
         const quantity = variantQty[variant.id] || 0;
         if (quantity > 0) {
           const itemToAdd = {
@@ -169,20 +210,21 @@ export default function ProductLightbox({
             id: `${product.id}-${variant.id}`,
             title: `${product.title} - ${variant.label}`,
             variant: variant.label,
-            quantity: quantity
+            quantity: quantity,
           };
           addItem(itemToAdd);
         }
       });
     } else {
-      if (qty > 0) { // Solo agregar si qty > 0
+      if (qty > 0) {
+        // Solo agregar si qty > 0
         const itemToAdd = { ...product, quantity: qty };
         addItem(itemToAdd);
       }
     }
   }
 
-  const totalVariantItems = hasVariants 
+  const totalVariantItems = hasVariants
     ? Object.values(variantQty).reduce((sum, q) => sum + q, 0)
     : 0;
 
@@ -259,11 +301,11 @@ export default function ProductLightbox({
           </div>
 
           {/* RIGHT: panel con SCROLL VERTICAL */}
-          <aside 
+          <aside
             className="bg-white rounded-md shadow-lg overflow-y-auto overflow-x-hidden"
             style={{
-              maxHeight: '100%',
-              WebkitOverflowScrolling: 'touch',
+              maxHeight: "100%",
+              WebkitOverflowScrolling: "touch",
             }}
           >
             <div className="p-4">
@@ -274,14 +316,17 @@ export default function ProductLightbox({
               />
 
               <div className="mb-3">
-                <div className="text-xs text-gray-500">Precio sin IVA</div>
-                <div className="flex items-baseline gap-2">
-                  <div className="text-2xl font-bold text-primary">
-                    ${Number(product.price || 0).toFixed(2)}
-                  </div>
+                {/* Precio sin impuestos TODO JUNTO */}
+                <div className="text-sm text-gray-500">
+                  Precio sin impuestos {fmtCurrency(netPrice)}
+                </div>
+
+                {/* Precio original (el que resalta) */}
+                <div className="text-2xl font-bold text-primary mt-1">
+                  {fmtCurrency(originalPrice)}
                 </div>
               </div>
-              
+
               <div
                 className="mb-4 text-sm text-gray-700 leading-relaxed"
                 dangerouslySetInnerHTML={{
@@ -298,11 +343,21 @@ export default function ProductLightbox({
                 <>
                   <div className="mb-3 space-y-3">
                     {product.variants.map((variant) => (
-                      <div key={variant.id} className="flex items-center justify-between border rounded p-2">
-                        <span className="text-sm font-medium">{variant.label}</span>
+                      <div
+                        key={variant.id}
+                        className="flex items-center justify-between border rounded p-2"
+                      >
+                        <span className="text-sm font-medium">
+                          {variant.label}
+                        </span>
                         <div className="flex items-center border rounded">
                           <button
-                            onClick={() => changeVariantQty(variant.id, Math.max(0, (variantQty[variant.id] || 0) - 1))}
+                            onClick={() =>
+                              changeVariantQty(
+                                variant.id,
+                                Math.max(0, (variantQty[variant.id] || 0) - 1),
+                              )
+                            }
                             className="px-3 py-1 text-sm"
                             aria-label={`Disminuir ${variant.label}`}
                           >
@@ -314,10 +369,17 @@ export default function ProductLightbox({
                             inputMode="numeric"
                             pattern="[0-9]*"
                             value={String(variantQty[variant.id] || 0)}
-                            onChange={(e) => changeVariantQty(variant.id, e.target.value)}
+                            onChange={(e) =>
+                              changeVariantQty(variant.id, e.target.value)
+                            }
                           />
                           <button
-                            onClick={() => changeVariantQty(variant.id, (variantQty[variant.id] || 0) + 1)}
+                            onClick={() =>
+                              changeVariantQty(
+                                variant.id,
+                                (variantQty[variant.id] || 0) + 1,
+                              )
+                            }
                             className="px-3 py-1 text-sm"
                             aria-label={`Aumentar ${variant.label}`}
                           >
@@ -327,7 +389,7 @@ export default function ProductLightbox({
                       </div>
                     ))}
                   </div>
-                  
+
                   <button
                     onClick={addToCartKeepOpen}
                     className="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
