@@ -266,7 +266,7 @@ export default function ServicePage({
             {/* Cerrar */}
             <button
               onClick={closeGallery}
-              className="absolute top-4 right-4 text-white text-2xl bg-black/40 px-3 py-1 rounded-md hover:bg-black/70 z-50"
+              className="absolute top-4 right-4 text-gray-600 text-2xl bg-black/40 px-3 py-1 rounded-md hover:bg-black/70 z-50"
               aria-label="Cerrar galería"
             >
               ✕
@@ -413,7 +413,7 @@ export default function ServicePage({
             {/* Cerrar */}
             <button
               onClick={() => setLightbox({ ...lightbox, open: false })}
-              className="absolute top-4 right-4 text-white text-2xl bg-black/40 px-3 py-1 rounded-md hover:bg-black/70 z-50"
+              className="absolute top-4 right-4 text-gray-600 text-2xl bg-black/40 px-3 py-1 rounded-md hover:bg-black/70 z-50"
               aria-label="Cerrar galería"
             >
               ✕

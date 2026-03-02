@@ -22,10 +22,19 @@ function reducer(state, action) {
       const existing = state.items.find((i) => i.id === item.id);
       let items;
       if (existing) {
+        // Item ya existe - actualizar cantidad y preservar/actualizar stock
         items = state.items.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + (item.quantity || 1) } : i
+          i.id === item.id 
+            ? { 
+                ...i, 
+                quantity: i.quantity + (item.quantity || 1),
+                // Actualizar stock si viene en el nuevo item
+                stock: item.stock !== undefined ? item.stock : i.stock
+              } 
+            : i
         );
       } else {
+        // Item nuevo - agregar con todos sus datos
         items = [...state.items, { ...item, quantity: item.quantity || 1 }];
       }
       return { ...state, items };

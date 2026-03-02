@@ -9,7 +9,7 @@ export default function ProductLightbox({
   onClose,
   onIndexChange,
 }) {
-  const { addItem } = useCart();
+  const { addItem, cart } = useCart(); // ⭐ Agregar cart para verificar cantidades
   const imageContainerRef = useRef(null);
 
   const [qty, setQty] = useState(0);
@@ -27,7 +27,17 @@ export default function ProductLightbox({
 
   // Stock para productos SIN variantes
   const stock = parseInt(product?.stock || product?.Stock || 0, 10);
-  const hasStock = stock > 0;
+  
+  // ⭐ Calcular stock disponible (stock - cantidad en carrito)
+  const getAvailableStock = () => {
+    if (hasVariants) return 0; // Para variantes se calcula individual
+    const itemInCart = cart.items.find((i) => i.id === product?.id);
+    const qtyInCart = itemInCart ? itemInCart.quantity : 0;
+    return Math.max(0, stock - qtyInCart);
+  };
+
+  const availableStock = getAvailableStock();
+  const hasStock = availableStock > 0;
 
   // ---- Funciones y constantes para precio / formato ----
   const IVA = 0.21;
@@ -172,26 +182,33 @@ export default function ProductLightbox({
 
   if (!open || !product) return null;
 
-  // Función para obtener stock de una variante específica
-  function getVariantStock(variantId) {
+  // ⭐ Función para obtener stock disponible de una variante (stock - cantidad en carrito)
+  function getVariantAvailableStock(variantId) {
     if (!hasVariants) return 0;
     const variant = product.variants.find((v) => v.id === variantId);
-    return parseInt(variant?.stock || 0, 10);
+    const totalStock = parseInt(variant?.stock || 0, 10);
+    
+    // Buscar en el carrito si ya hay cantidad agregada de esta variante
+    const itemId = `${product.id}-${variantId}`;
+    const itemInCart = cart.items.find((i) => i.id === itemId);
+    const qtyInCart = itemInCart ? itemInCart.quantity : 0;
+    
+    return Math.max(0, totalStock - qtyInCart);
   }
 
-  // Funciones de cantidad con límite de stock
+  // Funciones de cantidad con límite de stock disponible
   function changeQty(v) {
     const n = Number(v);
     if (Number.isNaN(n)) return;
-    const clamped = Math.max(0, Math.min(Math.floor(n), stock));
+    const clamped = Math.max(0, Math.min(Math.floor(n), availableStock));
     setQty(clamped);
   }
 
   function changeVariantQty(variantId, v) {
     const n = Number(v);
     if (Number.isNaN(n)) return;
-    const variantStock = getVariantStock(variantId);
-    const clamped = Math.max(0, Math.min(Math.floor(n), variantStock));
+    const variantAvailableStock = getVariantAvailableStock(variantId);
+    const clamped = Math.max(0, Math.min(Math.floor(n), variantAvailableStock));
     setVariantQty((prev) => ({
       ...prev,
       [variantId]: clamped,
@@ -209,14 +226,29 @@ export default function ProductLightbox({
             title: `${product.title} - ${variant.label}`,
             variant: variant.label,
             quantity: quantity,
+            stock: variant.stock || 0,
           };
           addItem(itemToAdd);
         }
       });
+      
+      // ⭐ Reset cantidades después de agregar
+      const resetQty = {};
+      product.variants.forEach((v) => {
+        resetQty[v.id] = 0;
+      });
+      setVariantQty(resetQty);
     } else {
       if (qty > 0) {
-        const itemToAdd = { ...product, quantity: qty };
+        const itemToAdd = {
+          ...product,
+          quantity: qty,
+          stock: stock || 0,
+        };
         addItem(itemToAdd);
+        
+        // ⭐ Reset cantidad después de agregar
+        setQty(0);
       }
     }
   }
@@ -225,9 +257,9 @@ export default function ProductLightbox({
     ? Object.values(variantQty).reduce((sum, q) => sum + q, 0)
     : 0;
 
-  // Verificar si hay al menos una variante con stock
+  // Verificar si hay al menos una variante con stock disponible
   const hasAnyVariantStock = hasVariants
-    ? product.variants.some((v) => (v.stock || 0) > 0)
+    ? product.variants.some((v) => getVariantAvailableStock(v.id) > 0)
     : false;
 
   const cur = images[index] ?? "";
@@ -247,7 +279,7 @@ export default function ProductLightbox({
         {/* Close btn */}
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 z-50 bg-white/10 hover:bg-white/20 rounded-md p-2 text-gray"
+          className="absolute top-2 right-2 z-50 bg-white/10 hover:bg-white/20 rounded-md p-2 text-gray-600"
           aria-label="Cerrar"
         >
           ✕
@@ -341,8 +373,8 @@ export default function ProductLightbox({
                 <>
                   <div className="mb-3 space-y-3">
                     {product.variants.map((variant) => {
-                      const variantStock = variant.stock || 0;
-                      const hasVariantStock = variantStock > 0;
+                      const variantAvailableStock = getVariantAvailableStock(variant.id);
+                      const hasVariantStock = variantAvailableStock > 0;
                       const currentQty = variantQty[variant.id] || 0;
 
                       return (
@@ -361,9 +393,9 @@ export default function ProductLightbox({
                                   Math.max(0, currentQty - 1),
                                 )
                               }
-                              className="px-3 py-1 text-sm"
+                              className="px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                               aria-label={`Disminuir ${variant.label}`}
-                              disabled={!hasVariantStock}
+                              disabled={!hasVariantStock || currentQty === 0}
                             >
                               -
                             </button>
@@ -382,12 +414,14 @@ export default function ProductLightbox({
                               onClick={() =>
                                 changeVariantQty(
                                   variant.id,
-                                  Math.min(variantStock, currentQty + 1),
+                                  Math.min(variantAvailableStock, currentQty + 1),
                                 )
                               }
-                              className="px-3 py-1 text-sm"
+                              className="px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                               aria-label={`Aumentar ${variant.label}`}
-                              disabled={!hasVariantStock || currentQty >= variantStock}
+                              disabled={
+                                !hasVariantStock || currentQty >= variantAvailableStock
+                              }
                             >
                               +
                             </button>
@@ -403,7 +437,9 @@ export default function ProductLightbox({
                     aria-label={`Agregar ${product.title} al carrito`}
                     disabled={!hasAnyVariantStock || totalVariantItems === 0}
                   >
-                    {!hasAnyVariantStock ? "Sin stock" : `Agregar (${totalVariantItems})`}
+                    {!hasAnyVariantStock
+                      ? "Sin stock"
+                      : `Agregar (${totalVariantItems})`}
                   </button>
                 </>
               ) : (
@@ -411,9 +447,9 @@ export default function ProductLightbox({
                   <div className="flex items-center border rounded">
                     <button
                       onClick={() => changeQty(Math.max(0, qty - 1))}
-                      className="px-3 py-2 text-sm"
+                      className="px-3 py-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                       aria-label="Disminuir cantidad"
-                      disabled={!hasStock}
+                      disabled={!hasStock || qty === 0}
                     >
                       -
                     </button>
@@ -427,10 +463,10 @@ export default function ProductLightbox({
                       disabled={!hasStock}
                     />
                     <button
-                      onClick={() => changeQty(Math.min(stock, qty + 1))}
-                      className="px-3 py-2 text-sm"
+                      onClick={() => changeQty(Math.min(availableStock, qty + 1))}
+                      className="px-3 py-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                       aria-label="Aumentar cantidad"
-                      disabled={!hasStock || qty >= stock}
+                      disabled={!hasStock || qty >= availableStock}
                     >
                       +
                     </button>

@@ -160,12 +160,19 @@ export default function CartDrawer() {
   function applyQtyFromInput(id) {
     const raw = qtyInput[id];
     const n = parseInt(raw, 10);
+
+    // Buscar el item para obtener su stock
+    const item = cart.items.find((i) => i.id === id);
+    const itemStock = item ? Number(item.stock) || Infinity : Infinity;
+
     if (Number.isNaN(n) || n < 1) {
       updateQty(id, 1);
       setQtyInput((s) => ({ ...s, [id]: "1" }));
     } else {
-      updateQty(id, n);
-      setQtyInput((s) => ({ ...s, [id]: String(n) }));
+      // Limitar al stock disponible
+      const clamped = Math.min(n, itemStock);
+      updateQty(id, clamped);
+      setQtyInput((s) => ({ ...s, [id]: String(clamped) }));
     }
   }
   function handleQtyKeyDown(e, id) {
@@ -180,9 +187,15 @@ export default function CartDrawer() {
     setQtyInput((s) => ({ ...s, [it.id]: String(next) }));
   }
   function increaseQty(it) {
-    const next = (Number(it.quantity) || 1) + 1;
-    updateQty(it.id, next);
-    setQtyInput((s) => ({ ...s, [it.id]: String(next) }));
+    const currentQty = Number(it.quantity) || 1;
+    const itemStock = Number(it.stock) || Infinity; // Si no hay stock definido, sin límite
+
+    // Solo incrementar si no supera el stock
+    if (currentQty < itemStock) {
+      const next = currentQty + 1;
+      updateQty(it.id, next);
+      setQtyInput((s) => ({ ...s, [it.id]: String(next) }));
+    }
   }
 
   // Helper para obtener la imagen del producto
@@ -361,8 +374,13 @@ export default function CartDrawer() {
 
                         <button
                           onClick={() => increaseQty(it)}
-                          className="px-2 py-1 bg-gray-100 rounded text-sm"
+                          className="px-2 py-1 bg-gray-100 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                           aria-label={`Aumentar cantidad de ${it.title}`}
+                          disabled={
+                            it.stock !== undefined &&
+                            it.stock !== null &&
+                            it.quantity >= it.stock
+                          }
                         >
                           +
                         </button>
