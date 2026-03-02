@@ -128,9 +128,29 @@ export default function CartDrawer() {
       alert("El carrito está vacío.");
       return;
     }
+
+    // Disclaimer antes de enviar
+    const confirmacion = window.confirm(
+      "Al enviar tu pedido por WhatsApp, el carrito se vaciará automáticamente.\n\n¿Deseas continuar?",
+    );
+
+    if (!confirmacion) {
+      return; // El usuario canceló
+    }
+
+    // Construir mensaje y abrir WhatsApp
     const text = buildWhatsappText();
     const url = waLink(null, text);
     window.open(url, "_blank");
+
+    // Vaciar carrito automáticamente
+    clearCart();
+
+    // Resetear campos del formulario
+    setCustomer({ name: "", email: "" });
+
+    // Cerrar el drawer (opcional, puedes comentar esta línea si prefieres dejarlo abierto)
+    setOpen(false);
   }
 
   function handleQtyInputChange(id, value) {
