@@ -106,10 +106,10 @@ export default function Home() {
 
               <div className="mt-8 flex justify-center gap-4">
                 <a
-                  href="/servicios"
+                  href="/productos"
                   className="inline-block bg-white text-[#2e358c] font-medium px-6 py-3 rounded shadow hover:shadow-lg transform hover:-translate-y-0.5 transition"
                 >
-                  Servicios
+                  Productos
                 </a>
 
                 <a
