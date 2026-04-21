@@ -24,42 +24,39 @@ function parseLocalizedNumber(value) {
   return Number.isFinite(n) ? n : 0;
 }
 
-// ⭐ Nueva función para convertir links de Google Drive
 function convertDriveLink(url) {
-  if (!url || typeof url !== "string") return url;
-  
+  if (!url || typeof url !== "string") return "";
+
   const trimmed = url.trim();
-  
-  // Si es una ruta local, dejarla tal cual
+  if (!trimmed) return "";
+
   if (trimmed.startsWith("/") || trimmed.startsWith("./")) {
     return trimmed;
   }
-  
-  // Si es un link de Google Drive, convertirlo
+
   if (trimmed.includes("drive.google.com")) {
-    // Extraer el FILE_ID de diferentes formatos posibles
     let fileId = null;
-    
-    // Formato: https://drive.google.com/file/d/FILE_ID/view?usp=...
+
     const match1 = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-    if (match1) {
-      fileId = match1[1];
-    }
-    
-    // Formato: https://drive.google.com/open?id=FILE_ID
+    if (match1) fileId = match1[1];
+
     const match2 = trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-    if (match2) {
-      fileId = match2[1];
-    }
-    
-    // Si encontramos el ID, convertir al formato directo
+    if (match2) fileId = match2[1];
+
     if (fileId) {
       return `https://drive.google.com/uc?export=view&id=${fileId}`;
     }
   }
-  
-  // Si no es Drive ni ruta local, devolverlo tal cual
+
   return trimmed;
+}
+
+function splitImageList(value) {
+  if (!value) return [];
+  return String(value)
+    .split(/;|\n|,/)
+    .map((i) => convertDriveLink(i.trim()))
+    .filter(Boolean);
 }
 
 export default async function handler(req, res) {
@@ -68,7 +65,7 @@ export default async function handler(req, res) {
   }
 
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(
-    RANGE,
+    RANGE
   )}?key=${API_KEY}`;
 
   try {
@@ -97,19 +94,24 @@ export default async function handler(req, res) {
         itemLower[String(k).toLowerCase()] = item[k];
       });
 
-      // 🔄 NORMALIZACIÓN: imágenes con conversión de links de Drive
       const imagesRaw = itemLower["imagenes"] || itemLower["images"] || "";
-      const imagesArray = imagesRaw
-        ? String(imagesRaw)
-            .split(";")
-            .map((i) => convertDriveLink(i.trim())) // ⭐ Convertir cada link
-            .filter(Boolean)
-        : [];
+      const imagesArray = splitImageList(imagesRaw);
 
-      // Variantes: ids, labels, stocks (separador ';')
-      const variantIdsRaw = itemLower["variantes_ids"] ?? itemLower["variants_ids"] ?? itemLower["variantes"] ?? "";
-      const variantLabelsRaw = itemLower["variantes_labels"] ?? itemLower["variants_labels"] ?? itemLower["variantes_labels"] ?? "";
-      const variantStocksRaw = itemLower["variantes_stock"] ?? itemLower["variants_stock"] ?? itemLower["variantes_stock"] ?? "";
+      const variantIdsRaw =
+        itemLower["variantes_ids"] ??
+        itemLower["variants_ids"] ??
+        itemLower["variantes"] ??
+        "";
+
+      const variantLabelsRaw =
+        itemLower["variantes_labels"] ??
+        itemLower["variants_labels"] ??
+        "";
+
+      const variantStocksRaw =
+        itemLower["variantes_stock"] ??
+        itemLower["variants_stock"] ??
+        "";
 
       const variantIds = variantIdsRaw
         ? String(variantIdsRaw).split(";").map((v) => v.trim()).filter(Boolean)
@@ -129,7 +131,6 @@ export default async function handler(req, res) {
         stock: Number.isFinite(variantStocks[i]) ? variantStocks[i] : 0,
       }));
 
-      // Stock general
       const stockKeys = [
         "stock",
         "cantidad",
@@ -138,16 +139,24 @@ export default async function handler(req, res) {
         "qty",
         "existencias",
       ];
+
       let generalStock = 0;
       for (const k of stockKeys) {
-        if (Object.prototype.hasOwnProperty.call(itemLower, k) && String(itemLower[k]).trim() !== "") {
+        if (
+          Object.prototype.hasOwnProperty.call(itemLower, k) &&
+          String(itemLower[k]).trim() !== ""
+        ) {
           generalStock = parseLocalizedNumber(String(itemLower[k]));
           break;
         }
       }
 
-      // Price parsing
-      const precioRaw = itemLower["precio"] ?? itemLower["price"] ?? itemLower["precio_venta"] ?? "";
+      const precioRaw =
+        itemLower["precio"] ??
+        itemLower["price"] ??
+        itemLower["precio_venta"] ??
+        "";
+
       const price = parseLocalizedNumber(String(precioRaw));
 
       return {
