@@ -58,7 +58,7 @@ function convertDriveLink(url) {
     }
   }
   
-  // Si no es Drive ni ruta local, devolver tal cual
+  // Si no es Drive ni ruta local, devolverlo tal cual
   return trimmed;
 }
 
