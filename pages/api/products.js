@@ -12,21 +12,54 @@ function parseLocalizedNumber(value) {
   let s = value.trim();
   if (s === "") return 0;
 
-  // limpiar espacios y símbolos comunes
   s = s.replace(/\s/g, "");
 
-  // Si tiene ambos '.' y ',' asumimos formato "14.271,00" -> quitar puntos, coma -> punto
   if (s.indexOf(".") > -1 && s.indexOf(",") > -1) {
     s = s.replace(/\./g, "").replace(",", ".");
   } else if (s.indexOf(",") > -1 && s.indexOf(".") === -1) {
-    // "14271,00" -> "14271.00"
     s = s.replace(",", ".");
-  } else {
-    // Dejar tal cual (ej "14271.00" o "14271")
   }
 
   const n = parseFloat(s);
   return Number.isFinite(n) ? n : 0;
+}
+
+// ⭐ Nueva función para convertir links de Google Drive
+function convertDriveLink(url) {
+  if (!url || typeof url !== "string") return url;
+  
+  const trimmed = url.trim();
+  
+  // Si es una ruta local, dejarla tal cual
+  if (trimmed.startsWith("/") || trimmed.startsWith("./")) {
+    return trimmed;
+  }
+  
+  // Si es un link de Google Drive, convertirlo
+  if (trimmed.includes("drive.google.com")) {
+    // Extraer el FILE_ID de diferentes formatos posibles
+    let fileId = null;
+    
+    // Formato: https://drive.google.com/file/d/FILE_ID/view?usp=...
+    const match1 = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (match1) {
+      fileId = match1[1];
+    }
+    
+    // Formato: https://drive.google.com/open?id=FILE_ID
+    const match2 = trimmed.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (match2) {
+      fileId = match2[1];
+    }
+    
+    // Si encontramos el ID, convertir al formato directo
+    if (fileId) {
+      return `https://drive.google.com/uc?export=view&id=${fileId}`;
+    }
+  }
+  
+  // Si no es Drive ni ruta local, devolver tal cual
+  return trimmed;
 }
 
 export default async function handler(req, res) {
@@ -56,22 +89,21 @@ export default async function handler(req, res) {
     const products = rows.slice(1).map((row) => {
       const item = {};
       headers.forEach((header, index) => {
-        // normalizamos a string vacío si no existe la celda
         item[header] = row[index] ?? "";
       });
 
-      // Para buscar propiedades de forma case-insensitive y robusta
       const itemLower = {};
       Object.keys(item).forEach((k) => {
         itemLower[String(k).toLowerCase()] = item[k];
       });
 
-      // 🔄 NORMALIZACIÓN: imágenes
-      const imagesArray = (itemLower["imagenes"] || itemLower["images"] || "")
-        ? (String(itemLower["imagenes"] || itemLower["images"])
+      // 🔄 NORMALIZACIÓN: imágenes con conversión de links de Drive
+      const imagesRaw = itemLower["imagenes"] || itemLower["images"] || "";
+      const imagesArray = imagesRaw
+        ? String(imagesRaw)
             .split(";")
-            .map((i) => i.trim())
-            .filter(Boolean))
+            .map((i) => convertDriveLink(i.trim())) // ⭐ Convertir cada link
+            .filter(Boolean)
         : [];
 
       // Variantes: ids, labels, stocks (separador ';')
@@ -97,7 +129,7 @@ export default async function handler(req, res) {
         stock: Number.isFinite(variantStocks[i]) ? variantStocks[i] : 0,
       }));
 
-      // ---- Stock general: soportamos varios nombres de columna (case-insensitive) ----
+      // Stock general
       const stockKeys = [
         "stock",
         "cantidad",
@@ -113,9 +145,8 @@ export default async function handler(req, res) {
           break;
         }
       }
-      // ------------------------------------------------------------------------------
 
-      // Price parsing robusto (acepta "14.271,00", "14271.00", "121", etc.)
+      // Price parsing
       const precioRaw = itemLower["precio"] ?? itemLower["price"] ?? itemLower["precio_venta"] ?? "";
       const price = parseLocalizedNumber(String(precioRaw));
 
@@ -128,7 +159,6 @@ export default async function handler(req, res) {
         image: imagesArray[0] || "",
         images: imagesArray,
         variants,
-        // Si hay variantes devolvemos stock null en el nivel producto (para evitar confusión)
         stock: variants.length ? null : (Number.isFinite(generalStock) ? generalStock : 0),
         disclaimer: item.disclaimer ?? itemLower["disclaimer"] ?? "",
       };
