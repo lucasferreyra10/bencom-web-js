@@ -23,24 +23,15 @@ export default function ProductLightbox({
         : [];
 
   const maxIndex = Math.max(0, images.length - 1);
-  const hasVariants = product?.variants && product.variants.length > 1;
-  const singleVariant =
-    product?.variants && product.variants.length === 1
-      ? product.variants[0]
-      : null;
+  const hasVariants = product?.variants && product.variants.length > 0;
 
-  // Stock para productos SIN variantes (o con una única variante)
-  const stock = singleVariant
-    ? parseInt(singleVariant?.stock || 0, 10)
-    : parseInt(product?.stock || product?.Stock || 0, 10);
-
+  // Stock para productos SIN variantes
+  const stock = parseInt(product?.stock || product?.Stock || 0, 10);
+  
   // ⭐ Calcular stock disponible (stock - cantidad en carrito)
   const getAvailableStock = () => {
     if (hasVariants) return 0; // Para variantes se calcula individual
-    const cartId = singleVariant
-      ? `${product.id}-${singleVariant.id}`
-      : product?.id;
-    const itemInCart = cart.items.find((i) => i.id === cartId);
+    const itemInCart = cart.items.find((i) => i.id === product?.id);
     const qtyInCart = itemInCart ? itemInCart.quantity : 0;
     return Math.max(0, stock - qtyInCart);
   };
@@ -196,12 +187,12 @@ export default function ProductLightbox({
     if (!hasVariants) return 0;
     const variant = product.variants.find((v) => v.id === variantId);
     const totalStock = parseInt(variant?.stock || 0, 10);
-
+    
     // Buscar en el carrito si ya hay cantidad agregada de esta variante
     const itemId = `${product.id}-${variantId}`;
     const itemInCart = cart.items.find((i) => i.id === itemId);
     const qtyInCart = itemInCart ? itemInCart.quantity : 0;
-
+    
     return Math.max(0, totalStock - qtyInCart);
   }
 
@@ -240,7 +231,7 @@ export default function ProductLightbox({
           addItem(itemToAdd);
         }
       });
-
+      
       // ⭐ Reset cantidades después de agregar
       const resetQty = {};
       product.variants.forEach((v) => {
@@ -249,22 +240,13 @@ export default function ProductLightbox({
       setVariantQty(resetQty);
     } else {
       if (qty > 0) {
-        const itemToAdd = singleVariant
-          ? {
-              ...product,
-              id: `${product.id}-${singleVariant.id}`,
-              title: `${product.title} - ${singleVariant.label}`,
-              variant: singleVariant.label,
-              quantity: qty,
-              stock: singleVariant.stock || 0,
-            }
-          : {
-              ...product,
-              quantity: qty,
-              stock: stock || 0,
-            };
+        const itemToAdd = {
+          ...product,
+          quantity: qty,
+          stock: stock || 0,
+        };
         addItem(itemToAdd);
-
+        
         // ⭐ Reset cantidad después de agregar
         setQty(0);
       }

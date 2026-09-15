@@ -53,11 +53,6 @@ export default function ProductCard({ product, onOpenGallery }) {
       </button>
 
       <h3 className="font-semibold">{product.title}</h3>
-      {product?.collection && (
-        <span className="inline-block mt-1 mb-1 text-[10px] font-medium uppercase tracking-wide text-primary bg-primary/10 rounded px-2 py-0.5 self-start">
-          {product.collection}
-        </span>
-      )}
       <p
         className="text-sm text-gray-600 mt-1 flex-1"
         dangerouslySetInnerHTML={{ __html: product.description }}

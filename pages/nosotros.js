@@ -9,11 +9,9 @@ export default function Nosotros() {
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-3xl font-title mb-2">Nosotros</h2>
           <p className="text-lg mb-4">
-            Somos <strong>Seona Deco</strong>, una propuesta dedicada a la
-            decoración y aromatización de espacios. Nuestro catálogo reúne
-            sahumerios, velas, difusores, jabones líquidos, aromatizantes y
-            productos de decoración, pensados para aportar aroma, calidez y
-            personalidad a cada ambiente.
+            Somos <strong>BENCOM S.R.L.</strong>, dedicados al mantenimiento
+            integral y soluciones para empresas. Nos orientamos a ofrecer un
+            servicio profesional, rápido y garantizado.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -22,16 +20,16 @@ export default function Nosotros() {
               <h3 className="text-xl font-semibold mb-3">Nuestros contactos</h3>
               <dl className="space-y-3 text-lg">
                 <div className="flex items-center flex-wrap">
-                  <span className="mr-3 text-2xl text-primary">
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="w-5 h-5"
-                      fill="currentColor"
-                      xmlns="http://www.w3.org/2000/svg"
-                      aria-hidden="true"
-                    >
-                      <path d="M20.52 3.48A11.86 11.86 0 0012.06 0C5.5 0 .2 5.3.2 11.86c0 2.09.55 4.13 1.6 5.93L0 24l6.4-1.68a11.83 11.83 0 005.66 1.44h.01c6.56 0 11.86-5.3 11.86-11.86 0-3.17-1.24-6.15-3.41-8.42zM12.06 21.5h-.01a9.6 9.6 0 01-4.9-1.34l-.35-.21-3.66.96.98-3.57-.23-.36a9.6 9.6 0 01-1.47-5.12c0-5.3 4.32-9.62 9.64-9.62 2.58 0 5 1 6.82 2.83a9.57 9.57 0 012.82 6.8c0 5.3-4.32 9.63-9.64 9.63z" />
-                    </svg>
+                  <span className="mr-3 text-2xl">
+                    {" "}
+                    <img
+                      src="icons/NUEVOS ICONOS BENCOM-12.svg"
+                      alt="WhatsApp"
+                      width={20}
+                      height={20}
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </span>
                   <div>
                     <dt className="font-medium">Teléfono</dt>
@@ -39,7 +37,7 @@ export default function Nosotros() {
                       <a
                         href={waLink()}
                         className="text-secondary underline break-all"
-                        aria-label="Chat de WhatsApp"
+                        aria-label="Llamar al 11 2779 7320"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -50,11 +48,11 @@ export default function Nosotros() {
                 </div>
 
                 <div className="flex items-center flex-wrap">
-                  <span className="mr-3 text-2xl text-primary">
+                  <span className="mr-3 text-2xl">
                     <svg
                       viewBox="0 0 24 24"
                       className="w-5 h-5"
-                      fill="currentColor"
+                      fill="#2e358c"
                       xmlns="http://www.w3.org/2000/svg"
                       aria-hidden="true"
                     >
@@ -65,9 +63,9 @@ export default function Nosotros() {
                     <dt className="font-medium">Email</dt>
                     <dd>
                       <a
-                        href="mailto:seonadeco@gmail.com"
+                        href="mailto:mantenimiento@bencom.com.ar"
                         className="text-secondary underline break-all"
-                        aria-label="Enviar correo a Seona Deco"
+                        aria-label="Enviar correo a mantenimiento"
                         rel="noopener noreferrer"
                       >
                         Nuestro correo
@@ -77,35 +75,45 @@ export default function Nosotros() {
                 </div>
 
                 <div className="flex items-center flex-wrap">
-                  <span className="mr-3 text-2xl text-primary">
-                    <svg
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      className="w-5 h-5"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
-                      <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
-                    </svg>
+                  <span className="mr-3 text-2xl">
+                    {" "}
+                    <img
+                      src="icons/NUEVOS ICONOS BENCOM-13.svg"
+                      alt="Instagram"
+                      width={20}
+                      height={20}
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </span>
                   <div>
                     <dt className="font-medium">Instagram</dt>
                     <dd>
                       <a
-                        href="https://www.instagram.com/seona.deco/"
+                        href="https://instagram.com/bencomsrl"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-secondary underline break-all"
-                        aria-label="Abrir Instagram de Seona Deco"
+                        aria-label="Abrir Instagram de bencomsrl"
                       >
                         Ver más novedades
                       </a>
                     </dd>
                   </div>
+                </div>
+                <div className="flex items-center flex-wrap">
+                  <span className="mr-3 text-2xl">
+                    {" "}
+                    <img
+                      src="https://img.icons8.com/m_outlined/512/whatsapp--v2.png"
+                      alt="WhatsApp"
+                      className="w-5 h-5 filter invert object-contain"
+                      width={20}
+                      height={20}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </span>
                 </div>
               </dl>
             </div>

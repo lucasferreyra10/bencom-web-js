@@ -10,17 +10,17 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#6F5D4E",
-          light:   "#8A7563",
-          dark:    "#57483D",
+          DEFAULT: "#2e358c",
+          light:   "#30368b",
+          dark:    "#242c67",
         },
         secondary: {
-          DEFAULT: "#D8C8B6",
-          light:   "#E8DDD0",
+          DEFAULT: "#009ee2",
+          light:   "#0089d0",
         },
-        accent: "#B89B7A",
-        background: "#F3EEE8",
-        black: "#292622",
+        accent: "#009ee2",
+        background: "#eeeeeF",
+        black: "#000100",
         white: "#ffffff"
       },
       fontFamily: {
