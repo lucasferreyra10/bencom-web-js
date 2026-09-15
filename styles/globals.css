@@ -40,7 +40,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ---------- Fix global: evita franja blanca al desplazar .site-content ---------- */
 /* Aseguramos fondo global coherente */
-:root { --bg: #eeeeeF; --cart-width: 24rem; }
+:root { --bg: #F3EEE8; --cart-width: 24rem; }
 html, body, #__next { height: 100%; background: var(--bg) !important; }
 
 /* Aseguramos que site-content no tenga fondo blanco por accidente */

@@ -6,7 +6,7 @@ const fs = require("fs");
 const path = require("path");
 
 // CONFIG: ajustá el número que quieras buscar (con o sin +)
-const SEARCH_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+5491127797320";
+const SEARCH_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+5491124016096";
 const SEARCH_NUMBER_VARIANTS = [
   SEARCH_NUMBER,
   SEARCH_NUMBER.replace(/^\+/, ""), // without plus

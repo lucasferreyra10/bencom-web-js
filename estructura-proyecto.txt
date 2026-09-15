@@ -1,0 +1,198 @@
+.env.example
+.gitattributes
+.gitignore
+estructura.txt
+next.config.js
+package-lock.json
+package.json
+pnpm-lock.yaml
+postcss.config.js
+tailwind.config.js
+components\Carousel.js
+components\CartDrawer.jsx
+components\CartProvider.jsx
+components\ImageLightbox.jsx
+components\Layout.js
+components\ProductCard.jsx
+components\ProductLightbox.jsx
+components\ServicePage.jsx
+data\services.js
+lib\wa.js
+pages\index.js
+pages\nosotros.js
+pages\productos.js
+pages\servicios.js
+pages\_app.js
+pages\api\products.js
+pages\api\send-email.js
+pages\servicios\[slug].js
+public\footerBencom.svg
+public\logoBencom.png
+public\covers\demarcacion.jpeg
+public\covers\destapaciones.jpeg
+public\covers\equipos-de-frio.jpeg
+public\covers\herrerias.jpeg
+public\covers\obra-civil-menor.jpeg
+public\covers\pintura-en-altura.jpeg
+public\covers\portada-inicio.jpeg
+public\covers\portada_inicio2.jpeg
+public\covers\probar_portada_1.jpeg
+public\covers\probar_portada_1.png
+public\covers\probar_portada_2.jpeg
+public\covers\probar_portada_2.png
+public\covers\proyectos-ideas.jpeg
+public\icons\favicon.ico
+public\icons\NUEVOS ICONOS BENCOM-01.svg
+public\icons\NUEVOS ICONOS BENCOM-02.svg
+public\icons\NUEVOS ICONOS BENCOM-03.svg
+public\icons\NUEVOS ICONOS BENCOM-04.svg
+public\icons\NUEVOS ICONOS BENCOM-05.svg
+public\icons\NUEVOS ICONOS BENCOM-06.svg
+public\icons\NUEVOS ICONOS BENCOM-07.svg
+public\icons\NUEVOS ICONOS BENCOM-08.svg
+public\icons\NUEVOS ICONOS BENCOM-09.svg
+public\icons\NUEVOS ICONOS BENCOM-10.svg
+public\icons\NUEVOS ICONOS BENCOM-11.svg
+public\icons\NUEVOS ICONOS BENCOM-12.svg
+public\icons\NUEVOS ICONOS BENCOM-13.svg
+public\Imagenes\1_obra civil menor\FOTOS PORTADAS SECCIONES BENCOM WEB-02.png
+public\Imagenes\1_obra civil menor\Imagen de WhatsApp 2025-10-06 a las 13.19.12_1e20b554.jpg
+public\Imagenes\1_obra civil menor\Imagen de WhatsApp 2025-10-06 a las 13.19.13_4cd7ea55.jpg
+public\Imagenes\1_obra civil menor\Imagen de WhatsApp 2025-10-06 a las 13.19.13_a7fb1ca0.jpg
+public\Imagenes\1_obra civil menor\Imagen de WhatsApp 2025-10-06 a las 13.19.15_5b2b344f.jpg
+public\Imagenes\1_obra civil menor\Imagen de WhatsApp 2025-10-06 a las 13.19.15_e63dfe9a.jpg
+public\Imagenes\1_obra civil menor\Imagen de WhatsApp 2025-10-06 a las 13.19.17_4150374d.jpg
+public\Imagenes\1_obra civil menor\Imagen de WhatsApp 2025-10-06 a las 13.22.09_08c8c096.jpg
+public\Imagenes\1_obra civil menor\Imagen de WhatsApp 2025-10-06 a las 14.44.24_253c00c3.jpg
+public\Imagenes\1_obra civil menor\Imagen de WhatsApp 2025-10-06 a las 14.48.39_317371c4.jpg
+public\Imagenes\1_obra civil menor\Imagen de WhatsApp 2025-10-06 a las 14.48.40_4c77d754.jpg
+public\Imagenes\1_obra civil menor\Imagen de WhatsApp 2025-10-06 a las 14.48.40_b5aec0fa.jpg
+public\Imagenes\1_obra civil menor\Imagen de WhatsApp 2025-10-06 a las 14.48.41_39bdc216.jpg
+public\Imagenes\1_obra civil menor\Imagen de WhatsApp 2025-10-06 a las 15.19.51_ec3783c7.jpg
+public\Imagenes\1_obra civil menor\Imagen de WhatsApp 2025-10-06 a las 15.19.52_db0ed6b3.jpg
+public\Imagenes\1_obra civil menor\Imagen de WhatsApp 2025-10-06 a las 15.26.41_59437f98.jpg
+public\Imagenes\1_obra civil menor\Imagen de WhatsApp 2025-10-06 a las 15.26.42_94e2ff32.jpg
+public\Imagenes\1_obra civil menor\Imagen de WhatsApp 2025-10-06 a las 15.26.42_cda08740.jpg
+public\Imagenes\1_obra civil menor\Imagen de WhatsApp 2025-10-06 a las 15.38.05_a72e5d53.jpg
+public\Imagenes\1_obra civil menor\IMG-20230605-WA0036.jpg
+public\Imagenes\1_obra civil menor\WhatsApp Image 2024-08-23 at 12.40.52 (2).jpeg
+public\Imagenes\1_obra civil menor\WhatsApp Image 2025-07-28 at 15.08.24.jpeg
+public\Imagenes\2_destapaciones\destapaciones_1.jpeg
+public\Imagenes\2_destapaciones\destapaciones_2.jpeg
+public\Imagenes\2_destapaciones\destapaciones_3.jpeg
+public\Imagenes\3_demarcacion vial\20231207_140527.heic
+public\Imagenes\3_demarcacion vial\demarcacion.jpeg
+public\Imagenes\3_demarcacion vial\demarcaciones.jpeg
+public\Imagenes\3_demarcacion vial\fgtgs.jpeg
+public\Imagenes\3_demarcacion vial\Foto 1 Editada.jpg
+public\Imagenes\3_demarcacion vial\Imagen de WhatsApp 2025-10-06 a las 13.16.37_d280da6b.jpg
+public\Imagenes\3_demarcacion vial\Imagen de WhatsApp 2025-10-06 a las 13.16.38_197abe60.jpg
+public\Imagenes\3_demarcacion vial\Imagen de WhatsApp 2025-10-06 a las 13.19.09_e8168217.jpg
+public\Imagenes\3_demarcacion vial\Imagen de WhatsApp 2025-10-06 a las 14.44.23_3cefd348.jpg
+public\Imagenes\3_demarcacion vial\Imagen de WhatsApp 2025-10-06 a las 14.44.23_bdea5ec6.jpg
+public\Imagenes\3_demarcacion vial\Imagen de WhatsApp 2025-10-06 a las 15.42.55_a49fdad7.jpg
+public\Imagenes\3_demarcacion vial\Imagen de WhatsApp 2025-10-06 a las 15.42.55_f3aa5c30.jpg
+public\Imagenes\3_demarcacion vial\Imagen de WhatsApp 2025-10-06 a las 15.42.56_a7b7fec6.jpg
+public\Imagenes\3_demarcacion vial\WhatsApp Image 2024-06-25 at 14.55.27 (1).jpeg
+public\Imagenes\3_demarcacion vial\WhatsApp Image 2025-06-18 at 12.54.07.jpeg
+public\Imagenes\4_pintura en altura\Imagen de WhatsApp 2025-10-06 a las 13.22.07_b75d9712.jpg
+public\Imagenes\4_pintura en altura\Imagen de WhatsApp 2025-10-06 a las 13.22.09_39e25648.jpg
+public\Imagenes\4_pintura en altura\Imagen de WhatsApp 2025-10-06 a las 15.08.49_adef13c7.jpg
+public\Imagenes\4_pintura en altura\WhatsApp Image 2024-08-23 at 13.45.01.jpeg
+public\Imagenes\4_pintura en altura\WhatsApp Image 2024-11-05 at 19.18.36.jpeg
+public\Imagenes\5_herrerias\1 Imagen de WhatsApp 2025-10-06 a las 13.22.08_bcb98649.jpg
+public\Imagenes\5_herrerias\2 WhatsApp Image 2024-09-03 at 12.17.40 (1).jpeg
+public\Imagenes\5_herrerias\herreria.jpeg
+public\Imagenes\5_herrerias\Imagen de WhatsApp 2025-10-06 a las 14.48.30_a8bbfc95.jpg
+public\Imagenes\5_herrerias\Imagen de WhatsApp 2025-10-06 a las 14.48.31_cf2f3e84.jpg
+public\Imagenes\5_herrerias\Imagen de WhatsApp 2025-10-06 a las 14.48.31_f647929a.jpg
+public\Imagenes\5_herrerias\Imagen de WhatsApp 2025-10-06 a las 15.24.44_0fb2e261.jpg
+public\Imagenes\6_equipos de frio\Imagen de WhatsApp 2025-10-06 a las 14.48.38_14eaf193.jpg
+public\Imagenes\6_equipos de frio\Imagen de WhatsApp 2025-10-06 a las 14.48.38_9aeb9165.jpg
+public\Imagenes\6_equipos de frio\Imagen de WhatsApp 2025-10-06 a las 14.48.39_5eed3d50.jpg
+public\products\ert.jpeg
+public\products\fesg.jpeg
+public\products\fvw.jpeg
+public\products\ged.jpeg
+public\products\WhatsApp Image 2025-03-26 at 12.28.52.jpeg
+public\products\WhatsApp Image 2025-07-30 at 13.23.31.jpeg
+public\products\aromatizante-de-ambientes\img1.jpg
+public\products\chapas-identificadoras\img1.jpg
+public\products\chapas-identificadoras\img2.jpg
+public\products\chapas-identificadoras\img3.jpg
+public\products\chapas-identificadoras\img4.jpg
+public\products\guantes-de-nitrilo\img1.jpg
+public\products\guantes-de-nitrilo\img2.jpg
+public\products\guantes-de-nitrilo\img3.jpg
+public\products\guantes-de-nitrilo\img4.jpg
+public\products\insectisidas\img1.jpg
+public\products\insectisidas\img2.jpg
+public\products\picos-prolongadores-1.5m\img1.png
+public\products\picos-prolongadores-1.5m\img2.png
+public\products\picos-prolongadores-1.5m\img3.png
+public\products\picos-prolongadores-1m\img1.png
+public\products\picos-prolongadores-1m\img2.png
+public\products\picos-prolongadores-1m\img3.png
+public\products\picos-prolongadores-1m\img4.png
+public\products\picos-prolongadores-1m\img5.png
+public\products\picos-prolongadores-1m\img6.png
+public\products\repelentes\img1.jpg
+public\products\repelentes\img2.jpg
+public\services\1_obra-civil-menor\img1.jpg
+public\services\1_obra-civil-menor\img10.jpg
+public\services\1_obra-civil-menor\img11.jpg
+public\services\1_obra-civil-menor\img12.jpg
+public\services\1_obra-civil-menor\img13.jpg
+public\services\1_obra-civil-menor\img14.jpg
+public\services\1_obra-civil-menor\img15.jpg
+public\services\1_obra-civil-menor\img16.jpg
+public\services\1_obra-civil-menor\img17.jpg
+public\services\1_obra-civil-menor\img18.jpg
+public\services\1_obra-civil-menor\img19.jpg
+public\services\1_obra-civil-menor\img2.jpg
+public\services\1_obra-civil-menor\img20.jpg
+public\services\1_obra-civil-menor\img21.jpg
+public\services\1_obra-civil-menor\img22.jpg
+public\services\1_obra-civil-menor\img3.jpg
+public\services\1_obra-civil-menor\img4.jpg
+public\services\1_obra-civil-menor\img5.jpg
+public\services\1_obra-civil-menor\img6.jpg
+public\services\1_obra-civil-menor\img7.jpg
+public\services\1_obra-civil-menor\img8.jpg
+public\services\1_obra-civil-menor\img9.jpg
+public\services\2_destapaciones\img1.jpg
+public\services\2_destapaciones\img2.jpg
+public\services\2_destapaciones\img3.jpg
+public\services\3_demarcacion-vial\img1.jpg
+public\services\3_demarcacion-vial\img10.jpg
+public\services\3_demarcacion-vial\img11.jpg
+public\services\3_demarcacion-vial\img12.jpg
+public\services\3_demarcacion-vial\img13.jpg
+public\services\3_demarcacion-vial\img14.jpg
+public\services\3_demarcacion-vial\img15.jpg
+public\services\3_demarcacion-vial\img2.jpg
+public\services\3_demarcacion-vial\img3.jpg
+public\services\3_demarcacion-vial\img4.jpg
+public\services\3_demarcacion-vial\img5.jpg
+public\services\3_demarcacion-vial\img6.jpg
+public\services\3_demarcacion-vial\img7.jpg
+public\services\3_demarcacion-vial\img8.jpg
+public\services\3_demarcacion-vial\img9.jpg
+public\services\4_pintura-en-altura\img1.jpg
+public\services\4_pintura-en-altura\img2.jpg
+public\services\4_pintura-en-altura\img3.jpg
+public\services\4_pintura-en-altura\img4.jpg
+public\services\4_pintura-en-altura\img5.jpg
+public\services\5_herrerias\img1.jpg
+public\services\5_herrerias\img2.jpg
+public\services\5_herrerias\img3.jpg
+public\services\5_herrerias\img4.jpg
+public\services\5_herrerias\img5.jpg
+public\services\5_herrerias\img6.jpg
+public\services\5_herrerias\img7.jpg
+public\services\6_equipos-de-frio\img1.jpg
+public\services\6_equipos-de-frio\img2.jpg
+public\services\6_equipos-de-frio\img3.jpg
+public\services\7_proyectos-ideas\img1.jpg
+scripts\find-wa.js
+styles\globals.css

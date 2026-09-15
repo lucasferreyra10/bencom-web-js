@@ -1,10 +1,7 @@
 // components/CartProvider.jsx
 import React, { createContext, useContext, useEffect, useReducer } from "react";
-
 const CartContext = createContext();
-
-const STORAGE_KEY = "bencom_cart_v1";
-
+const STORAGE_KEY = "seonadeco_cart_v1";
 function loadInitial() {
   if (typeof window === "undefined") return { items: [] };
   try {
@@ -14,7 +11,6 @@ function loadInitial() {
     return { items: [] };
   }
 }
-
 function reducer(state, action) {
   switch (action.type) {
     case "ADD_ITEM": {
@@ -24,13 +20,13 @@ function reducer(state, action) {
       if (existing) {
         // Item ya existe - actualizar cantidad y preservar/actualizar stock
         items = state.items.map((i) =>
-          i.id === item.id 
-            ? { 
-                ...i, 
+          i.id === item.id
+            ? {
+                ...i,
                 quantity: i.quantity + (item.quantity || 1),
                 // Actualizar stock si viene en el nuevo item
                 stock: item.stock !== undefined ? item.stock : i.stock
-              } 
+              }
             : i
         );
       } else {
@@ -58,10 +54,8 @@ function reducer(state, action) {
       return state;
   }
 }
-
 export function CartProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, undefined, loadInitial);
-
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -69,23 +63,18 @@ export function CartProvider({ children }) {
       /* ignore */
     }
   }, [state]);
-
   const addItem = (item) => dispatch({ type: "ADD_ITEM", payload: item });
   const updateQty = (id, quantity) => dispatch({ type: "UPDATE_QTY", payload: { id, quantity } });
   const removeItem = (id) => dispatch({ type: "REMOVE_ITEM", payload: id });
   const clearCart = () => dispatch({ type: "CLEAR_CART" });
-
   const getTotal = () =>
     state.items.reduce((s, it) => s + (Number(it.price) || 0) * (Number(it.quantity) || 0), 0);
-
   const getCount = () => state.items.reduce((s, it) => s + (Number(it.quantity) || 0), 0);
-
   return (
     <CartContext.Provider value={{ cart: state, addItem, updateQty, removeItem, clearCart, getTotal, getCount }}>
       {children}
     </CartContext.Provider>
   );
 }
-
 export const useCart = () => useContext(CartContext);
 export default CartProvider;

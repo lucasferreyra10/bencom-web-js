@@ -2,7 +2,9 @@
 
 const SPREADSHEET_ID = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
 const API_KEY = process.env.GOOGLE_SHEETS_API_KEY;
-const RANGE = "Sheet1!A1:Z1000";
+// Usar el nombre exacto de la pestaña de tu Sheet (ej. "Productos" o "Sheet1")
+const SHEET_TAB_NAME = process.env.SHEET_TAB_NAME || "Productos";
+const RANGE = `${SHEET_TAB_NAME}!A1:N1000`;
 
 function parseLocalizedNumber(value) {
   if (value === null || value === undefined) return 0;
@@ -36,7 +38,6 @@ function convertDriveLink(url) {
 
   if (trimmed.includes("drive.google.com")) {
     let fileId = null;
-
     const match1 = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
     if (match1) fileId = match1[1];
 
@@ -51,17 +52,26 @@ function convertDriveLink(url) {
   return trimmed;
 }
 
-function splitImageList(value) {
-  if (!value) return [];
-  return String(value)
-    .split(/;|\n|,/)
-    .map((i) => convertDriveLink(i.trim()))
-    .filter(Boolean);
+function splitImageList(imagesValue, singleImageValue) {
+  let list = [];
+  if (imagesValue) {
+    list = String(imagesValue)
+      .split(/;|\n/)
+      .map((i) => convertDriveLink(i.trim()))
+      .filter(Boolean);
+  }
+
+  if (list.length === 0 && singleImageValue) {
+    const single = convertDriveLink(String(singleImageValue).trim());
+    if (single) list.push(single);
+  }
+
+  return list;
 }
 
 export default async function handler(req, res) {
   if (!SPREADSHEET_ID || !API_KEY) {
-    return res.status(500).json({ error: "Faltan variables de entorno" });
+    return res.status(500).json({ error: "Faltan variables de entorno en el servidor" });
   }
 
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(
@@ -77,105 +87,85 @@ export default async function handler(req, res) {
     }
 
     const rows = data.values || [];
-    if (rows.length === 0) {
+    if (rows.length <= 1) {
       return res.status(200).json([]);
     }
 
-    const headers = rows[0];
+    // Encabezados normalizados a minúsculas
+    const headers = rows[0].map((h) => String(h).trim().toLowerCase());
 
-    const products = rows.slice(1).map((row) => {
-      const item = {};
-      headers.forEach((header, index) => {
-        item[header] = row[index] ?? "";
-      });
+    const products = rows
+      .slice(1)
+      .map((row) => {
+        const item = {};
+        headers.forEach((header, index) => {
+          item[header] = row[index] ? String(row[index]).trim() : "";
+        });
 
-      const itemLower = {};
-      Object.keys(item).forEach((k) => {
-        itemLower[String(k).toLowerCase()] = item[k];
-      });
+        // Filtrar filas completamente vacías o sin ID
+        if (!item["id"]) return null;
 
-      const imagesRaw = itemLower["imagenes"] || itemLower["images"] || "";
-      const imagesArray = splitImageList(imagesRaw);
+        // 1. Imágenes
+        const imagesArray = splitImageList(item["images"] || item["imagenes"], item["image"] || item["imagen"]);
+        const mainImage = item["image"] ? convertDriveLink(item["image"]) : imagesArray[0] || "";
 
-      const variantIdsRaw =
-        itemLower["variantes_ids"] ??
-        itemLower["variants_ids"] ??
-        itemLower["variantes"] ??
-        "";
+        // 2. Variantes
+        const variantIdsRaw = item["variantes_ids"] || item["variants_ids"] || item["variantes"] || "";
+        const variantLabelsRaw = item["variantes_labels"] || item["variants_labels"] || "";
+        const variantStocksRaw = item["variantes_stock"] || item["variants_stock"] || "";
 
-      const variantLabelsRaw =
-        itemLower["variantes_labels"] ??
-        itemLower["variants_labels"] ??
-        "";
+        const variantIds = variantIdsRaw
+          ? variantIdsRaw.split(";").map((v) => v.trim()).filter(Boolean)
+          : [];
 
-      const variantStocksRaw =
-        itemLower["variantes_stock"] ??
-        itemLower["variants_stock"] ??
-        "";
+        const variantLabels = variantLabelsRaw
+          ? variantLabelsRaw.split(";").map((v) => v.trim())
+          : [];
 
-      const variantIds = variantIdsRaw
-        ? String(variantIdsRaw).split(";").map((v) => v.trim()).filter(Boolean)
-        : [];
+        const variantStocks = variantStocksRaw
+          ? variantStocksRaw.split(";").map((v) => parseLocalizedNumber(v))
+          : [];
 
-      const variantLabels = variantLabelsRaw
-        ? String(variantLabelsRaw).split(";").map((v) => v.trim())
-        : [];
+        const variants = variantIds.map((id, i) => ({
+          id,
+          label: variantLabels[i] || id,
+          stock: Number.isFinite(variantStocks[i]) ? variantStocks[i] : 0,
+        }));
 
-      const variantStocks = variantStocksRaw
-        ? String(variantStocksRaw).split(";").map((v) => parseLocalizedNumber(v))
-        : [];
-
-      const variants = variantIds.map((id, i) => ({
-        id,
-        label: variantLabels[i] || id,
-        stock: Number.isFinite(variantStocks[i]) ? variantStocks[i] : 0,
-      }));
-
-      const stockKeys = [
-        "stock",
-        "cantidad",
-        "stock_unidades",
-        "stock_qty",
-        "qty",
-        "existencias",
-      ];
-
-      let generalStock = 0;
-      for (const k of stockKeys) {
-        if (
-          Object.prototype.hasOwnProperty.call(itemLower, k) &&
-          String(itemLower[k]).trim() !== ""
-        ) {
-          generalStock = parseLocalizedNumber(String(itemLower[k]));
-          break;
+        // 3. Stock General
+        const stockKeys = ["stock", "cantidad", "stock_unidades", "qty", "existencias"];
+        let generalStock = 0;
+        for (const k of stockKeys) {
+          if (item[k] !== undefined && item[k] !== "") {
+            generalStock = parseLocalizedNumber(item[k]);
+            break;
+          }
         }
-      }
 
-      const precioRaw =
-        itemLower["precio"] ??
-        itemLower["price"] ??
-        itemLower["precio_venta"] ??
-        "";
+        // 4. Precios
+        const precioRaw = item["price"] || item["precio"] || item["precio_venta"] || "";
+        const price = parseLocalizedNumber(precioRaw);
 
-      const price = parseLocalizedNumber(String(precioRaw));
-
-      return {
-        id: item.id ?? itemLower["id"] ?? "",
-        title: item.titulo ?? itemLower["titulo"] ?? itemLower["title"] ?? "",
-        price,
-        description: item.descripcion ?? itemLower["descripcion"] ?? "",
-        longDescription: item.descripcion_larga ?? itemLower["descripcion_larga"] ?? "",
-        image: imagesArray[0] || "",
-        images: imagesArray,
-        variants,
-        stock: variants.length ? null : (Number.isFinite(generalStock) ? generalStock : 0),
-        disclaimer: item.disclaimer ?? itemLower["disclaimer"] ?? "",
-      };
-    });
+        return {
+          id: item["id"],
+          title: item["title"] || item["titulo"] || "",
+          category: item["category"] || item["categoria"] || "",
+          collection: item["collection"] || item["coleccion"] || null,
+          price,
+          description: item["description"] || item["descripcion"] || "",
+          longDescription: item["longdescription"] || item["descripcion_larga"] || null,
+          image: mainImage,
+          images: imagesArray,
+          variants,
+          stock: variants.length > 0 ? null : generalStock,
+          disclaimer: item["disclaimer"] || null,
+        };
+      })
+      .filter(Boolean);
 
     return res.status(200).json(products);
   } catch (error) {
-    console.error("Error Google Sheets:", error);
-    return res.status(500).json({ error: "Error al leer Google Sheets" });
+    console.error("Error al consultar Google Sheets API:", error);
+    return res.status(500).json({ error: "Error al leer datos de Google Sheets" });
   }
 }

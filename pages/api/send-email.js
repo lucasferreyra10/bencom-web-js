@@ -76,17 +76,16 @@ export default async function handler(req, res) {
       <p>${escapeHtml(message).replace(/\n/g, "<br/>")}</p>
     `;
 
-    // Aseguramos formato "Nombre vía Bencom" con el SMTP real
+    // Aseguramos formato "Nombre vía Seona Deco" con el SMTP real
+    const senderEmail = EMAIL_FROM || SMTP_USER || "seonadeco@gmail.com";
     const fromAddress =
       name && name.trim().length
-        ? `${escapeHtml(name)} vía bencom.com.ar <${
-            SMTP_USER || "mantenimiento@bencom.com.ar"
-          }>`
-        : `Bencom <${SMTP_USER || "mantenimiento@bencom.com.ar"}>`;
+        ? `${escapeHtml(name)} vía Seona Deco <${senderEmail}>`
+        : `Seona Deco <${senderEmail}>`;
 
     const mailOptions = {
       from: fromAddress,
-      to: EMAIL_TO || "mantenimiento@bencom.com.ar",
+      to: EMAIL_TO || "seonadeco@gmail.com",
       subject: subjectFinal,
       text: textBody,
       html: htmlBody,

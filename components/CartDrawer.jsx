@@ -163,7 +163,11 @@ export default function CartDrawer() {
 
     // Buscar el item para obtener su stock
     const item = cart.items.find((i) => i.id === id);
-    const itemStock = item ? Number(item.stock) || Infinity : Infinity;
+    const itemStock = item
+      ? Number.isFinite(Number(item.stock))
+        ? Number(item.stock)
+        : 0
+      : 0;
 
     if (Number.isNaN(n) || n < 1) {
       updateQty(id, 1);
@@ -188,7 +192,9 @@ export default function CartDrawer() {
   }
   function increaseQty(it) {
     const currentQty = Number(it.quantity) || 1;
-    const itemStock = Number(it.stock) || Infinity; // Si no hay stock definido, sin límite
+    const itemStock = Number.isFinite(Number(it.stock))
+      ? Number(it.stock)
+      : 0; // Sin stock definido → no se permite incrementar
 
     // Solo incrementar si no supera el stock
     if (currentQty < itemStock) {
@@ -251,7 +257,7 @@ export default function CartDrawer() {
           aria-label="Contactar por WhatsApp"
         >
           <img
-            src="/icons/NUEVOS ICONOS BENCOM-12.svg"
+            src="/icons/whatsapp.svg"
             alt="WhatsApp"
             width={22}
             height={22}
