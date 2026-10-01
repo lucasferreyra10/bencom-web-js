@@ -1,17 +1,39 @@
 // pages/nosotros.js
 import Layout from "../components/Layout";
 import { waLink } from "../lib/wa";
+import { supabasePublic } from '../lib/supabase/public';
 
-export default function Nosotros() {
+export async function getServerSideProps() {
+  try {
+    const { data, error } = await supabasePublic
+      .from('about_content')
+      .select('*')
+      .eq('section', 'general')
+      .single();
+
+    return {
+      props: {
+        aboutData: data || null,
+      },
+    };
+  } catch (error) {
+    return { props: { aboutData: null } };
+  }
+}
+
+export default function Nosotros({ aboutData }) {
+  const content = aboutData?.content || "Somos BENCOM S.R.L., dedicados al mantenimiento integral y soluciones para empresas. Nos orientamos a ofrecer un servicio profesional, rápido y garantizado.";
+  const instagramLink = aboutData?.instagram_url || "https://instagram.com/bencomsrl";
+  const emailLink = aboutData?.email ? `mailto:${aboutData.email}` : "mailto:mantenimiento@bencom.com.ar";
+  const whatsappNumber = aboutData?.whatsapp_number || null;
+
   return (
     <Layout>
       <section className="space-y-8">
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-3xl font-title mb-2">Nosotros</h2>
-          <p className="text-lg mb-4">
-            Somos <strong>BENCOM S.R.L.</strong>, dedicados al mantenimiento
-            integral y soluciones para empresas. Nos orientamos a ofrecer un
-            servicio profesional, rápido y garantizado.
+          <p className="text-lg mb-4 whitespace-pre-wrap">
+            {content}
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -35,9 +57,9 @@ export default function Nosotros() {
                     <dt className="font-medium">Teléfono</dt>
                     <dd>
                       <a
-                        href={waLink()}
+                        href={waLink(whatsappNumber)}
                         className="text-secondary underline break-all"
-                        aria-label="Llamar al 11 2779 7320"
+                        aria-label="Llamar al WhatsApp"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -63,7 +85,7 @@ export default function Nosotros() {
                     <dt className="font-medium">Email</dt>
                     <dd>
                       <a
-                        href="mailto:mantenimiento@bencom.com.ar"
+                        href={emailLink}
                         className="text-secondary underline break-all"
                         aria-label="Enviar correo a mantenimiento"
                         rel="noopener noreferrer"
@@ -90,7 +112,7 @@ export default function Nosotros() {
                     <dt className="font-medium">Instagram</dt>
                     <dd>
                       <a
-                        href="https://instagram.com/bencomsrl"
+                        href={instagramLink}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-secondary underline break-all"
@@ -100,20 +122,6 @@ export default function Nosotros() {
                       </a>
                     </dd>
                   </div>
-                </div>
-                <div className="flex items-center flex-wrap">
-                  <span className="mr-3 text-2xl">
-                    {" "}
-                    <img
-                      src="https://img.icons8.com/m_outlined/512/whatsapp--v2.png"
-                      alt="WhatsApp"
-                      className="w-5 h-5 filter invert object-contain"
-                      width={20}
-                      height={20}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </span>
                 </div>
               </dl>
             </div>

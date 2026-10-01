@@ -2,43 +2,60 @@
 
 import { useRouter } from "next/router";
 import ServicePage from "../../components/ServicePage";
-import { services } from "../../data/services";
+import { supabasePublic } from "../../lib/supabase/public";
 
-export default function ServicioDinamico() {
-  const router = useRouter();
-  const { slug } = router.query;
+export async function getServerSideProps({ params }) {
+  const { slug } = params;
+  
+  // Fetch the main service
+  const { data: service, error: serviceError } = await supabasePublic
+    .from("services")
+    .select("*")
+    .eq("slug", slug)
+    .single();
 
-  // Buscar el servicio actual
-  const service = services.find((s) => s.slug === slug);
-
-  // Si no se encuentra el servicio, mostrar mensaje
-  if (!service) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold">Servicio no encontrado</h1>
-      </div>
-    );
+  if (serviceError || !service) {
+    return { notFound: true };
   }
 
-  // Construir las rutas completas de las imágenes
-  const images = service.images.map((img) => `/services/${service.folder}/${img}`);
+  // Fetch other services
+  const { data: allServices, error: otherError } = await supabasePublic
+    .from("services")
+    .select("*")
+    .neq("slug", slug)
+    .order("order_index", { ascending: true });
 
-  // Construir el array de otros servicios (excluyendo el actual)
-  const otherServices = services
-    .filter((s) => s.slug !== slug)
-    .map((s) => ({
-      id: s.slug,
-      title: s.title,
-      description: s.description,
-      list: s.items.slice(0, 10), // Mostrar solo los primeros 10 items
-      images: s.images.slice(0, 50).map((img) => `/services/${s.folder}/${img}`), // Mostrar solo 50 imágenes
-    }));
+  const otherServices = (allServices || []).map((s) => ({
+    id: s.slug,
+    title: s.title,
+    description: s.description,
+    list: s.items ? s.items.slice(0, 10) : [],
+    images: s.images ? s.images.slice(0, 50) : [],
+  }));
+
+  return {
+    props: {
+      service,
+      otherServices,
+    },
+  };
+}
+
+export default function ServicioDinamico({ service, otherServices }) {
+  const router = useRouter();
+
+  if (router.isFallback || !service) {
+    return <div>Cargando...</div>;
+  }
+
+  // Use the full image URLs stored in Supabase
+  const images = service.images || [];
 
   return (
     <ServicePage
       title={service.title}
       description={service.description}
-      items={service.items}
+      items={service.items || []}
       images={images}
       otherServices={otherServices}
     />

@@ -53,22 +53,30 @@ export default function ProductCard({ product, onOpenGallery }) {
       </button>
 
       <h3 className="font-semibold">{product.title}</h3>
-      <p
+      <div
         className="text-sm text-gray-600 mt-1 flex-1"
         dangerouslySetInnerHTML={{ __html: product.description }}
       />
 
       <div className="mt-3 flex items-center justify-between">
         <div className="flex items-baseline gap-2">
-          {/* Precio original (el que resalta) */}
-          <div className="text-lg font-semibold">
-            {fmtCurrency(originalPrice)}
-          </div>
+          {originalPrice > 0 ? (
+            <>
+              {/* Precio original (el que resalta) */}
+              <div className="text-lg font-semibold text-primary">
+                {fmtCurrency(originalPrice)}
+              </div>
 
-          {/* Frase con precio sin impuestos todo en la misma línea */}
-          <div className="text-xs text-gray-500 ml-2">
-            Precio sin impuestos {fmtCurrency(netPrice)}
-          </div>
+              {/* Frase con precio sin impuestos todo en la misma línea */}
+              <div className="text-xs text-gray-500 ml-2">
+                Sin imp. {fmtCurrency(netPrice)}
+              </div>
+            </>
+          ) : (
+            <div className="text-sm font-medium text-gray-500 italic">
+              Consultar precio
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-2">

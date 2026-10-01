@@ -103,19 +103,32 @@ export default function CartDrawer() {
       const desc = it.description ? stripHTML(it.description) : "";
 
       // Precio
-      const price = `$${((Number(it.price) || 0) * Number(it.quantity)).toFixed(2)}`;
+      const unitPrice = Number(it.price) || 0;
+      const priceText = unitPrice > 0 ? `$${(unitPrice * Number(it.quantity)).toFixed(2)}` : "A consultar";
 
       // Armar la línea completa
       if (desc) {
         lines.push(`${itemLine}`);
         lines.push(`  (${desc})`);
-        lines.push(`  Subtotal: ${price}`);
+        if (unitPrice > 0) {
+          lines.push(`  Subtotal: ${priceText}`);
+        }
       } else {
-        lines.push(`${itemLine} — ${price}`);
+        if (unitPrice > 0) {
+          lines.push(`${itemLine} — ${priceText}`);
+        } else {
+          lines.push(`${itemLine}`);
+        }
       }
     });
     lines.push("");
-    lines.push(`Total: $${getTotal().toFixed(2)}`);
+    
+    const total = getTotal();
+    if (total > 0) {
+      lines.push(`Total: $${total.toFixed(2)}`);
+    } else {
+      lines.push("Total: A consultar");
+    }
     if (website) {
       lines.push("");
       lines.push(`Pedido generado desde: ${website}`);
@@ -163,7 +176,7 @@ export default function CartDrawer() {
 
     // Buscar el item para obtener su stock
     const item = cart.items.find((i) => i.id === id);
-    const itemStock = item ? Number(item.stock) || Infinity : Infinity;
+    const itemStock = item ? ((item.stock === null || item.stock === undefined) ? Infinity : Number(item.stock)) : Infinity;
 
     if (Number.isNaN(n) || n < 1) {
       updateQty(id, 1);
@@ -188,7 +201,7 @@ export default function CartDrawer() {
   }
   function increaseQty(it) {
     const currentQty = Number(it.quantity) || 1;
-    const itemStock = Number(it.stock) || Infinity; // Si no hay stock definido, sin límite
+    const itemStock = (it.stock === null || it.stock === undefined) ? Infinity : Number(it.stock); // Si no hay stock definido, sin límite
 
     // Solo incrementar si no supera el stock
     if (currentQty < itemStock) {
@@ -345,7 +358,7 @@ export default function CartDrawer() {
                         </div>
                         {/* Precio */}
                         <div className="text-sm text-gray-700 font-medium flex-shrink-0">
-                          ${it.price}
+                          {Number(it.price) > 0 ? `$${it.price}` : <span className="italic text-gray-500">Consultar</span>}
                         </div>
                       </div>
 
@@ -429,7 +442,7 @@ export default function CartDrawer() {
                 <div>
                   <div className="text-sm text-gray-600">Total</div>
                   <div className="font-semibold text-lg">
-                    ${getTotal().toFixed(2)}
+                    {getTotal() > 0 ? `$${getTotal().toFixed(2)}` : <span className="text-sm italic text-gray-500 font-normal">A consultar</span>}
                   </div>
                 </div>
 

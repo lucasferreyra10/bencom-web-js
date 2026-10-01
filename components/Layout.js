@@ -47,6 +47,26 @@ export default function Layout({ children }) {
   //   }
   // };
 
+  const [aboutData, setAboutData] = useState(null);
+
+  useEffect(() => {
+    async function fetchAbout() {
+      try {
+        const { createClient } = await import('../lib/supabase/client');
+        const supabase = createClient();
+        const { data } = await supabase.from('about_content').select('*').eq('section', 'general').single();
+        if (data) setAboutData(data);
+      } catch (err) {
+        console.error("Error fetching about_content", err);
+      }
+    }
+    fetchAbout();
+  }, []);
+
+  const instagramLink = aboutData?.instagram_url || "https://instagram.com/bencomsrl";
+  const emailLink = aboutData?.email ? `mailto:${aboutData.email}` : "mailto:mantenimiento@bencom.com.ar";
+  const whatsappNumber = aboutData?.whatsapp_number || null;
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <header className="bg-primary text-white relative z-30">
@@ -460,7 +480,7 @@ export default function Layout({ children }) {
             {/* WhatsApp */}
             <a
               className="ml-3"
-              href={waLink()}
+              href={waLink(whatsappNumber)}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="WhatsApp"
@@ -481,7 +501,7 @@ export default function Layout({ children }) {
             {/* Instagram */}
             <a
               className="ml-3 text-white"
-              href="https://instagram.com/bencomsrl"
+              href={instagramLink}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
@@ -505,7 +525,7 @@ export default function Layout({ children }) {
             {/* Gmail (envelope, en currentColor para mantener estilo) */}
             <a
               className="ml-3 text-white"
-              href="mailto:mantenimiento@bencom.com.ar"
+              href={emailLink}
               rel="noopener noreferrer"
               aria-label="Email"
               title="Email"

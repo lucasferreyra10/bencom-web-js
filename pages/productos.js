@@ -9,25 +9,63 @@ import ProductLightbox from "../components/ProductLightbox";
  * getServerSideProps construye la base URL desde la request para que
  * funcione tanto en desarrollo (localhost) como en producción.
  */
-export async function getServerSideProps(context) {
-  try {
-    // Construir baseUrl a partir de la request (funciona local y en deploy)
-    const req = context.req;
-    const protocol = req.headers["x-forwarded-proto"] || (req.connection && req.connection.encrypted ? "https" : "http");
-    const host = req.headers["x-forwarded-host"] || req.headers.host;
-    const baseUrl = `${protocol}://${host}`;
+import { supabasePublic } from '../lib/supabase/public';
 
-    const res = await fetch(`${baseUrl}/api/products`);
-    if (!res.ok) {
-      console.error("Error fetching /api/products:", res.status, await res.text());
+export async function getServerSideProps() {
+  try {
+    const { data: rawProducts, error } = await supabasePublic
+      .from('products')
+      .select('*');
+
+    if (error) {
+      console.error("Error fetching products from Supabase:", error);
       return { props: { products: [] } };
     }
 
-    const products = await res.json();
-    // Asegurarnos de devolver un array
+    const mappedProducts = (rawProducts || []).map(p => {
+      // Reconstruir variantes desde las columnas separadas
+      let variants = [];
+      if (p.variantes_ids && p.variantes_labels) {
+        // Soporta tanto comas como punto y coma como separadores
+        const ids = p.variantes_ids.split(/[,;]/).map(s => s.trim()).filter(Boolean);
+        const labels = p.variantes_labels.split(/[,;]/).map(s => s.trim()).filter(Boolean);
+        const stockArr = Array.isArray(p.variantes_stock) 
+          ? p.variantes_stock 
+          : [];
+        
+        // Iteramos hasta el mínimo entre ids y labels
+        const limit = Math.min(ids.length, labels.length);
+        for (let i = 0; i < limit; i++) {
+          variants.push({
+            id: ids[i],
+            label: labels[i],
+            // Si no hay stock definido para esta variante, queda null (infinito)
+            stock: stockArr[i] !== undefined ? stockArr[i] : null
+          });
+        }
+      }
+
+      return {
+        ...p,
+        title: p.titulo || p.title || '',
+        description: p.descripcion || p.description || '',
+        longDescription: p.descripcion_larga || p.longDescription || '',
+        images: p.imagenes ? p.imagenes.split(/[,;]/).map(s => s.trim()).filter(Boolean) : (p.images || []),
+        image: p.imagenes ? p.imagenes.split(/[,;]/)[0].trim() : (p.image || ''),
+        variants: variants.length > 0 ? variants : (p.variants || null)
+      }
+    });
+
+    // Natural sort by ID (e.g., p-1, p-2, p-10)
+    mappedProducts.sort((a, b) => {
+      const idA = String(a.id || '');
+      const idB = String(b.id || '');
+      return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
+    });
+
     return {
       props: {
-        products: Array.isArray(products) ? products : [],
+        products: mappedProducts,
       },
     };
   } catch (error) {

@@ -26,7 +26,12 @@ export default function ProductLightbox({
   const hasVariants = product?.variants && product.variants.length > 0;
 
   // Stock para productos SIN variantes
-  const stock = parseInt(product?.stock || product?.Stock || 0, 10);
+  const rawStock = product?.stock ?? product?.Stock;
+  let stock = Infinity;
+  if (rawStock !== undefined && rawStock !== null && rawStock !== "") {
+    stock = parseInt(rawStock, 10);
+    if (Number.isNaN(stock)) stock = Infinity;
+  }
   
   // ⭐ Calcular stock disponible (stock - cantidad en carrito)
   const getAvailableStock = () => {
@@ -186,7 +191,11 @@ export default function ProductLightbox({
   function getVariantAvailableStock(variantId) {
     if (!hasVariants) return 0;
     const variant = product.variants.find((v) => v.id === variantId);
-    const totalStock = parseInt(variant?.stock || 0, 10);
+    let totalStock = Infinity;
+    if (variant?.stock !== undefined && variant?.stock !== null && variant?.stock !== "") {
+      totalStock = parseInt(variant.stock, 10);
+      if (Number.isNaN(totalStock)) totalStock = Infinity;
+    }
     
     // Buscar en el carrito si ya hay cantidad agregada de esta variante
     const itemId = `${product.id}-${variantId}`;
@@ -226,7 +235,7 @@ export default function ProductLightbox({
             title: `${product.title} - ${variant.label}`,
             variant: variant.label,
             quantity: quantity,
-            stock: variant.stock || 0,
+            stock: (variant.stock === undefined || variant.stock === null || variant.stock === "") ? null : parseInt(variant.stock, 10),
           };
           addItem(itemToAdd);
         }
@@ -243,7 +252,7 @@ export default function ProductLightbox({
         const itemToAdd = {
           ...product,
           quantity: qty,
-          stock: stock || 0,
+          stock: stock === Infinity ? null : stock,
         };
         addItem(itemToAdd);
         
@@ -349,14 +358,16 @@ export default function ProductLightbox({
                 dangerouslySetInnerHTML={{ __html: product.description }}
               />
 
-              <div className="mb-3">
-                <div className="text-sm text-gray-500">
-                  Precio sin impuestos {fmtCurrency(netPrice)}
+              {originalPrice > 0 && (
+                <div className="mb-3">
+                  <div className="text-sm text-gray-500">
+                    Precio sin impuestos {fmtCurrency(netPrice)}
+                  </div>
+                  <div className="text-2xl font-bold text-primary mt-1">
+                    {fmtCurrency(originalPrice)}
+                  </div>
                 </div>
-                <div className="text-2xl font-bold text-primary mt-1">
-                  {fmtCurrency(originalPrice)}
-                </div>
-              </div>
+              )}
 
               <div
                 className="mb-4 text-sm text-gray-700 leading-relaxed"

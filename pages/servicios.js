@@ -1,139 +1,36 @@
 // pages/servicios.js
 import { useEffect, useState, useRef } from "react";
 import Layout from "../components/Layout";
+import { supabasePublic } from "../lib/supabase/public";
 
-export default function Servicios() {
-  const destapaciones = ["Cloacas", "Pluviales", "Cocinas", "Lavaderos"];
-  const obraCivilMenor = [
-    "Consorcios",
-    "Restaurantes",
-    "Comercios",
-    "Industrias",
-    "Domicilios",
-  ];
-  const demarcacionVial = [
-    "Sendas",
-    "Topes y Estacionamiento",
-    "Pintura de Cordones",
-    "Arreglos menores",
-    "Proyectos",
-    "Planeamiento de reformas",
-    "Trabajos de Durlock",
-    "Demarcación Vial",
-    "Herrerías",
-    "Proyectos-Ideas",
-    "Obra Civil Menor",
-    "Plomería",
-    "Destapaciones Pluviales",
-    "Equipos de frío",
-    "Pintura de Cañerías",
-    "Nichos de incendio",
-    "Oficinas",
-    "Medianeras",
-    "Impermeabilizaciones",
-  ];
-  const herrerias = [
-    "Trabajos garantizados",
-    "No cobramos por metro",
-    "Contamos con factura",
-    "Aceptamos transferencias, tarjetas y cuenta corriente",
-    "Atención en CABA y AMBA",
-  ];
-  const pinturaEnAltura = [];
-  const proyectosIdeas = [];
-  const equiposDeFrio = [];
+export async function getServerSideProps() {
+  const { data: services, error } = await supabasePublic
+    .from("services")
+    .select("*")
+    .order("order_index", { ascending: true });
 
-  // Importar todas las imágenes únicas de /public/services y subcarpetas
-  // Si agregas nuevas imágenes a la carpeta, actualiza este array.
-  const imagePool = [
-   // Subcarpeta: 1_obra civil menor
-    "/services/1_obra civil menor/Imagen de WhatsApp 2025-10-06 a las 13.19.15_5b2b344f.jpg", // 0
-    "/services/1_obra civil menor/Imagen de WhatsApp 2025-10-06 a las 13.19.15_e63dfe9a.jpg", // 1
-    "/services/1_obra civil menor/Imagen de WhatsApp 2025-10-06 a las 13.19.17_4150374d.jpg", // 2
-    "/services/1_obra civil menor/Imagen de WhatsApp 2025-10-06 a las 13.22.09_08c8c096.jpg", // 3
+  if (error) {
+    console.error("Error fetching services", error);
+    return { props: { servicesData: [] } };
+  }
 
-    // Subcarpeta: destapaciones
-    "/services/destapaciones/destapaciones-1.jpg", // 4
-    "/services/destapaciones/destapaciones-2.jpg", // 5
+  // Mapeamos los datos de Supabase para que coincidan con la estructura esperada
+  const servicesData = (services || []).map(s => ({
+    id: s.slug,
+    title: s.title,
+    description: s.description,
+    list: s.items || [],
+    images: s.images || [],
+  }));
 
-    // Subcarpeta: 3_demarcacion vial
-    "/services/3_demarcacion vial/Foto 1 Editada.jpg", // 6
-    "/services/3_demarcacion vial/Imagen de WhatsApp 2025-10-06 a las 13.16.37_ca068e05.jpg", // 7
-
-    // Subcarpeta: herreria
-    "/services/herreria/herreria-1.jpg", // 8
-    "/services/herreria/herreria-2.jpg", // 9
-
-    // Subcarpeta: pintura-altura
-    "/services/pintura-altura/pintura-altura-1.jpg", // 10
-    "/services/pintura-altura/pintura-altura-2.jpg", // 11
-
-    // Subcarpeta: equipos-frio
-    "/services/equipos-frio/equipos-frio-1.jpg",  // 12
-    "/services/equipos-frio/equipos-frio-2.jpg",  // 13
-
-    // Subcarpeta: proyectos-ideas
-    "/services/proyectos-ideas/proyectos-ideas-1.jpg", // 14
-    "/services/proyectos-ideas/proyectos-ideas-2.jpg", // 15
-
-    // Agrega aquí cualquier otra imagen nueva que esté en /public/services o sus subcarpetas
-  ];
-
-  const servicesData = [
-    {
-      id: "obra-civil-menor",
-      title: "Obra civil menor",
-      description:
-        "Pequeñas obras civiles con calidad garantizada.",
-      list: obraCivilMenor,
-      images: [imagePool[0], imagePool[1], imagePool[2], imagePool[3]],
+  return {
+    props: {
+      servicesData,
     },
-    {
-      id: "destapaciones",
-      title: "Destapaciones",
-      description:
-        "Brindamos un servicio profesional, eficiente y confiable.",
-      list: destapaciones,
-      images: [],
-    },
-    {
-      id: "demarcación-vial",
-      title: "Demarcación vial",
-      description: "Demarcación para todo tipo de proyectos.",
-      list: demarcacionVial,
-      images: [imagePool[6], imagePool[7]],
-    },
-    {
-      id: "pintura-en-altura",
-      title: "Pintura en altura",
-      description:
-        "Servicios de pintura en altura con profesionales capacitados.",
-      list: pinturaEnAltura,
-      images: [imagePool[1], imagePool[4], imagePool[0]],
-    },
-    {
-      id: "herrerias",
-      title: "Herrerías",
-      description: "Trabajos de herrería a medida: estructuras, rejas y más.",
-      list: herrerias,
-      images: [imagePool[3], imagePool[4]],
-    },
-    {
-      id: "equipos-de-frio",
-      title: "Equipos de frío",
-      description: "Mantenimiento y reparación de equipos de refrigeración.",
-      list: equiposDeFrio,
-      images: [imagePool[3], imagePool[4]],
-    },
-    {
-      id: "proyectos-ideas",
-      title: "Proyectos-Ideas",
-      description:
-        "Soluciones innovadoras para optimizar procesos y mantenimiento.",
-      list: proyectosIdeas,
-      images: [imagePool[3], imagePool[4]],
-    },
-  ];
+  };
+}
+
+export default function Servicios({ servicesData }) {
 
   const [openId, setOpenId] = useState(null);
   const [modal, setModal] = useState({ open: false, images: [], index: 0 });
