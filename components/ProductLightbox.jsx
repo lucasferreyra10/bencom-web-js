@@ -354,8 +354,8 @@ export default function ProductLightbox({
             <div className="p-4">
               <h2 className="text-xl font-semibold mb-2">{product.title}</h2>
               <div
-                className="text-sm text-gray-600 mb-3"
-                dangerouslySetInnerHTML={{ __html: product.description }}
+                className="text-sm text-gray-600 mb-3 break-words whitespace-pre-wrap overflow-hidden"
+                dangerouslySetInnerHTML={{ __html: product.description ? product.description.replace(/&nbsp;/g, ' ') : '' }}
               />
 
               {originalPrice > 0 && (
@@ -370,12 +370,9 @@ export default function ProductLightbox({
               )}
 
               <div
-                className="mb-4 text-sm text-gray-700 leading-relaxed"
+                className="mb-4 text-sm text-gray-700 leading-relaxed break-words whitespace-pre-wrap overflow-hidden"
                 dangerouslySetInnerHTML={{
-                  __html:
-                    product.longDescription ||
-                    product.description ||
-                    "Sin descripción adicional.",
+                  __html: (product.longDescription || product.description || "Sin descripción adicional.").replace(/&nbsp;/g, ' ')
                 }}
               />
 
@@ -497,8 +494,8 @@ export default function ProductLightbox({
               {/* Disclaimer */}
               {product.disclaimer && (
                 <div
-                  className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded text-sm text-gray-700"
-                  dangerouslySetInnerHTML={{ __html: product.disclaimer }}
+                  className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded text-sm text-gray-700 w-full break-words whitespace-pre-wrap overflow-hidden"
+                  dangerouslySetInnerHTML={{ __html: product.disclaimer.replace(/&nbsp;/g, ' ') }}
                 />
               )}
 

@@ -23,6 +23,7 @@ export async function getServerSideProps() {
 
 export default function Nosotros({ aboutData }) {
   const content = aboutData?.content || "Somos BENCOM S.R.L., dedicados al mantenimiento integral y soluciones para empresas. Nos orientamos a ofrecer un servicio profesional, rápido y garantizado.";
+  const cleanContent = content ? content.replace(/&nbsp;/g, ' ') : '';
   const instagramLink = aboutData?.instagram_url || "https://instagram.com/bencomsrl";
   const emailLink = aboutData?.email ? `mailto:${aboutData.email}` : "mailto:mantenimiento@bencom.com.ar";
   const whatsappNumber = aboutData?.whatsapp_number || null;
@@ -32,9 +33,10 @@ export default function Nosotros({ aboutData }) {
       <section className="space-y-8">
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-3xl font-title mb-2">Nosotros</h2>
-          <p className="text-lg mb-4 whitespace-pre-wrap">
-            {content}
-          </p>
+          <div 
+            className="text-lg mb-4 whitespace-pre-wrap break-words quill-content" 
+            dangerouslySetInnerHTML={{ __html: cleanContent }} 
+          />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* Contact info card */}

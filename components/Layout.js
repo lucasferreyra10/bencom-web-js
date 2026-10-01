@@ -83,7 +83,8 @@ export default function Layout({ children }) {
                   src="/logoBencom.png"
                   alt="BENCOM S.R.L."
                   width={50}
-                  height={15}
+                  height={35}
+                  className="w-[50px] h-auto object-contain"
                   priority
                 />
               </div>
@@ -274,7 +275,8 @@ export default function Layout({ children }) {
                     src="/logoBencom.png"
                     alt="BENCOM S.R.L."
                     width={50}
-                    height={15}
+                    height={35}
+                    className="w-[50px] h-auto object-contain"
                     priority
                   />
                 </Link>
@@ -451,7 +453,8 @@ export default function Layout({ children }) {
             src="/footerBencom.svg"
             alt="BENCOM S.R.L."
             width={150}
-            height={50}
+            height={21}
+            className="w-[150px] h-auto object-contain"
             priority
           />
           <span className="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">

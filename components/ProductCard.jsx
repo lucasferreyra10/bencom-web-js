@@ -54,8 +54,8 @@ export default function ProductCard({ product, onOpenGallery }) {
 
       <h3 className="font-semibold">{product.title}</h3>
       <div
-        className="text-sm text-gray-600 mt-1 flex-1"
-        dangerouslySetInnerHTML={{ __html: product.description }}
+        className="text-sm text-gray-600 mt-1 flex-1 break-words whitespace-pre-wrap overflow-hidden"
+        dangerouslySetInnerHTML={{ __html: product.description ? product.description.replace(/&nbsp;/g, ' ') : '' }}
       />
 
       <div className="mt-3 flex items-center justify-between">

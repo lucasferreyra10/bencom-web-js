@@ -358,7 +358,7 @@ export default function CartDrawer() {
                         </div>
                         {/* Precio */}
                         <div className="text-sm text-gray-700 font-medium flex-shrink-0">
-                          {Number(it.price) > 0 ? `$${it.price}` : <span className="italic text-gray-500">Consultar</span>}
+                          {Number(it.price) > 0 ? `$${it.price}` : <span className="italic text-gray-500"></span>}
                         </div>
                       </div>
 
