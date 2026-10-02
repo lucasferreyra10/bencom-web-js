@@ -23,6 +23,7 @@ import { CSS } from '@dnd-kit/utilities';
 export default function ServiciosAdmin() {
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
+  const [filterTab, setFilterTab] = useState('todos') // 'todos', 'visibles', 'ocultos'
   
   const [editingService, setEditingService] = useState(null)
   
@@ -53,6 +54,16 @@ export default function ServiciosAdmin() {
       alert('Error eliminando: ' + error.message)
     }
   }
+
+  const handleToggleVisibility = async (id, currentHidden) => {
+    const newHidden = !currentHidden;
+    setServices(services.map(s => s.id === id ? { ...s, is_hidden: newHidden } : s));
+    const { error } = await supabase.from('services').update({ is_hidden: newHidden }).eq('id', id);
+    if (error) {
+       setServices(services.map(s => s.id === id ? { ...s, is_hidden: currentHidden } : s));
+       alert('Error actualizando visibilidad: ' + error.message);
+    }
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -101,6 +112,12 @@ export default function ServiciosAdmin() {
     )
   }
 
+  const filteredServices = services.filter(s => {
+    if (filterTab === 'visibles') return !s.is_hidden
+    if (filterTab === 'ocultos') return s.is_hidden
+    return true
+  })
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 border-b pb-4">
@@ -116,42 +133,63 @@ export default function ServiciosAdmin() {
         </button>
       </div>
 
+      <div className="mb-6 flex space-x-2 border-b border-gray-200">
+        <button
+          onClick={() => setFilterTab('todos')}
+          className={`py-2 px-4 border-b-2 font-medium text-sm transition-colors ${filterTab === 'todos' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
+        >
+          Todos
+        </button>
+        <button
+          onClick={() => setFilterTab('visibles')}
+          className={`py-2 px-4 border-b-2 font-medium text-sm transition-colors ${filterTab === 'visibles' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
+        >
+          Visibles
+        </button>
+        <button
+          onClick={() => setFilterTab('ocultos')}
+          className={`py-2 px-4 border-b-2 font-medium text-sm transition-colors ${filterTab === 'ocultos' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
+        >
+          Ocultos
+        </button>
+      </div>
+
       <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-primary uppercase tracking-wider">Orden</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-primary uppercase tracking-wider">Slug</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-primary uppercase tracking-wider">Título</th>
-                <th className="px-6 py-4 text-right text-xs font-semibold text-primary uppercase tracking-wider">Acciones</th>
-              </tr>
-            </thead>
-            <DndContext 
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={handleDragEnd}
-            >
+          <DndContext 
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-primary uppercase tracking-wider w-24">Orden</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-primary uppercase tracking-wider">Slug</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-primary uppercase tracking-wider">Título</th>
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-primary uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
               <tbody className="divide-y divide-gray-200 bg-white">
-                {services.length === 0 ? (
+                {filteredServices.length === 0 ? (
                   <tr>
                     <td colSpan="4" className="px-6 py-12 text-center text-gray-500">
-                      No hay servicios registrados. Haz clic en "Agregar Servicio" para comenzar.
+                      No hay servicios en esta vista.
                     </td>
                   </tr>
                 ) : (
                   <SortableContext 
-                    items={services.map(s => s.id)}
+                    items={filteredServices.map(s => s.id)}
                     strategy={verticalListSortingStrategy}
                   >
-                    {services.map((s) => (
-                      <SortableRow key={s.id} service={s} onEdit={setEditingService} onDelete={handleDelete} />
+                    {filteredServices.map((s) => (
+                      <SortableRow key={s.id} service={s} onEdit={setEditingService} onDelete={handleDelete} onToggleVisibility={handleToggleVisibility} />
                     ))}
                   </SortableContext>
                 )}
               </tbody>
-            </DndContext>
-          </table>
+            </table>
+          </DndContext>
         </div>
       </div>
     </div>
@@ -167,6 +205,7 @@ function ServiceForm({ service, onCancel, onSave }) {
     description: service.description || '',
     folder: service.folder || '',
     order_index: service.order_index || 0,
+    is_hidden: service.is_hidden || false,
   })
 
   // Arrays from JSONB
@@ -222,7 +261,8 @@ function ServiceForm({ service, onCancel, onSave }) {
       ...formData,
       items: cleanItems,
       images: currentImages,
-      order_index: parseInt(formData.order_index, 10) || 0
+      order_index: parseInt(formData.order_index, 10) || 0,
+      is_hidden: formData.is_hidden
     }
 
     let error;
@@ -250,6 +290,23 @@ function ServiceForm({ service, onCancel, onSave }) {
       </div>
       
       <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="flex items-center gap-3 bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input 
+              type="checkbox" 
+              name="is_hidden"
+              checked={formData.is_hidden}
+              onChange={(e) => setFormData({ ...formData, is_hidden: e.target.checked })}
+              className="sr-only peer" 
+            />
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+          </label>
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold text-gray-700">Ocultar servicio</span>
+            <span className="text-xs text-gray-500">No se mostrará en la vista pública si está activado</span>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Slug (ID para URL ej. "mantenimiento")</label>
@@ -376,7 +433,7 @@ function ServiceForm({ service, onCancel, onSave }) {
   )
 }
 
-function SortableRow({ service, onEdit, onDelete }) {
+function SortableRow({ service, onEdit, onDelete, onToggleVisibility }) {
   const {
     attributes,
     listeners,
@@ -394,17 +451,34 @@ function SortableRow({ service, onEdit, onDelete }) {
   };
 
   return (
-    <tr ref={setNodeRef} style={style} className={`hover:bg-gray-50 transition-colors bg-white ${isDragging ? 'shadow-xl opacity-90' : ''}`}>
+    <tr ref={setNodeRef} style={style} className={`hover:bg-gray-50 transition-colors bg-white ${isDragging ? 'shadow-xl opacity-90' : ''} ${service.is_hidden ? 'opacity-60' : ''}`}>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium cursor-grab active:cursor-grabbing" {...attributes} {...listeners}>
         <div className="flex items-center gap-2">
            <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8h16M4 16h16"></path></svg>
            {service.order_index}
         </div>
       </td>
-      <td className="px-6 py-4 text-sm text-gray-500">{service.slug}</td>
+      <td className="px-6 py-4 text-sm text-gray-500">
+        <div className="flex items-center gap-2">
+          {service.slug}
+          {service.is_hidden && <span className="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded">Oculto</span>}
+        </div>
+      </td>
       <td className="px-6 py-4 text-sm text-gray-900 font-medium">{service.title}</td>
-      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium z-10 relative">
-        <button onPointerDown={(e) => e.stopPropagation()} onClick={() => onEdit(service)} className="text-secondary hover:text-secondary-light mr-4 transition-colors font-semibold relative z-20 cursor-pointer">Editar</button>
+      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium z-10 relative flex items-center justify-end gap-3">
+        <button 
+          onPointerDown={(e) => e.stopPropagation()} 
+          onClick={() => onToggleVisibility(service.id, service.is_hidden)}
+          className={`flex items-center justify-center p-1.5 rounded-full transition-colors ${service.is_hidden ? 'bg-gray-200 text-gray-500 hover:bg-gray-300' : 'bg-green-100 text-green-600 hover:bg-green-200'}`}
+          title={service.is_hidden ? "Mostrar servicio" : "Ocultar servicio"}
+        >
+          {service.is_hidden ? (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+          )}
+        </button>
+        <button onPointerDown={(e) => e.stopPropagation()} onClick={() => onEdit(service)} className="text-secondary hover:text-secondary-light transition-colors font-semibold relative z-20 cursor-pointer">Editar</button>
         <button onPointerDown={(e) => e.stopPropagation()} onClick={() => onDelete(service.id)} className="text-red-500 hover:text-red-700 transition-colors font-semibold relative z-20 cursor-pointer">Eliminar</button>
       </td>
     </tr>

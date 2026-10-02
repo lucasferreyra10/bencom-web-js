@@ -7,6 +7,7 @@ export async function getServerSideProps() {
   const { data: services, error } = await supabasePublic
     .from("services")
     .select("*")
+    .or("is_hidden.eq.false,is_hidden.is.null")
     .order("order_index", { ascending: true });
 
   if (error) {

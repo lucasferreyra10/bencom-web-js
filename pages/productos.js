@@ -15,7 +15,9 @@ export async function getServerSideProps() {
   try {
     const { data: rawProducts, error } = await supabasePublic
       .from('products')
-      .select('*');
+      .select('*')
+      .or('is_hidden.eq.false,is_hidden.is.null')
+      .order('order_index', { ascending: true });
 
     if (error) {
       console.error("Error fetching products from Supabase:", error);
@@ -54,13 +56,6 @@ export async function getServerSideProps() {
         image: p.imagenes ? p.imagenes.split(/[,;]/)[0].trim() : (p.image || ''),
         variants: variants.length > 0 ? variants : (p.variants || null)
       }
-    });
-
-    // Natural sort by ID (e.g., p-1, p-2, p-10)
-    mappedProducts.sort((a, b) => {
-      const idA = String(a.id || '');
-      const idB = String(b.id || '');
-      return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
     });
 
     return {
