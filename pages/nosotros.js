@@ -2,6 +2,7 @@
 import Layout from "../components/Layout";
 import { waLink } from "../lib/wa";
 import { supabasePublic } from '../lib/supabase/public';
+import Head from "next/head";
 
 export async function getServerSideProps() {
   try {
@@ -30,6 +31,16 @@ export default function Nosotros({ aboutData }) {
 
   return (
     <Layout>
+      <Head>
+        <title>Nosotros | BENCOM S.R.L - Mantenimiento Integral y Soluciones Operativas</title>
+        <meta name="description" content="Conocé más sobre BENCOM S.R.L. Somos una empresa de mantenimiento integral que nace del conocimiento operativo. Ofrecemos calidad, agilidad y soluciones a medida en CABA y GBA." />
+        <meta name="keywords" content="nosotros bencom, bencom srl, sobre nosotros, empresa de mantenimiento, soluciones operativas, mantenimiento en AMBA" />
+        <meta property="og:title" content="Nosotros | BENCOM S.R.L - Empresa de Mantenimiento Integral" />
+        <meta property="og:description" content="Conocé más sobre BENCOM S.R.L. Especialistas en mantenimiento de estaciones de servicio y obras civiles." />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://www.bencom.com.ar/nosotros" />
+      </Head>
       <section className="space-y-8">
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-3xl font-title mb-2">Nosotros</h2>

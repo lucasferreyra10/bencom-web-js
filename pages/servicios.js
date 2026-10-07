@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef } from "react";
 import Layout from "../components/Layout";
 import { supabasePublic } from "../lib/supabase/public";
+import Head from "next/head";
 
 export async function getServerSideProps() {
   const { data: services, error } = await supabasePublic
@@ -63,6 +64,16 @@ export default function Servicios({ servicesData }) {
 
   return (
     <Layout>
+      <Head>
+        <title>Servicios | BENCOM S.R.L - Obra Civil, Destapaciones, Pintura y Más</title>
+        <meta name="description" content="Conocé nuestros servicios de mantenimiento de estaciones de servicio: obra civil menor, destapaciones, demarcación vial, pintura en altura, herrerías y equipos de frío en AMBA." />
+        <meta name="keywords" content="servicios bencom, mantenimiento de estaciones de servicio, destapaciones, demarcación vial, pintura en altura, herrerías, equipos de frío, obras civiles menores" />
+        <meta property="og:title" content="Servicios | BENCOM S.R.L - Mantenimiento en AMBA" />
+        <meta property="og:description" content="Soluciones integrales de mantenimiento para empresas y estaciones de servicio." />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://www.bencom.com.ar/servicios" />
+      </Head>
       <section className="space-y-8 px-4 py-8 max-w-5xl mx-auto">
         <div className="bg-white shadow rounded-lg p-6">
           <h1 className="text-3xl font-title mb-2">Nuestros servicios</h1>

@@ -3,6 +3,8 @@ import Layout from "../components/Layout";
 import Carousel from "../components/Carousel";
 import { waLink } from "../lib/wa";
 
+import Head from "next/head";
+
 const SERVICIOS = [
   {
     id: "obra-civil-menor",
@@ -65,6 +67,16 @@ const SERVICIOS = [
 export default function Home() {
   return (
     <Layout>
+      <Head>
+        <title>BENCOM S.R.L | Mantenimiento de Estaciones de Servicio y Obras Civiles en AMBA</title>
+        <meta name="description" content="En BENCOM S.R.L brindamos soluciones integrales de mantenimiento de estaciones de servicio, obras civiles, demarcación vial, pintura en altura, herrerías, equipos de frío y destapaciones en CABA y Gran Buenos Aires." />
+        <meta name="keywords" content="bencom, bencom srl, mantenimiento de estaciones de servicio, obra civil menor, destapaciones, demarcación vial, pintura en altura, herrerías, equipos de frío, AMBA, mantenimiento integral" />
+        <meta property="og:title" content="BENCOM S.R.L | Mantenimiento de Estaciones de Servicio" />
+        <meta property="og:description" content="Especialistas en mantenimiento integral y soluciones operativas para empresas y estaciones de servicio en CABA y Gran Buenos Aires." />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://www.bencom.com.ar/" />
+      </Head>
       {/* HERO */}
       <section className="relative">
         <div

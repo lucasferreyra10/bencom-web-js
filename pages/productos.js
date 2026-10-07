@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Layout from "../components/Layout";
 import ProductCard from "../components/ProductCard";
 import ProductLightbox from "../components/ProductLightbox";
+import Head from "next/head";
 
 /**
  * Ahora traemos los productos desde /api/products (SSR).
@@ -96,6 +97,16 @@ export default function Productos({ products = [] }) {
 
   return (
     <Layout>
+      <Head>
+        <title>Productos | BENCOM S.R.L - Mantenimiento e Insumos</title>
+        <meta name="description" content="Explorá los productos e insumos de BENCOM S.R.L para el mantenimiento de estaciones de servicio y empresas. Realizá tu pedido fácilmente." />
+        <meta name="keywords" content="productos bencom, insumos para estaciones de servicio, repuestos, mantenimiento, bencom srl" />
+        <meta property="og:title" content="Productos | BENCOM S.R.L" />
+        <meta property="og:description" content="Catálogo de productos e insumos de BENCOM S.R.L." />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://www.bencom.com.ar/productos" />
+      </Head>
       <section className="max-w-6xl mx-auto px-4 py-8 space-y-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="text-3xl font-title">Nuestros productos</h1>

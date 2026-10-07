@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import Layout from "./Layout";
+import Head from "next/head";
 
 export default function ServicePage({
   title,
@@ -212,6 +213,15 @@ export default function ServicePage({
 
   return (
     <Layout>
+      <Head>
+        <title>{title} | BENCOM S.R.L - Mantenimiento AMBA</title>
+        <meta name="description" content={description || "Servicio de mantenimiento integral especializado para empresas y estaciones de servicio en CABA y Gran Buenos Aires."} />
+        <meta name="keywords" content={`${title}, mantenimiento de estaciones de servicio, obra civil, bencom, bencom srl, amba`} />
+        <meta property="og:title" content={`${title} | BENCOM S.R.L`} />
+        <meta property="og:description" content={description || "Servicio de mantenimiento especializado en AMBA."} />
+        <meta property="og:type" content="article" />
+        <meta name="robots" content="index, follow" />
+      </Head>
       {/* ================= HEADER ================= */}
       <section className="max-w-5xl mx-auto px-4 py-8 space-y-6">
         <h1 className="text-3xl font-title">{title}</h1>
