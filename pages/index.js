@@ -2,69 +2,67 @@
 import Layout from "../components/Layout";
 import Carousel from "../components/Carousel";
 import { waLink } from "../lib/wa";
+import { supabasePublic } from "../lib/supabase/public";
 
 import Head from "next/head";
 
-const SERVICIOS = [
-  {
-    id: "obra-civil-menor",
-    title: "Obra civil menor",
-    desc: "Pequeñas obras civiles con calidad garantizada.",
-    img: "/covers/obra-civil-menor.jpeg",
-    href: "/servicios/obra-civil-menor",
-    icon: "/icons/NUEVOS ICONOS BENCOM-01.svg",
-  },
-  {
-    id: "destapaciones",
-    title: "Destapaciones",
-    desc: "Brindamos un servicio profesional, eficiente y confiable.",
-    img: "/covers/destapaciones.jpeg",
-    href: "/servicios/destapaciones",
-    icon: "/icons/NUEVOS ICONOS BENCOM-02.svg",
-  },
-  {
-    id: "demarcacion",
-    title: "Demarcación vial",
-    desc: "Demarcación para todo tipo de proyectos.",
-    img: "/covers/demarcacion.jpeg",
-    href: "/servicios/demarcacion-vial",
-    icon: "/icons/NUEVOS ICONOS BENCOM-03.svg",
-  },
-  {
-    id: "pintura-en-altura",
-    title: "Pintura en altura",
-    desc: "Servicios de pintura en altura con profesionales capacitados.",
-    img: "/covers/pintura-en-altura.jpeg",
-    href: "/servicios/pintura-en-altura",
-    icon: "/icons/NUEVOS ICONOS BENCOM-04.svg",
-  },
-  {
-    id: "herrerias",
-    title: "Herrerías",
-    desc: "Trabajos de herrería a medida: estructuras, rejas y más.",
-    img: "/covers/herrerias.jpeg",
-    href: "/servicios/herrerias",
-    icon: "/icons/NUEVOS ICONOS BENCOM-05.svg",
-  },
-  {
-    id: "equipos-de-frio",
-    title: "Equipos de frío",
-    desc: "Mantenimiento y reparación de equipos de refrigeración.",
-    img: "/covers/equipos-de-frio.jpeg",
-    href: "/servicios/equipos-de-frio",
-    icon: "/icons/NUEVOS ICONOS BENCOM-06.svg",
-  },
-  {
-    id: "proyectos-ideas",
-    title: "Proyectos-Ideas",
-    desc: "Soluciones innovadoras para optimizar procesos y mantenimiento.",
-    img: "/covers/proyectos-ideas.jpeg",
-    href: "/servicios/proyectos-ideas",
-    icon: "/icons/NUEVOS ICONOS BENCOM-07.svg",
-  },
-];
+const ICON_MAPPING = {
+  "obra-civil-menor": "/icons/NUEVOS ICONOS BENCOM-01.svg",
+  "destapaciones": "/icons/NUEVOS ICONOS BENCOM-02.svg",
+  "demarcacion-vial": "/icons/NUEVOS ICONOS BENCOM-03.svg",
+  "pintura-en-altura": "/icons/NUEVOS ICONOS BENCOM-04.svg",
+  "herrerias": "/icons/NUEVOS ICONOS BENCOM-05.svg",
+  "equipos-de-frio": "/icons/NUEVOS ICONOS BENCOM-06.svg",
+  "proyectos-ideas": "/icons/NUEVOS ICONOS BENCOM-07.svg",
+};
 
-export default function Home() {
+const IMG_MAPPING = {
+  "obra-civil-menor": "/covers/obra-civil-menor.jpeg",
+  "destapaciones": "/covers/destapaciones.jpeg",
+  "demarcacion-vial": "/covers/demarcacion.jpeg",
+  "pintura-en-altura": "/covers/pintura-en-altura.jpeg",
+  "herrerias": "/covers/herrerias.jpeg",
+  "equipos-de-frio": "/covers/equipos-de-frio.jpeg",
+  "proyectos-ideas": "/covers/proyectos-ideas.jpeg",
+};
+
+export async function getServerSideProps() {
+  const { data: services, error } = await supabasePublic
+    .from("services")
+    .select("*")
+    .or("is_hidden.eq.false,is_hidden.is.null")
+    .order("order_index", { ascending: true });
+
+  if (error) {
+    console.error("Error fetching services", error);
+    return { props: { servicesData: [] } };
+  }
+
+  const servicesData = (services || []).map((s) => {
+    let shortDesc = s.description || "";
+    const dotIndex = shortDesc.indexOf(".");
+    if (dotIndex !== -1) {
+      shortDesc = shortDesc.substring(0, dotIndex + 1);
+    }
+
+    return {
+      id: s.slug,
+      title: s.title,
+      desc: shortDesc,
+      img: IMG_MAPPING[s.slug] || (s.images && s.images.length > 0 ? s.images[0] : null),
+      href: `/servicios/${s.slug}`,
+      icon: ICON_MAPPING[s.slug] || null,
+    };
+  });
+
+  return {
+    props: {
+      servicesData,
+    },
+  };
+}
+
+export default function Home({ servicesData = [] }) {
   return (
     <Layout>
       <Head>
@@ -146,7 +144,7 @@ export default function Home() {
           </h2>
 
           {/* Carousel: ELIMINÉ minGridBreakpoint para que NUNCA se convierta en grid */}
-          <Carousel items={SERVICIOS} />
+          <Carousel items={servicesData} />
         </div>
       </section>
 
