@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <link rel="icon" href="/icons/favicon.ico?v=1" sizes="any" />
+        <link rel="icon" href="https://spvcxzfmitsqdjerqabx.supabase.co/storage/v1/object/public/media/favicon.ico" sizes="any" />
       </Head>
 
       {/* Fonts wrapper */}
