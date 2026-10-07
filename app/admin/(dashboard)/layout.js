@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
+import { LOGOS } from '@/lib/constants'
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname()
@@ -55,7 +57,14 @@ export default function AdminLayout({ children }) {
         ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
         <div className="hidden md:flex h-20 items-center justify-center border-b border-primary-dark bg-primary-dark">
-          <h1 className="text-2xl font-title tracking-widest uppercase">BENCOM S.R.L.</h1>
+          <Image 
+            src={LOGOS.footer.src}
+            alt={LOGOS.footer.alt}
+            width={LOGOS.footer.width}
+            height={LOGOS.footer.height}
+            className="w-[150px] h-auto object-contain"
+            priority
+          />
         </div>
         
         <div className="md:hidden h-16 border-b border-primary-dark bg-primary-dark"></div> {/* Mobile spacer */}

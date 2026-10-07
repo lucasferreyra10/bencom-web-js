@@ -6,6 +6,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { waLink } from "../lib/wa";
 
+import { LOGOS } from '@/lib/constants';
+
 export default function Layout({ children }) {
   const [open, setOpen] = useState(false); // mobile overlay
   const [mobileServiciosOpen, setMobileServiciosOpen] = useState(false); // mobile sub-menu
@@ -100,10 +102,10 @@ export default function Layout({ children }) {
             >
               <div className="flex items-center">
                 <Image
-                  src="/logoBencom.png"
-                  alt="BENCOM S.R.L."
-                  width={50}
-                  height={35}
+                  src={LOGOS.header.src}
+                  alt={LOGOS.header.alt}
+                  width={LOGOS.header.width}
+                  height={LOGOS.header.height}
                   className="w-[50px] h-auto object-contain"
                   priority
                 />
@@ -246,10 +248,10 @@ export default function Layout({ children }) {
                   className="inline-block"
                 >
                   <Image
-                    src="/logoBencom.png"
-                    alt="BENCOM S.R.L."
-                    width={50}
-                    height={35}
+                    src={LOGOS.header.src}
+                    alt={LOGOS.header.alt}
+                    width={LOGOS.header.width}
+                    height={LOGOS.header.height}
                     className="w-[50px] h-auto object-contain"
                     priority
                   />
@@ -372,10 +374,10 @@ export default function Layout({ children }) {
       <footer className="bg-primary text-white body-font">
         <div className="max-w-6xl mx-auto px-6 py-8 flex items-center sm:flex-row flex-col">
           <Image
-            src="/footerBencom.svg"
-            alt="BENCOM S.R.L."
-            width={150}
-            height={21}
+            src={LOGOS.footer.src}
+            alt={LOGOS.footer.alt}
+            width={LOGOS.footer.width}
+            height={LOGOS.footer.height}
             className="w-[150px] h-auto object-contain"
             priority
           />
