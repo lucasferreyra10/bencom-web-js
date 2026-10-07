@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 /**
  * Carousel horizontal robusto (desktop + mobile)
@@ -206,9 +207,15 @@ export default function Carousel({ items = [], minSlides = 1 }) {
                   width: `${w}px`,
                 }}
               >
-                <div className="h-36 w-full overflow-hidden bg-gray-100 flex items-start justify-center">
+                <div className="relative h-36 w-full overflow-hidden bg-gray-100 flex items-start justify-center">
                   {s.img ? (
-                    <img src={s.img} alt={s.title} className="object-cover object-top w-full h-full" />
+                    <Image
+                      src={s.img}
+                      alt={s.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover object-top"
+                    />
                   ) : (
                     <div className="text-sm text-gray-500">Imagen</div>
                   )}

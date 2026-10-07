@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import Layout from "./Layout";
 import Head from "next/head";
+import Image from "next/image";
 
 export default function ServicePage({
   title,
@@ -245,12 +246,14 @@ export default function ServicePage({
               <button
                 key={src + i}
                 onClick={() => openGallery(i)}
-                className="group relative overflow-hidden rounded-md border bg-gray-50"
+                className="group relative overflow-hidden rounded-md border bg-gray-50 w-full h-28"
               >
-                <img
+                <Image
                   src={src}
                   alt={`${title} ${i + 1}`}
-                  className="w-full h-28 object-cover group-hover:scale-105 transition-transform duration-200"
+                  fill
+                  sizes="(max-width: 640px) 33vw, 25vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-200"
                 />
               </button>
             ))}
@@ -385,12 +388,14 @@ export default function ServicePage({
                             <button
                               key={img + i}
                               onClick={() => openImageGallery(s.images, i)}
-                              className="group relative overflow-hidden rounded-md border bg-gray-50"
+                              className="group relative overflow-hidden rounded-md border bg-gray-50 w-full h-28"
                             >
-                              <img
+                              <Image
                                 src={img}
                                 alt={`${s.title} ${i + 1}`}
-                                className="h-28 w-full object-cover group-hover:scale-105 transition-transform duration-200"
+                                fill
+                                sizes="(max-width: 640px) 33vw, 25vw"
+                                className="object-cover group-hover:scale-105 transition-transform duration-200"
                               />
                             </button>
                           ))}

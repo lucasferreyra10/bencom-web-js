@@ -48,19 +48,39 @@ export default function Layout({ children }) {
   // };
 
   const [aboutData, setAboutData] = useState(null);
+  const [servicesData, setServicesData] = useState([
+    { slug: "obra-civil-menor", title: "Obra civil menor" },
+    { slug: "destapaciones", title: "Destapaciones" },
+    { slug: "demarcacion-vial", title: "Demarcación vial" },
+    { slug: "pintura-en-altura", title: "Pintura en altura" },
+    { slug: "herrerias", title: "Herrerías" },
+    { slug: "equipos-de-frio", title: "Equipos de frío" },
+    { slug: "proyectos-ideas", title: "Proyectos-Ideas" },
+  ]);
 
   useEffect(() => {
-    async function fetchAbout() {
+    async function fetchData() {
       try {
         const { createClient } = await import('../lib/supabase/client');
         const supabase = createClient();
-        const { data } = await supabase.from('about_content').select('*').eq('section', 'general').single();
-        if (data) setAboutData(data);
+        
+        // Fetch about content
+        const { data: about } = await supabase.from('about_content').select('*').eq('section', 'general').single();
+        if (about) setAboutData(about);
+
+        // Fetch services
+        const { data: services } = await supabase
+          .from('services')
+          .select('slug, title')
+          .or("is_hidden.eq.false,is_hidden.is.null")
+          .order('order_index', { ascending: true });
+        
+        if (services) setServicesData(services);
       } catch (err) {
-        console.error("Error fetching about_content", err);
+        console.error("Error fetching Layout data", err);
       }
     }
-    fetchAbout();
+    fetchData();
   }, []);
 
   const instagramLink = aboutData?.instagram_url || "https://instagram.com/bencomsrl";
@@ -126,62 +146,16 @@ export default function Layout({ children }) {
               {/* Dropdown: ahora con fondo primario y texto blanco */}
               <div className="absolute left-0 mt-2 w-56 bg-primary text-white rounded shadow-lg border border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-150 z-50">
                 <ul className="py-2">
-                  <li>
-                    <Link
-                      href="/servicios/obra-civil-menor"
-                      className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                    >
-                      Obra civil menor
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/servicios/destapaciones"
-                      className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                    >
-                      Destapaciones
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/servicios/demarcacion-vial"
-                      className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                    >
-                      Demarcación vial
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/servicios/pintura-en-altura"
-                      className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                    >
-                      Pintura en altura
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/servicios/herrerias"
-                      className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                    >
-                      Herrerías
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/servicios/equipos-de-frio"
-                      className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                    >
-                      Equipos de frío
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/servicios/proyectos-ideas"
-                      className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                    >
-                      Proyectos-Ideas
-                    </Link>
-                  </li>
+                  {servicesData.map((s) => (
+                    <li key={s.slug}>
+                      <Link
+                        href={`/servicios/${s.slug}`}
+                        className="block px-4 py-2 text-sm text-white transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                      >
+                        {s.title}
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -350,69 +324,17 @@ export default function Layout({ children }) {
                           : "max-h-0 opacity-0"
                       }`}
                     >
-                      <li>
-                        <Link
-                          href="/servicios/obra-civil-menor"
-                          onClick={handleNavClick}
-                          className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                        >
-                          Obra civil menor
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href="/servicios/destapaciones"
-                          onClick={handleNavClick}
-                          className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                        >
-                          Destapaciones
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href="/servicios/demarcacion-vial"
-                          onClick={handleNavClick}
-                          className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                        >
-                          Demarcación vial
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href="/servicios/pintura-en-altura"
-                          onClick={handleNavClick}
-                          className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                        >
-                          Pintura en altura
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href="/servicios/herrerias"
-                          onClick={handleNavClick}
-                          className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                        >
-                          Herrerías
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href="/servicios/equipos-de-frio"
-                          onClick={handleNavClick}
-                          className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                        >
-                          Equipos de frío
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href="/servicios/proyectos-ideas"
-                          onClick={handleNavClick}
-                          className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
-                        >
-                          Proyectos-Ideas
-                        </Link>
-                      </li>
+                      {servicesData.map((s) => (
+                        <li key={s.slug}>
+                          <Link
+                            href={`/servicios/${s.slug}`}
+                            onClick={handleNavClick}
+                            className="block text-white px-4 py-2 rounded-lg transform transition hover:shadow-lg hover:-translate-y-0.5 hover:bg-primary/90"
+                          >
+                            {s.title}
+                          </Link>
+                        </li>
+                      ))}
                     </ul>
                   </li>
                   {/* Otros links mobile */}

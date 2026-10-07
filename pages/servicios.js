@@ -1,8 +1,8 @@
-// pages/servicios.js
 import { useEffect, useState, useRef } from "react";
 import Layout from "../components/Layout";
 import { supabasePublic } from "../lib/supabase/public";
 import Head from "next/head";
+import Image from "next/image";
 
 export async function getServerSideProps() {
   const { data: services, error } = await supabasePublic
@@ -141,14 +141,15 @@ export default function Servicios({ servicesData }) {
                         <button
                           key={src + i}
                           onClick={() => openImageGallery(s.images, i)}
-                          className="group relative overflow-hidden rounded-md border bg-gray-50"
+                          className="group relative overflow-hidden rounded-md border bg-gray-50 w-full h-28"
                           aria-label={`Ver imagen ${i + 1} de ${s.title}`}
                         >
-                          <img
+                          <Image
                             src={src}
                             alt={`${s.title} foto ${i + 1}`}
-                            className="w-full h-28 object-cover group-hover:scale-105 transition-transform duration-200"
-                            loading="lazy"
+                            fill
+                            sizes="(max-width: 640px) 33vw, 25vw"
+                            className="object-cover group-hover:scale-105 transition-transform duration-200"
                           />
                         </button>
                       ))}
