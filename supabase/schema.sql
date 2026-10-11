@@ -72,6 +72,13 @@ VALUES (
     'https://instagram.com/bencomsrl'
 ) ON CONFLICT (section) DO NOTHING;
 
+-- Insertar datos iniciales para home_features (Feature grid de la página de inicio)
+INSERT INTO public.about_content (section, content)
+VALUES (
+    'home_features',
+    '[{"id":1,"icon":"/icons/NUEVOS ICONOS BENCOM-08.svg","title":"Trabajos en AMBA","description":"Realizamos trabajos en CABA y Gran Buenos Aires."},{"id":2,"icon":"/icons/NUEVOS ICONOS BENCOM-09.svg","title":"Servicio profesional","description":"Técnicos capacitados y tiempos de respuesta ágiles."},{"id":3,"icon":"/icons/NUEVOS ICONOS BENCOM-10.svg","title":"Realizamos factura","description":"Facturamos nuestros servicios con factura A."},{"id":4,"icon":"/icons/NUEVOS ICONOS BENCOM-11.svg","title":"Medios de pago","description":"Nos adaptamos a la necesidad de cada cliente/empresa."}]'
+) ON CONFLICT (section) DO NOTHING;
+
 -- Configurar Storage (Bucket 'media')
 INSERT INTO storage.buckets (id, name, public) VALUES ('media', 'media', true) ON CONFLICT (id) DO NOTHING;
 

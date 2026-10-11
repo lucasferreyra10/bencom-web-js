@@ -23,6 +23,7 @@ export default function AdminLayout({ children }) {
 
   const navItems = [
     { name: 'Dashboard', href: '/admin', icon: '📊' },
+    { name: 'Inicio (Index)', href: '/admin/inicio', icon: '🏠' },
     { name: 'Productos', href: '/admin/productos', icon: '📦' },
     { name: 'Servicios', href: '/admin/servicios', icon: '🛠️' },
     { name: 'Nosotros', href: '/admin/nosotros', icon: '🏢' },

@@ -3,6 +3,7 @@ import Layout from "../components/Layout";
 import Carousel from "../components/Carousel";
 import { waLink } from "../lib/wa";
 import { supabasePublic } from "../lib/supabase/public";
+import { DEFAULT_HOME_FEATURES } from "../lib/constants";
 
 import Head from "next/head";
 
@@ -55,14 +56,34 @@ export async function getServerSideProps() {
     };
   });
 
+  // Obtener características destacadas (Feature grid)
+  let featuresData = DEFAULT_HOME_FEATURES;
+  try {
+    const { data: featuresRow } = await supabasePublic
+      .from("about_content")
+      .select("content")
+      .eq("section", "home_features")
+      .maybeSingle();
+
+    if (featuresRow?.content) {
+      const parsed = JSON.parse(featuresRow.content);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        featuresData = parsed;
+      }
+    }
+  } catch (err) {
+    console.error("Error fetching home_features:", err);
+  }
+
   return {
     props: {
       servicesData,
+      featuresData,
     },
   };
 }
 
-export default function Home({ servicesData = [] }) {
+export default function Home({ servicesData = [], featuresData = DEFAULT_HOME_FEATURES }) {
   return (
     <Layout>
       <Head>
@@ -148,83 +169,30 @@ export default function Home({ servicesData = [] }) {
         </div>
       </section>
 
-      {/* ---------- Feature grid: 4 items (2 cols on mobile, 4 cols on desktop) ---------- */}
+      {/* ---------- Feature grid: dinámico (2 cols on mobile, 4 cols on desktop) ---------- */}
       <section className="max-w-5xl mx-auto px-4 py-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {/* Item 1 */}
-          <article className="bg-[#DFDFDF] rounded-lg p-6 flex flex-col items-center text-center gap-3">
-            <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-primary/10">
-              {/* icon: NUEVOS ICONOS BENCOM-08.svg */}
-              <img
-                src="/icons/NUEVOS ICONOS BENCOM-08.svg"
-                alt="Trabajos en AMBA"
-                className="w-7 h-7 md:w-8 md:h-8"
-              />
-            </div>
+          {(featuresData && featuresData.length > 0 ? featuresData : DEFAULT_HOME_FEATURES).map((item, index) => (
+            <article
+              key={item.id || index}
+              className="bg-[#DFDFDF] rounded-lg p-6 flex flex-col items-center text-center gap-3 transition-transform hover:-translate-y-1 duration-200"
+            >
+              <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-primary/10 shrink-0">
+                <img
+                  src={item.icon || "/icons/NUEVOS ICONOS BENCOM-08.svg"}
+                  alt={item.title || "Característica"}
+                  className="w-7 h-7 md:w-8 md:h-8 object-contain"
+                />
+              </div>
 
-            <h3 className="text-lg font-semibold text-primary">
-              Trabajos en AMBA
-            </h3>
-            <p className="text-sm text-gray-600">
-              Realizamos trabajos en CABA y Gran Buenos Aires.
-            </p>
-          </article>
-          {/* Item 2 */}
-          <article className="bg-[#DFDFDF] rounded-lg p-6 flex flex-col items-center text-center gap-3">
-            <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-primary/10">
-              {/* icon: NUEVOS ICONOS BENCOM-09.svg */}
-              <img
-                src="/icons/NUEVOS ICONOS BENCOM-09.svg"
-                alt="Servicio profesional"
-                className="w-7 h-7 md:w-8 md:h-8"
-              />
-            </div>
-
-            <h3 className="text-lg font-semibold text-primary">
-              Servicio profesional
-            </h3>
-            <p className="text-sm text-gray-600">
-              Técnicos capacitados y tiempos de respuesta ágiles.
-            </p>
-          </article>
-
-          {/* Item 3 */}
-          <article className="bg-[#DFDFDF] rounded-lg p-6 flex flex-col items-center text-center gap-3">
-            <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-primary/10">
-              {/* icon: NUEVOS ICONOS BENCOM-10.svg */}
-              <img
-                src="/icons/NUEVOS ICONOS BENCOM-10.svg"
-                alt="Realizamos factura"
-                className="w-7 h-7 md:w-8 md:h-8"
-              />
-            </div>
-
-            <h3 className="text-lg font-semibold text-primary">
-              Realizamos factura
-            </h3>
-            <p className="text-sm text-gray-600">
-              Facturamos nuestros servicios con factura A.
-            </p>
-          </article>
-
-          {/* Item 4 */}
-          <article className="bg-[#DFDFDF] rounded-lg p-6 flex flex-col items-center text-center gap-3">
-            <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-full bg-primary/10">
-              {/* icon: NUEVOS ICONOS BENCOM-11.svg */}
-              <img
-                src="/icons/NUEVOS ICONOS BENCOM-11.svg"
-                alt="Medios de pago"
-                className="w-7 h-7 md:w-8 md:h-8"
-              />
-            </div>
-
-            <h3 className="text-lg font-semibold text-primary">
-              Medios de pago
-            </h3>
-            <p className="text-sm text-gray-600">
-              Nos adaptamos a la necesidad de cada cliente/empresa.
-            </p>
-          </article>
+              <h3 className="text-lg font-semibold text-primary">
+                {item.title}
+              </h3>
+              <p className="text-sm text-gray-600">
+                {item.description}
+              </p>
+            </article>
+          ))}
         </div>
       </section>
     </Layout>
